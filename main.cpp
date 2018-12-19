@@ -12,9 +12,7 @@ public:
 int x = 0;
 int y = 0;
 void MoveBlock(){
-    if(y > boardSize){
-    y++;
-    }
+    if(y > boardSize){y++;}
 }
 };
 
@@ -26,7 +24,7 @@ void update(block o){
                 board[i][j] = '@';
                 board[o.y][o.x] = 'P';
                 cout << board[i][j];
-        }  
+            }  
         cout << "\n";
     } 
 }
