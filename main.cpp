@@ -40,8 +40,8 @@ void run(){
         chrono::duration<double> D = now - previous;
         if(D.count() >= 1){
             previous = now;
-                    obj1.MoveBlock();
-                        update(obj1);}
+            obj1.MoveBlock();
+            update(obj1);}
     }
 }
 
