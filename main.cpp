@@ -1,62 +1,62 @@
 #include <iostream>
-#include <chrono>
-#include <thread>
+#include <vector>
+#include <ncurses.h>
+#include <string>
 
-using namespace std::literals::chrono_literals;
+// For sleep
+#include <unistd.h>
 
-static bool running = false;
-int boardSize = 10;
-int posX = 0;
-int posY = 0;
+//Blocks
+#include "board.h"
+//#include "block.h"
+//#include "shape.h"
 
-void update(){
-    	std::cout << "\033[2J\033[1;1H";    
-    	char board[10][10];
-		if(posX >= 10 || posY >= 10){
-			running = false;
-			return;
+//Convertion for usleep
+const int microsecondTosecond = 1000000; 
+
+/* Structure
+ * board owns a block
+ * a block is the currently moving piece
+ * a block has a shape
+*/
+
+int mainLoop(){
+	int ch = getch();
+	int delay = 0, height = 0, width = 0;
+	Board board;
+	while(true) {
+		while(delay <= 10){
+			if ((ch = getch()) != ERR) {
+					board.update(ch);
+					move(10, 10);
+					addch(ch);
+					addstr("Width: ");
+					addch(width + '0');
+					addstr("Height : ");
+					addch(height + '0');
+					refresh();
+					if(ch == 'q'){
+						addstr("QUITED");
+						usleep(1*microsecondTosecond);
+						endwin();
+						return 0;
+					}
 		}
-    	for(int i = 0; i < 10;i++){
-           	for(int j = 0; j < 10;j++){
-                	board[i][j] = '@';
-                	board[posX][posY] = 'P';
-                	std::cout << board[i][j];
-            	}  
-       	std::cout << "\n";
-    	} 
-}
-
-void inputLoop(){
-	char key;
-	while(true){
-		std::cin >> key;
-		switch(key){
-		case 'w':
-			posX--;
-			break;
-		case 'a':
-			posY--;
-			break;}
-	}
-}
-
-
-void run(){
-    running = true; 
-	while(running){
-		std::this_thread::sleep_for(1s);
-		posX += 1;
-		posY += 1;
-		update();
+		delay += 1;
+		usleep(10); //This makes the game MUCH less blocking and thread locking  
+		getmaxyx(stdscr, height, width);
+		}
+	delay = 0;
+	refresh();
     }
-	return;
 }
-
 
 int main(){
-    std::cout << "Hello World" << std::endl;
-    std::cout << "This is Tetris" << std::endl;	
-	std::thread gameThread(run);
-	inputLoop();
-	return 0;
+	initscr(); // Create the screen
+	cbreak(); // One char at a time
+	noecho(); // Dont echo key pressed
+	keypad(stdscr, TRUE); //enable "special" characters
+
+	nodelay(stdscr, TRUE); // Read inputs all the time.
+	return mainLoop();
 }
