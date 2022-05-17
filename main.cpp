@@ -27,27 +27,27 @@ int mainLoop(){
 	while(true) {
 		while(delay <= 10){
 			if ((ch = getch()) != ERR) {
-					board.update(ch);
-					move(10, 10);
-					addch(ch);
-					addstr("Width: ");
-					addch(width + '0');
-					addstr("Height : ");
-					addch(height + '0');
-					refresh();
-					if(ch == 'q'){
-						addstr("QUITED");
-						usleep(1*microsecondTosecond);
-						endwin();
-						return 0;
-					}
+				board.update(ch);
+				move(10, 10);
+				addch(ch);
+				addstr("Width: ");
+				addch(width + '0');
+				addstr("Height : ");
+				addch(height + '0');
+				refresh();
+				if(ch == 'q'){
+					addstr("QUITED");
+					usleep(1*microsecondTosecond);
+					endwin();
+					return 0;
+				}
+			}
+			delay += 1;
+			usleep(10); //This makes the game MUCH less blocking and thread locking  
+			getmaxyx(stdscr, height, width);
 		}
-		delay += 1;
-		usleep(10); //This makes the game MUCH less blocking and thread locking  
-		getmaxyx(stdscr, height, width);
-		}
-	delay = 0;
-	refresh();
+		delay = 0;
+		refresh();
     }
 }
 
