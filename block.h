@@ -11,6 +11,6 @@ class Block{
         Block(int x, int y,Shape shape);
         void move(int ch);
         void rotateRight();
-
-
+        int getX();
+        int getY();
 };

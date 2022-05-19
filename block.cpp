@@ -16,6 +16,14 @@ void Block::rotateRight(){
 
 }
 
+int Block::getX(){
+    return m_x;
+}
+
+int Block::getY(){
+    return m_y;
+}
+
 void Block::move(int ch){
     switch (ch) {   
         //Rotate the Block

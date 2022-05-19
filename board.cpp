@@ -18,6 +18,17 @@ int Board::amountOfRowsFilled(){
     }
     return numberOfRowsFilled;
 }
+
 void Board::update(int ch){
     m_block.move(ch);
+}
+
+void Board::draw(WINDOW*& screen){
+    for(int i = 0; i < BOARD_WIDTH; ++i){
+        for(int j = 0; j < BOARD_HEIGHT; ++j){
+            if(m_block.getX() == i && m_block.getY() == j){
+                
+            }
+        }
+    }
 }

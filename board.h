@@ -1,5 +1,6 @@
 #pragma once
 #include "block.h"
+#include <ncurses.h>
 
 #define BOARD_WIDTH 10
 #define BOARD_HEIGHT 20
@@ -13,4 +14,5 @@ class Board{
         void addPiece(Block bl);
         int amountOfRowsFilled();
         void update(int ch);
+        void draw(WINDOW*& screen);
 };
