@@ -5,3 +5,5 @@
 
 #define UI_WIDTH 0
 #define UI_HEIGHT 0
+
+#define SHAPESIZE 4

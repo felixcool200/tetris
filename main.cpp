@@ -40,8 +40,8 @@ int mainLoop(){
 		//while(delay <= 10){
 			timer.start();
 			if ((ch = getch()) != ERR) {
-				ui.draw(stdscr);
 				board.update(ch);
+				ui.draw(stdscr);
 				board.draw(stdscr);
 				move(10, 1);
 				addstr("0123456789");

@@ -1,5 +1,4 @@
 #include "block.h"
-#include <ncurses.h>
 #include "shape.h"
 
 Block::Block(){
@@ -13,7 +12,7 @@ Block::Block(int x, int y, Shape shape){
 }
 
 void Block::rotateRight(){
-
+    m_shape.rotateRight();
 }
 
 int Block::getX(){
@@ -46,4 +45,18 @@ void Block::move(int ch){
             m_x -= 1;
         break;
      }
+}
+
+void Block::draw(WINDOW*& screen){
+    wmove(screen, m_y, m_x);
+    for(int i = 0; i < SHAPESIZE; ++i){
+        for(int j = 0; j < SHAPESIZE; ++j){
+            if(m_shape.getShape(j,i)){
+                waddch(screen,'B');
+            }else{
+                waddch(screen,' ');
+            }
+        }
+        wmove(screen, m_y+i, m_x);
+    }
 }

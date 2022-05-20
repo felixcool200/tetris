@@ -1,4 +1,5 @@
 #include "board.h"
+#include "block.h"
 
 Board::Board(){}
 void Board::addPiece(Block bl){}
@@ -24,6 +25,9 @@ void Board::update(int ch){
 }
 
 void Board::draw(WINDOW*& screen){
+    m_block.draw(screen);
+    waddstr(screen,"hej");
+    mvwaddch(screen, 0, 0, '#');
     for(int i = 0; i < BOARD_WIDTH; ++i){
         for(int j = 0; j < BOARD_HEIGHT; ++j){
             if(m_block.getX() == i && m_block.getY() == j){
