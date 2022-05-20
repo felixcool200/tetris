@@ -1,4 +1,5 @@
 #pragma once
+#include "constants.h"
 #include "block.h"
 #include <ncurses.h>
 

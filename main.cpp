@@ -3,14 +3,16 @@
 #include <ncurses.h>
 #include <string>
 
-#define UI_WIDTH 0
-#define UI_HEIGHT 0
+#include "constants.h"
 
 // For sleep
 #include <unistd.h>
 
 //Blocks
 #include "board.h"
+
+//UI
+#include "ui.h"
 //#include "block.h"
 //#include "shape.h"
 
@@ -32,25 +34,25 @@ int mainLoop(){
 	int ch = getch();
 	int delay = 0, height = 0, width = 0;
 	Board board;
+	UI ui;
 	Timer timer(false);
 	while(true) {
 		//while(delay <= 10){
 			timer.start();
 			if ((ch = getch()) != ERR) {
+				ui.draw(stdscr);
 				board.update(ch);
 				board.draw(stdscr);
-				move(10, 10);
-				addch(ch);
+				move(10, 1);
+				addstr("0123456789");
+				mvaddch(11,5,ch);
 				if(ch == 'q'){
-					//addstr("QUITED");
-					//usleep(1*microsecondTosecond);
 					endwin();
 					std::cout << "Terminated" << std::endl;
 					return 0;
 				}
 			}
-			//delay += 1;
-			getmaxyx(stdscr, height, width); // Se if the terminal changed size
+			//getmaxyx(stdscr, height, width); // Se if the terminal changed size
 			refresh();
 			double deltaTime = (secoundsPerFrame - timer.stop())*microsecondTosecond;
 			if(deltaTime <= 0){
@@ -59,10 +61,6 @@ int mainLoop(){
 				return 0;
 			}
 			usleep(deltaTime);
-			//usleep(10); //This minimizes the CPU usage for the thread
-		//}
-		//delay = 0;
-		//refresh();
     }
 }
 
