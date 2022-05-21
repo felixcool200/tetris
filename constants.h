@@ -7,3 +7,43 @@
 #define UI_HEIGHT 0
 
 #define SHAPESIZE 4
+
+const bool O_PIECE[SHAPESIZE][SHAPESIZE] = {{0, 0, 0, 0},
+                                            {0, true,true,0},
+                                            {0, true,true,0},
+                                            {0, 0, 0, 0}};
+
+const bool I_PIECE[SHAPESIZE][SHAPESIZE] = {{0, true, 0, 0},
+                                            {0, true,0,0},
+                                            {0, true,0,0},
+                                            {0, true, 0, 0}};
+
+const bool S_PIECE[SHAPESIZE][SHAPESIZE] = {{0, 0, 0, 0},
+                                            {0, true, true,0},
+                                            {true, true, 0,0},
+                                            {0, 0, 0, 0}};
+
+const bool S_PIECE[SHAPESIZE][SHAPESIZE] = {{0, 0, 0, 0},
+                                            {0, true, true,0},
+                                            {true, true, 0,0},
+                                            {0, 0, 0, 0}};
+
+const bool Z_PIECE[SHAPESIZE][SHAPESIZE] = {{0, 0, 0, 0},
+                                            {0, true, true ,0},
+                                            {0, 0, true ,true},
+                                            {0, 0, 0, 0}};
+
+const bool L_PIECE[SHAPESIZE][SHAPESIZE] = {{0, true, 0, 0},
+                                            {0, true, 0,0},
+                                            {0, true, true,0},
+                                            {0, 0, 0, 0}};
+
+const bool J_PIECE[SHAPESIZE][SHAPESIZE] = {{0, 0, true, 0},
+                                            {0, 0, true,0},
+                                            {0, true, true,0},
+                                            {0, 0, 0, 0}};
+
+const bool T_PIECE[SHAPESIZE][SHAPESIZE] = {{0, 0, 0, 0},
+                                            {0, 0, 0 ,0},
+                                            {0, true, 0 ,0},
+                                            {true,true,true, 0}};

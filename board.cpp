@@ -1,7 +1,14 @@
 #include "board.h"
 #include "block.h"
 
-Board::Board(){}
+Board::Board(){
+    m_block = Block(3,0);
+        for(int i = 0; i < BOARD_HEIGHT; ++i){
+        for(int j = 0; j < BOARD_WIDTH; ++j){
+            m_board[j][i] = false;
+        }
+    }
+}
 void Board::addPiece(Block bl){}
 int Board::amountOfRowsFilled(){
     int numberOfRowsFilled = 0;

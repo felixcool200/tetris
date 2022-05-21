@@ -2,10 +2,12 @@
 #include "shape.h"
 
 Block::Block(){
-
 }
-Block::Block(int x, int y){
 
+Block::Block(int x, int y){
+    m_x = x;
+    m_y = y;
+    m_shape = Shape();
 }
 Block::Block(int x, int y, Shape shape){
 

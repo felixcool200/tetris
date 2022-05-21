@@ -1,8 +1,48 @@
 #include "shape.h"
+#include <stdlib.h>     /* srand, rand */
+Shape::Shape(){
+  srand(0);
+  setShape(rand() % 7);
+}
 
-Shape::Shape(){}
+bool Shape::setShape(int index){
+  switch (index)
+  {
+  case 0:
+      m_matrix = O_PIECE;
+      break;
+  case 1:
+      /* code */
+      break;
 
-Shape::Shape(int x, int y){}
+  case 2:
+      /* code */
+      break;
+
+  case 3:
+      /* code */
+      break;
+
+  case 4:
+      /* code */
+      break;
+
+  case 5:
+      /* code */
+      break;
+
+  case 6:
+      /* code */
+      break;
+
+  default:
+      break;
+  }
+}
+
+Shape::Shape(int shape){
+    
+}
 
 /*
 https://stackoverflow.com/questions/37812817/finding-element-at-x-y-in-a-given-matrix-after-rotation-in-c-c
