@@ -3,9 +3,6 @@
 #include "block.h"
 #include <ncurses.h>
 
-#define BOARD_WIDTH 10
-#define BOARD_HEIGHT 20
-
 class Board{
     private:
         bool m_board[BOARD_WIDTH][BOARD_HEIGHT];

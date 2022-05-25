@@ -2,14 +2,17 @@
 #include "block.h"
 
 Board::Board(){
-    m_block = Block(3,0);
+    m_block = Block(0,0);
         for(int i = 0; i < BOARD_HEIGHT; ++i){
         for(int j = 0; j < BOARD_WIDTH; ++j){
             m_board[j][i] = false;
         }
     }
 }
-void Board::addPiece(Block bl){}
+void Board::addPiece(Block bl){
+
+}
+
 int Board::amountOfRowsFilled(){
     int numberOfRowsFilled = 0;
     for(int i = 0; i < BOARD_HEIGHT; ++i){
@@ -33,8 +36,9 @@ void Board::update(int ch){
 
 void Board::draw(WINDOW*& screen){
     m_block.draw(screen);
-    waddstr(screen,"hej");
-    mvwaddch(screen, 0, 0, '#');
+    return;
+    //waddstr(screen,"hej");
+    //mvwaddch(screen, 0, 0, '#');
     for(int i = 0; i < BOARD_WIDTH; ++i){
         for(int j = 0; j < BOARD_HEIGHT; ++j){
             if(m_block.getX() == i && m_block.getY() == j){

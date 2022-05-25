@@ -1,5 +1,6 @@
 #include "ui.h"
 #include <string>
+#include "ScreenHandler.h"
 
     UI::UI(){
 
@@ -10,13 +11,11 @@
     }
     
     void UI::draw(WINDOW*& screen){
-        const char* hline = std::string(BOARD_WIDTH + 2, '#').c_str();
-        wmove(screen, 0, 0);
-        waddstr(screen,hline);
-        wmove(screen, BOARD_HEIGHT, 0);
-        waddstr(screen,hline);
+        std::string hline = std::string(BOARD_WIDTH + BORDER_LEFT + BORDER_RIGHT, '#');
+        ScreenHandler::addStringAt(screen,hline,0,0);
+        ScreenHandler::addStringAt(screen,hline,0,BOARD_HEIGHT);
         for(int i = 1; i < BOARD_HEIGHT; ++i){
-            mvwaddch(screen, i, 0, '#');
-            mvwaddch(screen, i, BOARD_WIDTH + 1, '#');
+            ScreenHandler::addCharAt(screen,'#',0,i);
+            ScreenHandler::addCharAt(screen,'#',(BOARD_WIDTH + BORDER_LEFT),i);
         }
     }

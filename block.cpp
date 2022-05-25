@@ -1,5 +1,7 @@
 #include "block.h"
 #include "shape.h"
+#include "constants.h"
+#include "ScreenHandler.h"
 
 Block::Block(){
 }
@@ -50,15 +52,13 @@ void Block::move(int ch){
 }
 
 void Block::draw(WINDOW*& screen){
-    wmove(screen, m_y, m_x);
+    //ScreenHandler::moveCurserBoard(screen, m_y, m_x);
     for(int i = 0; i < SHAPESIZE; ++i){
         for(int j = 0; j < SHAPESIZE; ++j){
             if(m_shape.getShape(j,i)){
-                waddch(screen,'B');
-            }else{
-                waddch(screen,' ');
+                ScreenHandler::addCharAtBoard(screen,'B',(m_x + j),(m_y + i));
             }
         }
-        wmove(screen, m_y+i, m_x);
+        //ScreenHandler::moveCurserBoard(screen, m_y + i, m_x);
     }
 }
