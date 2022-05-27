@@ -3,7 +3,7 @@
 class Shape{
     private:
         const bool (*m_matrix)[SHAPESIZE] = nullptr; //Work fine
-        short m_direction = 0; // plus means right
+        short m_direction = 1; // plus means right
     
         void setShape(int index);
     public:

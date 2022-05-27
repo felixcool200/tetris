@@ -40,12 +40,13 @@ int mainLoop(){
 		//while(delay <= 10){
 			timer.start();
 			if ((ch = getch()) != ERR) {
+				clear();
 				board.update(ch);
-				ui.draw(stdscr);
 				board.draw(stdscr);
-				move(10, 1);
-				addstr("0123456789");
-				mvaddch(11,5,ch);
+				ui.draw(stdscr);
+				//move(10, 1);
+				//addstr("0123456789");
+				//mvaddch(11,5,ch);
 				if(ch == 'q'){
 					endwin();
 					std::cout << "Terminated" << std::endl;

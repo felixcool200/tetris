@@ -7,10 +7,12 @@ class Board{
     private:
         bool m_board[BOARD_WIDTH][BOARD_HEIGHT];
         Block m_block;
+        bool checkForCollision(Block bl);
+        void addBlockToBoard(Block bl);
+        int amountOfRowsFilled();
+        void createNewBlock();
     public:
         Board();
-        void addPiece(Block bl);
-        int amountOfRowsFilled();
         void update(int ch);
         void draw(WINDOW*& screen);
 };
