@@ -30,9 +30,18 @@ const double secoundsPerFrame = 1.0/60.0;
  * a block has a shape
 */
 
+void update(int input, Board board, UI ui){
+	clear();
+	board.update(input);
+	ui.update();
+	board.draw(stdscr);
+	ui.draw(stdscr);
+	refresh();
+}
+
 int mainLoop(){
-	int ch = getch();
-	int delay = 0, height = 0, width = 0;
+	int ch = ERR;
+	int delay, height = 0, width = 0;
 	Board board;
 	UI ui;
 	Timer timer(false);
@@ -40,21 +49,22 @@ int mainLoop(){
 		//while(delay <= 10){
 			timer.start();
 			if ((ch = getch()) != ERR) {
-				clear();
-				board.update(ch);
-				board.draw(stdscr);
-				ui.draw(stdscr);
-				//move(10, 1);
-				//addstr("0123456789");
-				//mvaddch(11,5,ch);
+				delay = 0;
+				update(ch, board, ui);
 				if(ch == 'q'){
 					endwin();
 					std::cout << "Terminated" << std::endl;
 					return 0;
 				}
+				refresh();
 			}
+			if(delay == 10){
+				delay = 0;
+				board.tick();
+				update(-1, board, ui);
+			}
+			delay++;
 			//getmaxyx(stdscr, height, width); // Se if the terminal changed size
-			refresh();
 			double deltaTime = (secoundsPerFrame - timer.stop())*microsecondTosecond;
 			if(deltaTime <= 0){
 				endwin();
@@ -66,10 +76,11 @@ int mainLoop(){
 }
 
 int main(){
-	initscr(); // Create the screen
-	cbreak(); // One char at a time
+	timeout(-1); // Do not wait for input
+	//cbreak(); // One char at a time
 	noecho(); // Dont echo key pressed
 	keypad(stdscr, TRUE); //enable "special" characters
+	initscr(); // Create the screen
 	int height, width;
 	getmaxyx(stdscr, height, width);
 	if(height < BOARD_HEIGHT + UI_HEIGHT + 2 || width < BOARD_WIDTH + UI_WIDTH +  2){

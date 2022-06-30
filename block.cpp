@@ -3,6 +3,8 @@
 #include "constants.h"
 #include "ScreenHandler.h"
 
+#include <iostream>
+
 Block::Block(int x, int y){
     m_x = x;
     m_y = y;
@@ -28,6 +30,10 @@ int Block::getY(){
     return m_y;
 }
 
+void Block::tick(){
+    m_y += 1;
+}
+
 void Block::move(int ch){
     switch (ch) {   
         //Rotate the Block
@@ -49,12 +55,12 @@ void Block::move(int ch){
 
         //Move block one step to the left
         case KEY_LEFT:
-            if(m_x -1 >= 0){
+            if(m_x >= 0){
                 m_x -= 1;
             }
         break;
      }
-     m_y += 1;
+     //m_y += 1;
 }
 
 void Block::draw(WINDOW*& screen){

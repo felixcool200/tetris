@@ -10,14 +10,20 @@ Board::Board(){
         }
     }
 }
+
+void Board::tick(){
+    m_block.tick();
+}
+
 void Board::addBlockToBoard(Block bl){
-    for(int i = 0; i < SHAPESIZE; ++i){
+    m_board[bl.getX() + 2][bl.getY() + 2] = true;
+    /*for(int i = 0; i < SHAPESIZE; ++i){
         for(int j = 0; j < SHAPESIZE; ++j){
             if(bl.getShape(bl.getX() + j, bl.getY() + i)){
                 m_board[bl.getX() + j][bl.getY() + i] = true;
             }
         }
-    }
+    }*/
 }
 
 int Board::amountOfRowsFilled(){
@@ -67,7 +73,6 @@ void Board::createNewBlock(){
 
 
 void Board::draw(WINDOW*& screen){
-    m_block.draw(screen);
     for(int i = 0; i < BOARD_HEIGHT; ++i){
         for(int j = 0; j < BOARD_WIDTH; ++j){
             if(m_board[j][i]){
@@ -75,4 +80,5 @@ void Board::draw(WINDOW*& screen){
             }
         }
     }
+    m_block.draw(screen);
 }

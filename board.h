@@ -13,6 +13,7 @@ class Board{
         void createNewBlock();
     public:
         Board();
-        void update(int ch);
+        void tick();
+        void update(int ch = -1);
         void draw(WINDOW*& screen);
 };

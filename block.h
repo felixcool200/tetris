@@ -10,6 +10,7 @@ class Block{
         Block() : Block(BOARD_WIDTH/2,0){}; // Default constructor
         Block(int x, int y);
         Block(int x, int y, Shape shape);
+        void tick();
         void move(int ch);
         void draw(WINDOW*& screen);
         bool getShape(int x, int y);
