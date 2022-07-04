@@ -9,6 +9,7 @@ Block::Block(){
 Block::Block(int x, int y){
     m_x = x;
     m_y = y;
+    m_fast = false;
     m_shape = Shape();
 }
 Block::Block(int x, int y, Shape shape){
@@ -27,6 +28,11 @@ int Block::getY(){
     return m_y;
 }
 
+void Block::update(){
+    m_y += 1;
+    m_fast = 0;
+}
+
 void Block::move(int ch){
     switch (ch) {   
         //Rotate the Block
@@ -36,7 +42,7 @@ void Block::move(int ch){
 
         //Speed up block
         case KEY_DOWN:
-            m_y += 1;
+            m_fast = 1;
         break;
 
         //Move block one step to the right

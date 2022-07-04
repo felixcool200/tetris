@@ -3,7 +3,7 @@
 
 Board::Board(){
     m_block = Block(0,0);
-        for(int i = 0; i < BOARD_HEIGHT; ++i){
+    for(int i = 0; i < BOARD_HEIGHT; ++i){
         for(int j = 0; j < BOARD_WIDTH; ++j){
             m_board[j][i] = false;
         }
@@ -32,6 +32,7 @@ int Board::amountOfRowsFilled(){
 
 void Board::update(int ch){
     m_block.move(ch);
+    m_block.update();
 }
 
 void Board::draw(WINDOW*& screen){
