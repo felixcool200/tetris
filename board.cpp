@@ -60,9 +60,6 @@ bool Board::checkForCollision(Block bl){
 
 void Board::update(int ch){
     m_block.move(ch);
-<<<<<<< HEAD
-    m_block.update();
-=======
     if(checkForCollision(m_block)){
         //ScreenHandler::addStringAt(stdscr,std::string("Collision detected"),0,0);
         addBlockToBoard(m_block);
@@ -72,7 +69,6 @@ void Board::update(int ch){
 
 void Board::createNewBlock(){
     m_block = Block();
->>>>>>> 55d0b1e015c73c859648c99fd7a0aee26227e80a
 }
 
 
