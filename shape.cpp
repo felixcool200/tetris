@@ -66,18 +66,17 @@ m_dir = 3
 */
 bool Shape::getShape(int x, int y){
 		if(m_direction == 0){
-				m_matrix[x][y];
+				return m_matrix[x][y];
 		}
 		else if(m_direction == 1){
-				m_matrix[y][SHAPESIZE - 1 - x];
+				return m_matrix[y][SHAPESIZE - 1 - x];
 		}
 		else if(m_direction == 2){
-				m_matrix[SHAPESIZE - 1 - x][SHAPESIZE - 1 - y];
+				return m_matrix[SHAPESIZE - 1 - x][SHAPESIZE - 1 - y];
 		}
 		else{
-				m_matrix[SHAPESIZE - 1 - y][SHAPESIZE + 1 - (SHAPESIZE - 1 - x)];
+				return m_matrix[SHAPESIZE - 1 - y][SHAPESIZE - 1 - (SHAPESIZE - 1 - x)];
 		}
-		return m_matrix[x][y];
 }
 
 void Shape::rotateRight(){

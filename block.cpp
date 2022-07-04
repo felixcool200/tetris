@@ -3,8 +3,7 @@
 #include "constants.h"
 #include "ScreenHandler.h"
 
-Block::Block(){
-}
+#include <iostream>
 
 Block::Block(int x, int y){
     m_x = x;
@@ -14,6 +13,10 @@ Block::Block(int x, int y){
 }
 Block::Block(int x, int y, Shape shape){
 
+}
+
+bool Block::getShape(int x, int y){
+    return m_shape.getShape(x,y);
 }
 
 void Block::rotateRight(){
@@ -28,9 +31,8 @@ int Block::getY(){
     return m_y;
 }
 
-void Block::update(){
+void Block::tick(){
     m_y += 1;
-    m_fast = 0;
 }
 
 void Block::move(int ch){
@@ -47,14 +49,19 @@ void Block::move(int ch){
 
         //Move block one step to the right
         case KEY_RIGHT:
-            m_x += 1;
+            if(m_x + 1 < BOARD_WIDTH - SHAPESIZE){
+                m_x += 1;
+            }
         break;
 
         //Move block one step to the left
         case KEY_LEFT:
-            m_x -= 1;
+            if(m_x >= 0){
+                m_x -= 1;
+            }
         break;
      }
+     //m_y += 1;
 }
 
 void Block::draw(WINDOW*& screen){

@@ -6,5 +6,6 @@ namespace ScreenHandler{
     void addChar(WINDOW*& screen, char c);
     void addCharAt(WINDOW*& screen,char ch, int x, int y);
     void addCharAtBoard(WINDOW*& screen,char ch, int x, int y);
+    void addStringAtBoard(WINDOW*& screen,std::string s, int x, int y);
     void addStringAt(WINDOW*& screen, std::string s, int x, int y);
 }

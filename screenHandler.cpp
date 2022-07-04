@@ -21,6 +21,11 @@ namespace ScreenHandler{
     void addCharAtBoard(WINDOW*& screen,char ch, int x, int y){
         mvwaddch(screen, (y+ BORDER_TOP), (x + BORDER_LEFT), ch);
     }
+
+    void addStringAtBoard(WINDOW*& screen,std::string s, int x, int y){
+        mvwaddstr(screen, (y+ BORDER_TOP), (x + BORDER_LEFT), s.c_str());
+    }
+
     
     void addStringAt(WINDOW*& screen, std::string s, int x, int y){
         mvwaddstr(screen, y, x, s.c_str());
