@@ -30,7 +30,7 @@ const double secoundsPerFrame = 1.0/60.0;
  * a block has a shape
 */
 
-void update(int input, Board board, UI ui){
+void update(int input, Board &board, UI &ui){
 	clear();
 	board.update(input);
 	ui.update();
@@ -49,12 +49,13 @@ int mainLoop(){
 		//while(delay <= 10){
 			timer.start();
 			if ((ch = getch()) != ERR) {
-				delay = 0;
+				//delay = 0;
 				update(ch, board, ui);
 				if(ch == 'q'){
 					endwin();
 					std::cout << "Terminated" << std::endl;
 					return 0;
+					break;
 				}
 				refresh();
 			}

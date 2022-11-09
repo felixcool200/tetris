@@ -1,6 +1,6 @@
 #pragma once
 
-#define BOARD_WIDTH 10
+#define BOARD_WIDTH 20
 #define BOARD_HEIGHT 20
 
 #define UI_WIDTH 0

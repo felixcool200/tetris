@@ -32,36 +32,40 @@ int Block::getY(){
 }
 
 void Block::tick(){
-    m_y += 1;
+    m_y += 1 + m_fast;
 }
 
 void Block::move(int ch){
+    m_fast = false;
     switch (ch) {   
         //Rotate the Block
         case KEY_UP:
+        case 'w':
             this->rotateRight();
         break;
 
         //Speed up block
         case KEY_DOWN:
-            m_fast = 1;
+        case 's':
+            m_fast = true;
         break;
 
         //Move block one step to the right
         case KEY_RIGHT:
-            if(m_x + 1 < BOARD_WIDTH - SHAPESIZE){
+        case 'd':
+            if(m_x <= BOARD_WIDTH - SHAPESIZE){
                 m_x += 1;
             }
         break;
 
         //Move block one step to the left
         case KEY_LEFT:
+        case 'a':
             if(m_x >= 0){
                 m_x -= 1;
             }
         break;
      }
-     //m_y += 1;
 }
 
 void Block::draw(WINDOW*& screen){
