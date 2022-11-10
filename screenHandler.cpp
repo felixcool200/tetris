@@ -4,6 +4,7 @@
 #include <string>
 
 namespace ScreenHandler{
+
     void moveCurserBoard(WINDOW*& screen, int x, int y){
         wmove(screen,(y + BORDER_TOP),(x + BORDER_LEFT));
         return;
@@ -13,13 +14,14 @@ namespace ScreenHandler{
         waddch(screen,c);
     }
     
-
     void addCharAt(WINDOW*& screen,char ch, int x, int y){
         mvwaddch(screen, y, x, ch);
     }
 
     void addCharAtBoard(WINDOW*& screen,char ch, int x, int y){
+        attron(COLOR_PAIR(COLOR_BLOCK_RED));
         mvwaddch(screen, (y+ BORDER_TOP), (x + BORDER_LEFT), ch);
+        attroff(COLOR_PAIR(COLOR_BLOCK_RED));
     }
 
     void addStringAtBoard(WINDOW*& screen,std::string s, int x, int y){

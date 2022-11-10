@@ -2,36 +2,44 @@
 #include <stdlib.h>		 /* srand, rand */
 #include<iostream>
 Shape::Shape(){
-	srand(2);
 	setShape(rand() % 7);
 }
 
 void Shape::setShape(int index){
 switch (index){
 	case 0:
-		m_matrix = O_PIECE;
+		setMatrix(O_PIECE);
 		break;
 	case 1:
-		m_matrix = I_PIECE;
+		setMatrix(I_PIECE);
 		break;
 	case 2:
-		m_matrix = S_PIECE;
+		setMatrix(S_PIECE);
 		break;
 	case 3:
-		m_matrix = Z_PIECE;
+		setMatrix(Z_PIECE);
 		break;
 	case 4:
-		m_matrix = L_PIECE;
+		setMatrix(L_PIECE);
 		break;
 	case 5:
-		m_matrix = J_PIECE;
+		setMatrix(J_PIECE);
 		break;
 	case 6:
-		m_matrix = T_PIECE;
+		setMatrix(T_PIECE);
 		break;
 	default:
-			break;
+		break;
 	}
+}
+
+void Shape::setMatrix(const bool matrix[SHAPESIZE][SHAPESIZE]){
+	for(int dy = 0; dy < SHAPESIZE; ++dy){
+        for(int dx = 0; dx < SHAPESIZE; ++dx){
+            // If there is a block at that position
+			m_matrix[dx][dy] = matrix[dx][dy];
+        }
+    }
 }
 
 Shape::Shape(int shapeIndex){
@@ -79,9 +87,6 @@ bool Shape::getShape(int x, int y){
 	case 3:
 		return m_matrix[SHAPESIZE - 1 - y][SHAPESIZE - 1 - (SHAPESIZE - 1 - x)];
 		break;	
-	default:
-		int i = 1/0;
-		break;
 	}
 }
 

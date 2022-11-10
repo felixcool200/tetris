@@ -77,6 +77,7 @@ int mainLoop(){
 }
 
 int main(){
+	srand(4);
 	timeout(-1); // Do not wait for input
 	//cbreak(); // One char at a time
 	noecho(); // Dont echo key pressed
@@ -90,6 +91,18 @@ int main(){
 		std::cout << "Height: " << height << ", Width: " << width << std::endl;
 		return 0;
 	}
+
+	if (has_colors() == FALSE) {
+		endwin();
+		printf("Your terminal does not support color\n");
+		exit(1);
+	}
+	start_color();
+	init_pair(COLOR_BLOCK_RED, COLOR_YELLOW, COLOR_GREEN);
+    init_pair(COLOR_BLOCK_GREEN, COLOR_CYAN, COLOR_BLUE);
+    init_pair(COLOR_BLOCK_BLUE, COLOR_BLACK, COLOR_WHITE);
+    init_pair(COLOR_BLOCK_YELLOW, COLOR_RED, COLOR_MAGENTA);
+
 	nodelay(stdscr, TRUE); // Read inputs all the time.
 	return mainLoop();
 }

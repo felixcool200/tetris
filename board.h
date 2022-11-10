@@ -7,10 +7,15 @@ class Board{
     private:
         bool m_board[BOARD_WIDTH][BOARD_HEIGHT];
         Block m_block;
-        bool checkForCollision(Block bl);
+        bool checkForFinalLocation(Block bl);
+        bool checkForObstruction(Block bl);
         void addBlockToBoard(Block bl);
+        void removeCompleteRows();
         int amountOfRowsFilled();
         void createNewBlock();
+        void removeRow(int index);
+        void removeRows(int start,int stop);
+
     public:
         Board();
         void tick();

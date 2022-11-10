@@ -13,6 +13,12 @@
 
 #define SHAPESIZE 4
 
+#define COLOR_BLOCK_RED 1
+#define COLOR_BLOCK_GREEN 2
+#define COLOR_BLOCK_BLUE 3
+#define COLOR_BLOCK_YELLOW 4
+
+
 const bool O_PIECE[SHAPESIZE][SHAPESIZE] = {{true, true, 0, 0},
                                             {true, true, 0,0},
                                             {0, 0, 0, 0},
