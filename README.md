@@ -21,11 +21,14 @@ Move to the directory
 
     $ cd ncurses-6.1
 Run the config
+
     $ ./configure --prefix=/opt/ncurses
 Compile
+
     $ make
     $ sudo make install
 Verify
+
     $ ls -la /opt/ncurses
 
 ## How to build using CMake
