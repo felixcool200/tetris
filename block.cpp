@@ -8,13 +8,11 @@
 Block::Block(int x, int y){
     m_x = x;
     m_y = y;
-    m_fast = false;
     m_shape = Shape();
 }
 Block::Block(int x, int y, Shape shape){
     m_x = x;
     m_y = y;
-    m_fast = false;
     m_shape = shape;
 }
 
@@ -34,12 +32,15 @@ int Block::getY(){
     return m_y;
 }
 
+int Block::getColor(){
+    return m_shape.getColor();;
+}
+
 void Block::tick(){
     m_y += 1;
 }
 
 void Block::move(int ch){
-    m_fast = false;
     switch (ch) {   
         //Rotate the Block
         case KEY_UP:
@@ -50,45 +51,21 @@ void Block::move(int ch){
         //Speed up block
         case KEY_DOWN:
         case 's':
-            m_fast = true;
+            m_y += 1;
         break;
 
         //Move block one step to the right
         case KEY_RIGHT:
         case 'd':
             m_x += 1;
-            if(m_x <= BOARD_WIDTH - this->mostRightOffset()){
-            }
         break;
 
         //Move block one step to the left
         case KEY_LEFT:
         case 'a':
             m_x -= 1;
-            if(m_x >= 0 + this->mostLeftOffset()){
-            }
         break;
      }
-}
-
-int Block::mostLeftOffset(){
-    for(int dx = 0; dx < SHAPESIZE; ++dx){
-        for(int dy = 0; dy < SHAPESIZE; ++dy){
-            if(m_shape.getShape(dy,dy)){
-                return dx;
-            }
-        }
-    }
-}
-
-int Block::mostRightOffset(){
-    for(int dx = SHAPESIZE; dx > 0; --dx){
-        for(int dy = 0; dy < SHAPESIZE; ++dy){
-            if(m_shape.getShape(dy,dy)){
-                return dx;
-            }
-        }
-    }
 }
 
 void Block::draw(WINDOW*& screen){
@@ -96,7 +73,7 @@ void Block::draw(WINDOW*& screen){
     for(int dx = 0; dx < SHAPESIZE; ++dx){
         for(int dy = 0; dy < SHAPESIZE; ++dy){
             if(m_shape.getShape(dx,dy)){
-                ScreenHandler::addCharAtBoard(screen,'B',(m_x + dx),(m_y + dy));
+                ScreenHandler::addCharAtBoard(screen,'B',(m_x + dx),(m_y + dy), this->getColor());
             }
         }
         //ScreenHandler::moveCurserBoard(screen, m_y + i, m_x);
@@ -108,5 +85,11 @@ void Block::draw(WINDOW*& screen){
 Block testMove(Block bl, int ch){
     // Make sure it is a copy of bl
     bl.move(ch);
+    return bl;
+}
+
+Block testTick(Block bl){
+    // Make sure it is a copy of bl
+    bl.tick();
     return bl;
 }

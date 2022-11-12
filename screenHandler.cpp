@@ -18,10 +18,10 @@ namespace ScreenHandler{
         mvwaddch(screen, y, x, ch);
     }
 
-    void addCharAtBoard(WINDOW*& screen,char ch, int x, int y){
-        attron(COLOR_PAIR(COLOR_BLOCK_RED));
+    void addCharAtBoard(WINDOW*& screen,char ch, int x, int y, int color){
+        attron(COLOR_PAIR(color));
         mvwaddch(screen, (y+ BORDER_TOP), (x + BORDER_LEFT), ch);
-        attroff(COLOR_PAIR(COLOR_BLOCK_RED));
+        attroff(COLOR_PAIR(color));
     }
 
     void addStringAtBoard(WINDOW*& screen,std::string s, int x, int y){

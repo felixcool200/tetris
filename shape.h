@@ -2,6 +2,7 @@
 #include "constants.h"
 class Shape{
     private:
+        int m_index;
         //const bool (*m_matrix)[SHAPESIZE] = nullptr; //Works fine breaks on shallow copy
         bool m_matrix[SHAPESIZE][SHAPESIZE]; //Works fine breaks on shallow copy
         short m_direction = 1; // plus means right
@@ -13,4 +14,5 @@ class Shape{
         bool getShape(int x,int y);
         void rotateRight();
         void rotateLeft();
+        int getColor();
 };

@@ -5,10 +5,8 @@ class Block{
     private:
         int m_x;
         int m_y;
-        bool m_fast;
+
         Shape m_shape; 
-        int mostLeftOffset();
-        int mostRightOffset();
     public:
         Block() : Block(BOARD_WIDTH/2,0){}; // Default constructor
         Block(int x, int y);
@@ -21,5 +19,7 @@ class Block{
         void update();
         int getX();
         int getY();
+        int getColor();
 };
 Block testMove(Block bl,int ch);
+Block testTick(Block bl);

@@ -2,7 +2,8 @@
 #include <stdlib.h>		 /* srand, rand */
 #include<iostream>
 Shape::Shape(){
-	setShape(rand() % 7);
+	m_index = rand() % BLOCKS;
+	setShape(m_index);
 }
 
 void Shape::setShape(int index){
@@ -91,9 +92,13 @@ bool Shape::getShape(int x, int y){
 }
 
 void Shape::rotateRight(){
-		m_direction = (m_direction + 1) % 4;
+	m_direction = (m_direction + 1) % 4;
 }
 
 void Shape::rotateLeft(){
-		m_direction = (m_direction - 1) % 4;
+	m_direction = (m_direction - 1) % 4;
+}
+
+int Shape::getColor(){
+	return BLOCK_COLORS[m_index];
 }
