@@ -29,21 +29,21 @@ const double secoundsPerFrame = 1.0/60.0;
  * a block has a shape
 */
 
-void update(char input, Board &board, UI &ui){
+void update(char input, Board &board){
 	clear();
 	board.update(input);
-	ui.update();
+	UI::update();
 	board.draw(stdscr);
-	ui.draw(stdscr, board.getHold());
+	UI::draw(stdscr, board.getHold());
 	refresh();
 }
 
-void tick(Board &board, UI &ui){
+void tick(Board &board){
 	clear();
 	board.tick();
-	ui.update();
+	UI::update();
 	board.draw(stdscr);
-	ui.draw(stdscr, board.getHold());
+	UI::draw(stdscr, board.getHold());
 	refresh();
 }
 
@@ -51,10 +51,9 @@ int mainLoop(){
 	char ch = ERR;
 	int delay_in_frames = 0 , height = 0, width = 0;
 	Board board;
-	UI ui;
 	Timer timer(false);
 	board.draw(stdscr);
-	ui.draw(stdscr, board.getHold());
+	UI::draw(stdscr, board.getHold());
 	int ff = 1;
 	refresh();	while(true) {
 		timer.start();
@@ -65,7 +64,7 @@ int mainLoop(){
 				return 0;
 				break;
 			}
-			update(ch, board, ui);
+			update(ch, board);
 			if(board.wasBlockJustPlaced()){
 				delay_in_frames = 0;
 			}
@@ -73,7 +72,7 @@ int mainLoop(){
 		}
 		if(delay_in_frames == int((START_DELAY_FRAMES * ff)+ 0.5)){
 			delay_in_frames = 0;
-			tick(board, ui); // Tick down
+			tick(board); // Tick down
 		}
 		if(board.isGameOver()){
 			endwin();
