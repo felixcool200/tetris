@@ -57,26 +57,26 @@ void Block::reset(){
 void Block::move(int ch){
     switch (ch) {   
         //Rotate the Block
-        case KEY_UP:
         case 'w':
+        case 'W':
             this->rotateRight();
         break;
 
         //Speed up block
-        case KEY_DOWN:
         case 's':
+        case 'S':
             m_y += 1;
         break;
 
         //Move block one step to the right
-        case KEY_RIGHT:
         case 'd':
+        case 'D':
             m_x += 1;
         break;
 
         //Move block one step to the left
-        case KEY_LEFT:
         case 'a':
+        case 'A':
             m_x -= 1;
         break;
      }
