@@ -6,40 +6,46 @@
 
 Board::Board(){
     m_block = Block();
+    m_hold = Block(-2);
     for(int y = 0; y < BOARD_HEIGHT; ++y){
         for(int x = 0; x < BOARD_WIDTH; ++x){
             m_board[x][y] = Square();
         }
     }
     // TODO: REMOVE ALL BELOW ONLY FOR TEXTING
-    for(int y = 0; y < 2; ++y){
+    for(int y = 0; y < 4; ++y){
         for(int x = 0; x < BOARD_WIDTH; ++x){
             m_board[x][BOARD_HEIGHT-1-y].place(4);
+            m_board[0][BOARD_HEIGHT-1-y].remove();
         }
     }
-    m_board[0][BOARD_HEIGHT-1].remove();
-    m_board[0][BOARD_HEIGHT-2].remove();
     m_gameOver = false;
 }
 
-// Loops over each square on the board twice
-// TODO: Optimize to only one pass
+// TODO: Optimize
 void Board::tick(){
-    /*if(checkForFinalLocation(m_block)){
-        placeBlock();
+    // If the block that is going to move is already blocked
+    m_blockJustPlaced = false;
+    if(checkForObstruction(m_block)){
+        m_gameOver = true;
+    }
+    /*if(checkForObstruction(m_block)){
+        m_gameOver = true;
     }*/
-
+    //See if we can move the block down one if not place it.
     if(checkForObstruction(testTick(m_block))){
         placeBlock();
     }else{   
         m_block.tick();
     }
-
 }
 
+bool Board::wasBlockJustPlaced(){
+    return m_blockJustPlaced;
+}
+
+
 void Board::addBlockToBoard(Block bl){
-    //m_board[bl.getX() + 2][bl.getY() + 2] = true;
-    //int matches = 0;
     int x = bl.getX();
     int y = bl.getY();
     for(int dy = 0; dy < SHAPESIZE; ++dy){
@@ -53,10 +59,7 @@ void Board::addBlockToBoard(Block bl){
     }
 }
 
-bool Board::isOnBoard(int x, int y){
-        return ((x <= BOARD_WIDTH - 1) && (x >= 0) && (y <= BOARD_HEIGHT - 1) && (y >= 0));
-}
-
+/*
 int Board::amountOfRowsFilled(){
     int numberOfRowsFilled = 0;
     for(int i = 0; i < BOARD_HEIGHT; ++i){
@@ -66,7 +69,7 @@ int Board::amountOfRowsFilled(){
                 rowSum += 1;
             }
         }
-        // If all pieces are covered
+        // If all pieces of the current row are covered
         if(rowSum == BOARD_WIDTH){
             numberOfRowsFilled += 1;
         }
@@ -74,7 +77,7 @@ int Board::amountOfRowsFilled(){
     return numberOfRowsFilled;
 }
 
-/*bool Board::checkForFinalLocation(Block bl){
+bool Board::checkForFinalLocation(Block bl){
     int x = bl.getX();
     int y = bl.getY();
     for(int dy = 0; dy < SHAPESIZE; ++dy){
@@ -99,16 +102,13 @@ bool Board::checkForObstruction(Block bl){
     for(int dy = 0; dy < SHAPESIZE; ++dy){
         for(int dx = 0; dx < SHAPESIZE; ++dx){
             // If there is a block at that position
-            if(bl.getShape(dx, dy)){
-                if(isOnBoard(x+dx,y+dy)){ //Should not be needed since the game should have reacted before any piece is outside the board
-                    if(m_board[x + dx][y + dy].isPlaced()){
-                        return true;
-                    }
-                }
-                if((x + dx < 0 || x + dx > BOARD_WIDTH - 1)){
+            if(bl.getShape(dx, dy)){ // Only check if the block is 
+                //Check that the piece does not leave the game board
+                if(!isOnBoard(x + dx,y + dy)){
                     return true;
                 }
-                if((y + dy < 0 || y + dy > BOARD_HEIGHT - 1)){
+                // See if there is a collision at that specific square.
+                if(m_board[x + dx][y + dy].isPlaced()){
                     return true;
                 }
             }
@@ -116,31 +116,56 @@ bool Board::checkForObstruction(Block bl){
     }
     return false;
 }
-void Board::update(int ch){
-    /*if(checkForFinalLocation(m_block)){
-        placeBlock();
-    }*/
-    if(!checkForObstruction(testMove(m_block,ch))){
-        m_block.move(ch);
+void Board::update(char ch){
+    m_blockJustPlaced = false;
+    if(checkForObstruction(m_block)){
+        m_gameOver = true;
+        return;
     }
+
+    switch (ch)
+    {
+    case ' ':
+        while(!checkForObstruction(testMove(m_block,'s'))){
+            m_block.move('s');
+        }
+        placeBlock();
+        break;
+    case 'c':
+        if(m_hold.getY() == -2){ // Same as never been held (no real block will have -2 in Y)
+            m_hold = m_block;
+            m_hold.hold();
+            m_block = Block(true);
+        }else{
+            if(!m_block.hasBeenHeld()){
+                Block tmp = m_hold;
+                m_hold = m_block;
+                m_hold.hold();
+                m_block = tmp;
+            }
+        }
+        break;
+    default:
+        if(!checkForObstruction(testMove(m_block,ch))){
+            m_block.move(ch);
+        }
+        break;
+    }
+}
+
+bool Board::isOnBoard(int x, int y){
+    return ((x <= BOARD_WIDTH - 1) && (x >= 0) && (y <= BOARD_HEIGHT - 1) && (y >= 0));
 }
 
 void Board::placeBlock(){
+    m_blockJustPlaced = true;
     //ScreenHandler::addStringAt(stdscr,std::string("Collision detected"),0,0);
     addBlockToBoard(m_block);
     removeCompleteRows();
-    checkForGameOver();
+    //checkForGameOver();
     createNewBlock();
 }
 
-void Board::checkForGameOver(){
-    for(int x = 0; x < BOARD_WIDTH; ++x){
-        //std::cout << "x:" << x << " y: "<< y << std::endl;
-        if(m_board[x][0].isPlaced()){
-            m_gameOver = true;
-        }
-    }
-}
 
 bool Board::isGameOver(){
     return m_gameOver;
@@ -175,10 +200,10 @@ void Board::removeRow(int index){
         }
     }
 }
-
+/*
 void Board::removeRows(int start,int stop){
     //std::clog << "COMPLETED REMOVE" << std::endl;
-    /*
+    
     if(rowIndexToRemove[0] == rowIndexToRemove[1] + 1){
         if(rowIndexToRemove[1] == rowIndexToRemove[2] + 1){
             if(rowIndexToRemove[2] == rowIndexToRemove[3] + 1){
@@ -194,9 +219,9 @@ void Board::removeRows(int start,int stop){
     }else{
         //One row
     }
-    */
-}
 
+}
+*/
 void Board::createNewBlock(){
     m_block = Block();
 }
@@ -204,11 +229,6 @@ void Board::createNewBlock(){
 void Board::draw(WINDOW*& screen){
     for(int y = 0; y < BOARD_HEIGHT; ++y){
         for(int x = 0; x < BOARD_WIDTH; ++x){
-            /*if(x >= 10){
-                ScreenHandler::addCharAtBoard(screen,(x-10)+'0', x, y);
-            }else{
-                ScreenHandler::addCharAtBoard(screen,x+'0', x, y);
-            }*/
             if(m_board[x][y].isPlaced()){
                 ScreenHandler::addCharAtBoard(screen,'B', x, y,m_board[x][y].getColor());
             }

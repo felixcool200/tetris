@@ -1,8 +1,10 @@
 #include "shape.h"
 #include <stdlib.h>		 /* srand, rand */
 #include<iostream>
+
 Shape::Shape(){
 	m_index = rand() % BLOCKS;
+	m_direction = DEFAULT_SHAPE_DIRECTION;
 	setShape(m_index);
 }
 
@@ -76,19 +78,20 @@ m_dir = 3
 bool Shape::getShape(int x, int y){
 	switch (m_direction)
 	{
-	case 0:
-		return m_matrix[x][y];
-		break;
-	case 1:
-		return m_matrix[y][SHAPESIZE - 1 - x];
-		break;
-	case 2:
-		return m_matrix[SHAPESIZE - 1 - x][SHAPESIZE - 1 - y];
-		break;
-	case 3:
-		return m_matrix[SHAPESIZE - 1 - y][SHAPESIZE - 1 - (SHAPESIZE - 1 - x)];
-		break;	
+		case 0:
+			return m_matrix[x][y];
+			break;
+		case 1:
+			return m_matrix[y][SHAPESIZE - 1 - x];
+			break;
+		case 2:
+			return m_matrix[SHAPESIZE - 1 - x][SHAPESIZE - 1 - y];
+			break;
+		case 3:
+			return m_matrix[SHAPESIZE - 1 - y][SHAPESIZE - 1 - (SHAPESIZE - 1 - x)];
+			break;	
 	}
+	return m_matrix[x][y]; // Default is zero rotation (should never happen) 
 }
 
 void Shape::rotateRight(){
@@ -97,6 +100,9 @@ void Shape::rotateRight(){
 
 void Shape::rotateLeft(){
 	m_direction = (m_direction - 1) % 4;
+}
+void Shape::reset(){
+	m_direction = DEFAULT_SHAPE_DIRECTION;
 }
 
 int Shape::getColor(){

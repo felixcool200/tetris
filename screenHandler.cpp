@@ -1,5 +1,6 @@
 #include "ScreenHandler.h"
 #include "constants.h"
+#include "board.h"
 #include <ncurses.h>
 #include <string>
 
@@ -19,9 +20,11 @@ namespace ScreenHandler{
     }
 
     void addCharAtBoard(WINDOW*& screen,char ch, int x, int y, int color){
-        attron(COLOR_PAIR(color));
-        mvwaddch(screen, (y+ BORDER_TOP), (x + BORDER_LEFT), ch);
-        attroff(COLOR_PAIR(color));
+        if(Board::isOnBoard(x,y)){
+            attron(COLOR_PAIR(color));
+            mvwaddch(screen, (y+ BORDER_TOP), (x + BORDER_LEFT), ch);
+            attroff(COLOR_PAIR(color));
+        }
     }
 
     void addStringAtBoard(WINDOW*& screen,std::string s, int x, int y){

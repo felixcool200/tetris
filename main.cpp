@@ -2,11 +2,10 @@
 #include <vector>
 #include <ncurses.h>
 #include <string>
-
-#include "constants.h"
-
 // For sleep
 #include <unistd.h>
+
+#include "constants.h"
 
 //Blocks
 #include "board.h"
@@ -30,7 +29,7 @@ const double secoundsPerFrame = 1.0/60.0;
  * a block has a shape
 */
 
-void update(int input, Board &board, UI &ui){
+void update(char input, Board &board, UI &ui){
 	clear();
 	board.update(input);
 	ui.update();
@@ -49,26 +48,31 @@ void tick(Board &board, UI &ui){
 }
 
 int mainLoop(){
-	int ch = ERR;
-	int delay = 0 , height = 0, width = 0;
+	char ch = ERR;
+	int delay_in_frames = 0 , height = 0, width = 0;
 	Board board;
 	UI ui;
 	Timer timer(false);
-	while(true) {
+	board.draw(stdscr);
+	ui.draw(stdscr);
+	int ff = 1;
+	refresh();	while(true) {
 		timer.start();
 		if ((ch = getch()) != ERR) {
-			//delay = 0;
-			update(ch, board, ui);
-			if(ch == 'q'){
+			if(ch == 'q' || ch == 'Q'){
 				endwin();
 				std::cout << "Terminated" << std::endl;
 				return 0;
 				break;
 			}
+			update(ch, board, ui);
+			if(board.wasBlockJustPlaced()){
+				delay_in_frames = 0;
+			}
 			refresh();
 		}
-		if(delay == DELAY){
-			delay = 0;
+		if(delay_in_frames == int((START_DELAY_FRAMES * ff)+ 0.5)){
+			delay_in_frames = 0;
 			tick(board, ui); // Tick down
 		}
 		if(board.isGameOver()){
@@ -76,7 +80,7 @@ int mainLoop(){
 			std::cout << "Game over" << std::endl;
 			return 0;
 		}
-		delay++;
+		delay_in_frames++;
 		//getmaxyx(stdscr, height, width); // Se if the terminal changed size
 		double deltaTime = (secoundsPerFrame - timer.stop())*microsecondTosecond;
 		if(deltaTime <= 0){

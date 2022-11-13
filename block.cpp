@@ -4,16 +4,11 @@
 #include "ScreenHandler.h"
 
 #include <iostream>
-
-Block::Block(int x, int y){
-    m_x = x;
-    m_y = y;
+Block::Block(int x, int y, bool held){
     m_shape = Shape();
-}
-Block::Block(int x, int y, Shape shape){
     m_x = x;
     m_y = y;
-    m_shape = shape;
+    m_beenHeld = held;
 }
 
 bool Block::getShape(int x, int y){
@@ -38,6 +33,21 @@ int Block::getColor(){
 
 void Block::tick(){
     m_y += 1;
+}
+
+bool Block::hasBeenHeld(){
+    return m_beenHeld;
+}
+
+void Block::hold(){
+    reset();
+    m_beenHeld = true;
+}
+
+void Block::reset(){
+    m_x = (BOARD_WIDTH-SHAPESIZE)/2;
+    m_y = -1;
+    m_shape.reset();
 }
 
 void Block::move(int ch){
