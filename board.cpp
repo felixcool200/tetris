@@ -50,7 +50,7 @@ void Board::addBlockToBoard(Block bl){
     int y = bl.getY();
     for(int dy = 0; dy < SHAPESIZE; ++dy){
         for(int dx = 0; dx < SHAPESIZE; ++dx){
-            if(bl.getShape(dx, dy)){
+            if(bl.isFilledAt(dx, dy)){
                 if(isOnBoard(x + dx,y + dy)){
                     m_board[x + dx][y + dy].place(bl.getColor());
                 }
@@ -83,7 +83,7 @@ bool Board::checkForFinalLocation(Block bl){
     for(int dy = 0; dy < SHAPESIZE; ++dy){
         for(int dx = 0; dx < SHAPESIZE; ++dx){
             // If there is a block at that position
-            if(bl.getShape(dx, dy)){
+            if(bl.isFilledAt(dx, dy)){
                 //And if we move one more block there is another block there
                 if(isOnBoard(x + dx,y + dy)){ // Remove? is it unnecessary?
                     if(m_board[x + dx][y + dy + 1] || y + dy == BOARD_HEIGHT - 1){
@@ -102,7 +102,7 @@ bool Board::checkForObstruction(Block bl){
     for(int dy = 0; dy < SHAPESIZE; ++dy){
         for(int dx = 0; dx < SHAPESIZE; ++dx){
             // If there is a block at that position
-            if(bl.getShape(dx, dy)){ // Only check if the block is 
+            if(bl.isFilledAt(dx, dy)){ // Only check if the block is 
                 //Check that the piece does not leave the game board
                 if(!isOnBoard(x + dx,y + dy)){
                     return true;
@@ -151,6 +151,10 @@ void Board::update(char ch){
         }
         break;
     }
+}
+
+Block Board::getHold(){
+    return m_hold;
 }
 
 bool Board::isOnBoard(int x, int y){
@@ -230,7 +234,7 @@ void Board::draw(WINDOW*& screen){
     for(int y = 0; y < BOARD_HEIGHT; ++y){
         for(int x = 0; x < BOARD_WIDTH; ++x){
             if(m_board[x][y].isPlaced()){
-                ScreenHandler::addCharAtBoard(screen,'B', x, y,m_board[x][y].getColor());
+                ScreenHandler::addCharAtBoard('B', x, y,m_board[x][y].getColor(),screen);
             }
         }
     }

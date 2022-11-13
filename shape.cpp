@@ -9,31 +9,48 @@ Shape::Shape(){
 }
 
 void Shape::setShape(int index){
-switch (index){
-	case 0:
-		setMatrix(O_PIECE);
-		break;
-	case 1:
-		setMatrix(I_PIECE);
-		break;
-	case 2:
-		setMatrix(S_PIECE);
-		break;
-	case 3:
-		setMatrix(Z_PIECE);
-		break;
-	case 4:
-		setMatrix(L_PIECE);
-		break;
-	case 5:
-		setMatrix(J_PIECE);
-		break;
-	case 6:
-		setMatrix(T_PIECE);
-		break;
-	default:
-		break;
+	switch (index){
+		case 0:
+			setMatrix(O_PIECE);
+			break;
+		case 1:
+			setMatrix(I_PIECE);
+			break;
+		case 2:
+			setMatrix(S_PIECE);
+			break;
+		case 3:
+			setMatrix(Z_PIECE);
+			break;
+		case 4:
+			setMatrix(L_PIECE);
+			break;
+		case 5:
+			setMatrix(J_PIECE);
+			break;
+		case 6:
+			setMatrix(T_PIECE);
+			break;
 	}
+}
+
+char Shape::getShape(){
+	switch (m_index){
+		case 0:
+			return 'O';
+		case 1:
+			return 'I';
+		case 2:
+			return 'S';
+		case 3:
+			return 'Z';
+		case 4:
+			return 'L';
+		case 5:
+			return 'J';
+		case 6:
+			return 'T';
+		}
 }
 
 void Shape::setMatrix(const bool matrix[SHAPESIZE][SHAPESIZE]){
@@ -75,7 +92,7 @@ m_dir = 3
 		1 5 9 D
 		0 4 8 C
 */
-bool Shape::getShape(int x, int y){
+bool Shape::isFilledAt(int x, int y){
 	switch (m_direction)
 	{
 		case 0:

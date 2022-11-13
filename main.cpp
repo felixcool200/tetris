@@ -34,7 +34,7 @@ void update(char input, Board &board, UI &ui){
 	board.update(input);
 	ui.update();
 	board.draw(stdscr);
-	ui.draw(stdscr);
+	ui.draw(stdscr, board.getHold());
 	refresh();
 }
 
@@ -43,7 +43,7 @@ void tick(Board &board, UI &ui){
 	board.tick();
 	ui.update();
 	board.draw(stdscr);
-	ui.draw(stdscr);
+	ui.draw(stdscr, board.getHold());
 	refresh();
 }
 
@@ -54,7 +54,7 @@ int mainLoop(){
 	UI ui;
 	Timer timer(false);
 	board.draw(stdscr);
-	ui.draw(stdscr);
+	ui.draw(stdscr, board.getHold());
 	int ff = 1;
 	refresh();	while(true) {
 		timer.start();
@@ -97,6 +97,7 @@ bool initNCURSES(){
 	noecho(); // Dont echo key pressed
 	keypad(stdscr, TRUE); //enable "special" characters
 	initscr(); // Create the screen
+	curs_set(0);
 	start_color();
 	//init_pair(COLOR_BLOCK_BLACK, COLOR_BLACK, COLOR_BLACK);
 	init_pair(COLOR_BLOCK_RED, COLOR_RED, COLOR_RED);
@@ -128,7 +129,7 @@ bool initNCURSES(){
 
 int main(){
 	//cbreak(); // One char at a time
-	srand(4);
+	srand(10);
 	if(initNCURSES() == -1){
 		return -1;
 	}

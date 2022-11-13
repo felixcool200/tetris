@@ -30,6 +30,7 @@ class Board{
         void tick();
         void update(char ch);
         void draw(WINDOW*& screen);
+        Block getHold();
         static bool isOnBoard(int x,int y);
         bool wasBlockJustPlaced();
 };

@@ -6,33 +6,36 @@
 
 namespace ScreenHandler{
 
-    void moveCurserBoard(WINDOW*& screen, int x, int y){
+    void moveCurserBoard(int x, int y, WINDOW*& screen){
         wmove(screen,(y + BORDER_TOP),(x + BORDER_LEFT));
-        return;
     }
 
-    void addChar(WINDOW*& screen, char c){
+    void addChar(char c, WINDOW*& screen){
         waddch(screen,c);
     }
     
-    void addCharAt(WINDOW*& screen,char ch, int x, int y){
-        mvwaddch(screen, y, x, ch);
-    }
-
-    void addCharAtBoard(WINDOW*& screen,char ch, int x, int y, int color){
-        if(Board::isOnBoard(x,y)){
+    void addCharAt(char ch, int x, int y, int color, WINDOW*& screen){
+        if(color == -1){
+            mvwaddch(screen, y, x, ch);
+        }else{
             attron(COLOR_PAIR(color));
-            mvwaddch(screen, (y+ BORDER_TOP), (x + BORDER_LEFT), ch);
+            mvwaddch(screen, y, x, ch);
             attroff(COLOR_PAIR(color));
         }
     }
 
-    void addStringAtBoard(WINDOW*& screen,std::string s, int x, int y){
+    void addCharAtBoard(char ch, int x, int y, int color, WINDOW*& screen){
+        if(Board::isOnBoard(x,y)){
+            addCharAt(ch, (x + BORDER_LEFT),(y+ BORDER_TOP), color, screen);
+        }
+    }
+
+    void addStringAtBoard(std::string s, int x, int y, WINDOW*& screen){
         mvwaddstr(screen, (y+ BORDER_TOP), (x + BORDER_LEFT), s.c_str());
     }
 
     
-    void addStringAt(WINDOW*& screen, std::string s, int x, int y){
+    void addStringAt(std::string s, int x, int y, WINDOW*& screen){
         mvwaddstr(screen, y, x, s.c_str());
     }
 }

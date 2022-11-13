@@ -8,7 +8,7 @@
 #define UI_HEIGHT 0
 
 #define BORDER_TOP 1
-#define BORDER_LEFT 1
+#define BORDER_LEFT 6
 #define BORDER_BOTTOM 1
 #define BORDER_RIGHT 1
 

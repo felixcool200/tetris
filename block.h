@@ -14,7 +14,7 @@ class Block{
         Block(bool held) : Block((BOARD_WIDTH-SHAPESIZE)/2,-1, held){};
         Block(int x, int y, bool held);
         
-        bool getShape(int x, int y);
+        bool isFilledAt(int x, int y);
         void hold();
         bool hasBeenHeld(); 
         
@@ -22,12 +22,15 @@ class Block{
         void tick();
         void move(int ch);
         void draw(WINDOW*& screen);
+        void drawAt(WINDOW*& screen,int x, int y);
         void rotateRight();
         void update();
         
         int getX();
         int getY();
         int getColor();
+        char getShape();
+
 };
 Block testMove(Block bl,int ch);
 Block testTick(Block bl);

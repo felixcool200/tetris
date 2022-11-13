@@ -11,7 +11,8 @@ class Shape{
     public:
         Shape();
         Shape(int shapeIndex);
-        bool getShape(int x,int y);
+        bool isFilledAt(int x,int y);
+        char getShape();
         void rotateRight();
         void reset();
         void rotateLeft();

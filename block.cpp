@@ -11,8 +11,12 @@ Block::Block(int x, int y, bool held){
     m_beenHeld = held;
 }
 
-bool Block::getShape(int x, int y){
-    return m_shape.getShape(x,y);
+bool Block::isFilledAt(int x, int y){
+    return m_shape.isFilledAt(x,y);
+}
+
+char Block::getShape(){
+    return m_shape.getShape();
 }
 
 void Block::rotateRight(){
@@ -82,11 +86,21 @@ void Block::draw(WINDOW*& screen){
     //ScreenHandler::moveCurserBoard(screen, m_y, m_x);
     for(int dx = 0; dx < SHAPESIZE; ++dx){
         for(int dy = 0; dy < SHAPESIZE; ++dy){
-            if(m_shape.getShape(dx,dy)){
-                ScreenHandler::addCharAtBoard(screen,'B',(m_x + dx),(m_y + dy), this->getColor());
+            if(m_shape.isFilledAt(dx,dy)){
+                ScreenHandler::addCharAtBoard('B',(m_x + dx),(m_y + dy), this->getColor(),screen);
             }
         }
-        //ScreenHandler::moveCurserBoard(screen, m_y + i, m_x);
+    }
+}
+
+void Block::drawAt(WINDOW*& screen,int x, int y){
+    //ScreenHandler::moveCurserBoard(screen, m_y, m_x);
+    for(int dx = 0; dx < SHAPESIZE; ++dx){
+        for(int dy = 0; dy < SHAPESIZE; ++dy){
+            if(m_shape.isFilledAt(dx,dy)){
+                ScreenHandler::addCharAt('B',(x + dx),(y + dy), this->getColor(),screen);
+            }
+        }
     }
 }
 
