@@ -30,5 +30,8 @@
 *.exe
 *.out
 *.app
-/build/
-/vscode/
+
+# Manually added
+/build/*
+!/build/build.sh
+/.vscode/
