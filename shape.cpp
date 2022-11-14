@@ -8,6 +8,7 @@ Shape::Shape(){
 	setShape(m_index);
 }
 
+//TODO: CHANGE To a list of pointers that index to the correct shape
 void Shape::setShape(int index){
 	switch (index){
 		case 0:
