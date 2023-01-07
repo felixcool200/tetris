@@ -7,6 +7,8 @@
 Board::Board(){
     m_block = Block();
     m_hold = Block(-2);
+    m_score = 0;
+    m_showPreview = true;
     for(int y = 0; y < BOARD_HEIGHT; ++y){
         for(int x = 0; x < BOARD_WIDTH; ++x){
             m_board[x][y] = Square();
@@ -20,6 +22,9 @@ Board::Board(){
         }
     }
     m_gameOver = false;
+    if(m_showPreview){
+        createPreview();   
+    }
 }
 
 // TODO: Optimize
@@ -116,6 +121,14 @@ bool Board::checkForObstruction(Block bl){
     }
     return false;
 }
+
+void Board::createPreview(){
+    m_blockPreview = m_block;
+    while(!checkForObstruction(testMove(m_blockPreview,'s'))){
+        m_blockPreview.move('s');
+    }
+}
+
 void Board::update(char ch){
     m_blockJustPlaced = false;
     if(checkForObstruction(m_block)){
@@ -128,7 +141,8 @@ void Board::update(char ch){
     case ' ':
         while(!checkForObstruction(testMove(m_block,'s'))){
             m_block.move('s');
-        }
+            m_score += 1;
+            }
         placeBlock();
         break;
     case 'c':
@@ -145,11 +159,17 @@ void Board::update(char ch){
             }
         }
         break;
+    case 'p':
+        m_showPreview = !m_showPreview;
+        break;
     default:
         if(!checkForObstruction(testMove(m_block,ch))){
             m_block.move(ch);
         }
         break;
+    }
+    if(m_showPreview){
+        createPreview();   
     }
 }
 
@@ -231,6 +251,7 @@ void Board::createNewBlock(){
 }
 
 void Board::draw(WINDOW*& screen){
+    //Draw board
     for(int y = 0; y < BOARD_HEIGHT; ++y){
         for(int x = 0; x < BOARD_WIDTH; ++x){
             if(m_board[x][y].isPlaced()){
@@ -238,5 +259,9 @@ void Board::draw(WINDOW*& screen){
             }
         }
     }
-    m_block.draw(screen);
+
+    m_block.draw(screen);    
+    if(m_showPreview){
+        m_blockPreview.draw(screen);
+    }
 }

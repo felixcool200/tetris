@@ -11,6 +11,12 @@ Block::Block(int x, int y, bool held){
     m_beenHeld = held;
 }
 
+Block::Block(const Block &o){
+    m_shape = o.m_shape;
+    m_x = o.m_x;
+    m_y = o.m_y;
+    m_beenHeld = o.m_beenHeld;
+}
 bool Block::isFilledAt(int x, int y){
     return m_shape.isFilledAt(x,y);
 }

@@ -11,12 +11,16 @@ class Board{
         bool m_gameOver;
         bool m_blockJustPlaced;
         Block m_hold;
+        Block m_blockPreview;
+        unsigned long m_score;
+        bool m_showPreview;
         
         //bool checkForFinalLocation(Block bl);
         bool checkForObstruction(Block bl);
-        
+ 
         //int amountOfRowsFilled();
-        
+
+        void createPreview();        
         void placeBlock();
         void addBlockToBoard(Block bl);
         void removeCompleteRows();

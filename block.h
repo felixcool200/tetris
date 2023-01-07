@@ -13,6 +13,7 @@ class Block{
         Block(int y) : Block((BOARD_WIDTH-SHAPESIZE)/2,y,false){};
         Block(bool held) : Block((BOARD_WIDTH-SHAPESIZE)/2,-1, held){};
         Block(int x, int y, bool held);
+        Block(const Block &o);
         
         bool isFilledAt(int x, int y);
         void hold();

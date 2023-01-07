@@ -1,5 +1,5 @@
 #include <iostream>
-#include <vector>
+//#include <vector>
 #include <ncurses.h>
 #include <string>
 // For sleep
@@ -55,16 +55,17 @@ int mainLoop(){
 	board.draw(stdscr);
 	UI::draw(stdscr, board.getHold());
 	int ff = 1;
-	refresh();	while(true) {
+	refresh();
+	while(true) {
 		timer.start();
 		if ((ch = getch()) != ERR) {
 			if(ch == 'q' || ch == 'Q'){
-				endwin();
-				std::cout << "Terminated" << std::endl;
-				return 0;
+				//endwin();
+				//std::cout << "Terminated" << std::endl;
 				break;
 			}
 			update(ch, board);
+			//Reset clock for the new block. Stops the first tick of block placed manually "via pressing space" to be random.
 			if(board.wasBlockJustPlaced()){
 				delay_in_frames = 0;
 			}
@@ -75,9 +76,10 @@ int mainLoop(){
 			tick(board); // Tick down
 		}
 		if(board.isGameOver()){
-			endwin();
-			std::cout << "Game over" << std::endl;
-			return 0;
+			//endwin();
+			//std::cout << "Game over" << std::endl;
+			//return 0;
+			break;
 		}
 		delay_in_frames++;
 		//getmaxyx(stdscr, height, width); // Se if the terminal changed size
@@ -85,24 +87,30 @@ int mainLoop(){
 		if(deltaTime <= 0){
 			endwin();
 			std::cout << "Error: Game to slow for 60 fps" << std::endl;
-			return 0;
+			break;
+			//return 0;
 		}
 		usleep(deltaTime);
     }
+	endwin();
+	std::cout << "Game over" << std::endl;
+	exit_curses;
+	delwin(stdscr);
+	return 0;
 }
 
-bool initNCURSES(){
+int initNCURSES(){
 	timeout(-1); // Do not wait for input
 	noecho(); // Dont echo key pressed
 	keypad(stdscr, TRUE); //enable "special" characters
 	initscr(); // Create the screen
 	curs_set(0);
 	start_color();
-	//init_pair(COLOR_BLOCK_BLACK, COLOR_BLACK, COLOR_BLACK);
+	init_pair(COLOR_BLOCK_BLACK, COLOR_BLACK, COLOR_BLACK);
 	init_pair(COLOR_BLOCK_RED, COLOR_RED, COLOR_RED);
-    init_pair(COLOR_BLOCK_GREEN, COLOR_GREEN, COLOR_GREEN);
-    init_pair(COLOR_BLOCK_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-    init_pair(COLOR_BLOCK_BLUE, COLOR_BLUE, COLOR_BLUE);
+  init_pair(COLOR_BLOCK_GREEN, COLOR_GREEN, COLOR_GREEN);
+  init_pair(COLOR_BLOCK_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
+  init_pair(COLOR_BLOCK_BLUE, COLOR_BLUE, COLOR_BLUE);
 	init_pair(COLOR_BLOCK_MAGENTA, COLOR_MAGENTA, COLOR_MAGENTA);
 	init_pair(COLOR_BLOCK_CYAN, COLOR_CYAN, COLOR_CYAN);
 	init_pair(COLOR_BLOCK_WHITE, COLOR_WHITE, COLOR_WHITE);
@@ -128,7 +136,7 @@ bool initNCURSES(){
 
 int main(){
 	//cbreak(); // One char at a time
-	srand(10);
+	srand(1);
 	if(initNCURSES() == -1){
 		return -1;
 	}

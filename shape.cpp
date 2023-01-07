@@ -3,6 +3,7 @@
 #include<iostream>
 
 Shape::Shape(){
+	//srand(19);
 	m_index = rand() % BLOCKS;
 	m_direction = DEFAULT_SHAPE_DIRECTION;
 	setShape(m_index);
@@ -52,6 +53,7 @@ char Shape::getShape(){
 		case 6:
 			return 'T';
 		}
+	return 'O';
 }
 
 void Shape::setMatrix(const bool matrix[SHAPESIZE][SHAPESIZE]){
