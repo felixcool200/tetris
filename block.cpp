@@ -69,6 +69,7 @@ void Block::move(int ch){
         break;
 
         //Speed up block
+        // TODO: Change this to a factor(2) that is multiplied when a tick is performed.
         case 's':
         case 'S':
             m_y += 1;
