@@ -1,7 +1,7 @@
 #pragma once
 #include "constants.hpp"
 #include "block.hpp"
-#include <ncurses.hpp>
+#include <ncurses.h>
 namespace UI{
     void drawBoardBorders(WINDOW*& screen);
     void drawHold(WINDOW*& screen, Block hold);
