@@ -1,7 +1,7 @@
 #pragma once
-#include "constants.h"
-#include "block.h"
-#include "square.h"
+#include "constants.hpp"
+#include "block.hpp"
+#include "square.hpp"
 #include <ncurses.h> // To get WINDOW*&
 class Board{
     private:

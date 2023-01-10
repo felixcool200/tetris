@@ -1,7 +1,7 @@
-#include "ui.h"
-#include "block.h"
+#include "ui.hpp"
+#include "block.hpp"
+#include "ScreenHandler.hpp"
 #include <string>
-#include "ScreenHandler.h"
 
 void UI::update(){
     //Should update score and nextblock.

@@ -1,7 +1,7 @@
-#include "board.h"
-#include "square.h"
-#include "block.h"
-#include "ScreenHandler.h"
+#include "board.hpp"
+#include "square.hpp"
+#include "block.hpp"
+#include "ScreenHandler.hpp"
 #include <iostream>
 
 Board::Board(){

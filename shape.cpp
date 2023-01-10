@@ -1,6 +1,6 @@
-#include "shape.h"
+#include "shape.hpp"
 #include <stdlib.h>		 /* srand, rand */
-#include<iostream>
+#include <iostream>
 
 Shape::Shape(){
 	//srand(19);

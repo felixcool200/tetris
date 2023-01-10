@@ -1,6 +1,6 @@
-#include "ScreenHandler.h"
-#include "constants.h"
-#include "board.h"
+#include "ScreenHandler.hpp"
+#include "constants.hpp"
+#include "board.hpp"
 #include <ncurses.h>
 #include <string>
 
