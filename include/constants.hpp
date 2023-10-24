@@ -1,28 +1,30 @@
 #pragma once
 
-#define BOARD_WIDTH 10
-#define BOARD_HEIGHT 20
-#define START_DELAY_FRAMES 60
+const int BOARD_WIDTH = 10;
+const int BOARD_HEIGHT = 20;
+const int START_DELAY_FRAMES = 60;
 
-#define UI_WIDTH 0
-#define UI_HEIGHT 0
+const int UI_WIDTH = 0;
+const int UI_HEIGHT = 0;
 
-#define BORDER_TOP 1
-#define BORDER_LEFT 6
-#define BORDER_BOTTOM 1
-#define BORDER_RIGHT 1
+const int BORDER_TOP = 1;
+const int BORDER_LEFT = 6;
+const int BORDER_BOTTOM = 1;
+const int BORDER_RIGHT = 1;
 
-#define SHAPESIZE 4
-#define DEFAULT_SHAPE_DIRECTION 1
+const int MAX_LEVEL = 29;
 
-#define COLOR_BLOCK_YELLOW 1
-#define COLOR_BLOCK_CYAN 2
-#define COLOR_BLOCK_GREEN 3
-#define COLOR_BLOCK_RED 4
-#define COLOR_BLOCK_WHITE 5
-#define COLOR_BLOCK_BLUE 6
-#define COLOR_BLOCK_MAGENTA 7
-#define COLOR_BLOCK_BLACK 8
+const int SHAPESIZE = 4;
+const int DEFAULT_SHAPE_DIRECTION = 1;
+
+const int COLOR_BLOCK_YELLOW = 1;
+const int COLOR_BLOCK_CYAN = 2;
+const int COLOR_BLOCK_GREEN = 3;
+const int COLOR_BLOCK_RED = 4;
+const int COLOR_BLOCK_WHITE = 5;
+const int COLOR_BLOCK_BLUE = 6;
+const int COLOR_BLOCK_MAGENTA = 7;
+const int COLOR_BLOCK_BLACK = 8;
 
 const int BLOCKS = 7;
 const int BLOCK_COLORS[BLOCKS] = {COLOR_BLOCK_YELLOW, COLOR_BLOCK_CYAN, COLOR_BLOCK_GREEN, COLOR_BLOCK_RED, COLOR_BLOCK_WHITE, COLOR_BLOCK_BLUE, COLOR_BLOCK_MAGENTA};//, COLOR_BLOCK_BLACK};
