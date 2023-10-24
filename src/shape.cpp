@@ -1,4 +1,4 @@
-#include "shape.hpp"
+#include "../include/shape.hpp"
 #include <stdlib.h>		 /* srand, rand */
 #include <iostream>
 

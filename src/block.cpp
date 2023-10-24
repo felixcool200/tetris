@@ -1,7 +1,7 @@
-#include "block.hpp"
-#include "shape.hpp"
-#include "constants.hpp"
-#include "ScreenHandler.hpp"
+#include "../include/block.hpp"
+#include "../include/shape.hpp"
+#include "../include/constants.hpp"
+#include "../include/screenHandler.hpp"
 
 #include <iostream>
 Block::Block(int x, int y, bool held){

@@ -1,4 +1,4 @@
-#include "square.hpp"
+#include "../include/square.hpp"
 
 Square::Square(){
 	m_board = false;

@@ -5,19 +5,19 @@
 // For sleep
 #include <unistd.h>
 
-#include "constants.hpp"
+#include "../include/constants.hpp"
 
 //Blocks
-#include "board.hpp"
+#include "../include/board.hpp"
 
 //UI
-#include "ui.hpp"
-//#include "block.h"
-//#include "shape.h"
+#include "../include/ui.hpp"
+//#include "../include/block.h"
+//#include "../include/shape.h"
 
 //Timing
 //#include <chrono>
-#include "timer.hpp"
+#include "../include/timer.hpp"
 
 //Convertion for usleep
 const int microsecondTosecond = 1000000; 

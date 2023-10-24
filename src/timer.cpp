@@ -1,6 +1,6 @@
 #include <chrono>
 #include <iostream>
-#include "timer.hpp"
+#include "../include/timer.hpp"
 
 Timer::Timer(){
     start();

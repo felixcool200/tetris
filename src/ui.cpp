@@ -1,6 +1,6 @@
-#include "ui.hpp"
-#include "block.hpp"
-#include "ScreenHandler.hpp"
+#include "../include/ui.hpp"
+#include "../include/block.hpp"
+#include "../include/screenHandler.hpp"
 #include <string>
 
 void UI::update(){
