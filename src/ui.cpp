@@ -2,16 +2,25 @@
 #include "../include/block.hpp"
 #include "../include/screenHandler.hpp"
 #include <string>
+#include <iostream>
 
 void UI::update(){
     //Should update score and nextblock.
 }
 
-void UI::draw(WINDOW*& screen,Block hold){
+void UI::draw(WINDOW*& screen,Block hold,Block next,int score){
     drawBoardBorders(screen);
     drawBorder(screen);
     drawHold(screen,hold);
+    drawNext(screen,next);
+    drawScore(screen,score);
 }
+
+void UI::drawScore(WINDOW*& screen,int score){
+    ScreenHandler::addStringAt("Score: ",1,1,screen);
+    ScreenHandler::addStringAt(std::to_string(score),7,1,screen);
+}
+
 
 void UI::drawBorder(WINDOW*& screen){
     std::string hline = std::string(BOARD_WIDTH + BORDER_LEFT + BORDER_RIGHT, '#');
@@ -35,6 +44,21 @@ void UI::drawHold(WINDOW*& screen,Block bl){
         }
         bl.rotateRight();
         bl.drawAt(screen,1,2);
+    }
+}
+
+void UI::drawNext(WINDOW*& screen,Block bl){
+    std::string hline = std::string(BORDER_LEFT, '#');
+    ScreenHandler::addStringAt("Next",1,1+SHAPESIZE+3,screen);
+    ScreenHandler::addStringAt(hline,0,2*(SHAPESIZE+3),screen);
+    //ScreenHandler::addStringAt(screen,hline,0,BOARD_HEIGHT + BORDER_TOP + BORDER_BOTTOM - 1);
+    if(bl.getY() != -2){
+        //This makes the blocks look better in the holding space
+        if(bl.getShape() == 'I'){
+            bl.rotateRight();
+        }
+        bl.rotateRight();
+        bl.drawAt(screen,1,2+SHAPESIZE+3);
     }
 }
 

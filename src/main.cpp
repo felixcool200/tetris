@@ -29,22 +29,23 @@ const double secoundsPerFrame = 1.0/60.0;
  * a block has a shape
 */
 
+void updateUI(Board &board){
+	UI::update();
+	board.draw(stdscr);
+	UI::draw(stdscr, board.getHold(),board.getNext(),board.getScore());
+	refresh();
+}
+
 void update(char input, Board &board){
 	clear();
 	board.update(input);
-	UI::update();
-	board.draw(stdscr);
-	UI::draw(stdscr, board.getHold());
-	refresh();
+	updateUI(board);
 }
 
 void tick(Board &board){
 	clear();
 	board.tick();
-	UI::update();
-	board.draw(stdscr);
-	UI::draw(stdscr, board.getHold());
-	refresh();
+	updateUI(board);
 }
 
 int mainLoop(){
@@ -53,8 +54,7 @@ int mainLoop(){
 	Board board;
 	Timer timer(false);
 	board.draw(stdscr);
-	UI::draw(stdscr, board.getHold());
-	int ff = 1;
+	UI::draw(stdscr, board.getHold(),board.getNext(),board.getScore());
 	refresh();
 	while(true) {
 		timer.start();
@@ -71,7 +71,9 @@ int mainLoop(){
 			}
 			refresh();
 		}
-		if(delay_in_frames == int((START_DELAY_FRAMES * ff)+ 0.5)){
+
+		// Game the block move (This controlles the speed)
+		if(delay_in_frames == int(board.getFramesPerTick())){
 			delay_in_frames = 0;
 			tick(board); // Tick down
 		}

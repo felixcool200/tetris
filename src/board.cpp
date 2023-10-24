@@ -7,7 +7,10 @@
 Board::Board(){
     m_block = Block();
     m_hold = Block(-2);
+    m_next = Block();
     m_score = 0;
+    m_level = 0;
+    m_linesCleared = 0;
     m_showPreview = true;
     for(int y = 0; y < BOARD_HEIGHT; ++y){
         for(int x = 0; x < BOARD_WIDTH; ++x){
@@ -147,13 +150,13 @@ void Board::update(char ch){
         break;
     case 'c':
         if(m_hold.getY() == -2){ // Same as never been held (no real block will have -2 in Y)
-            m_hold = m_block;
+            m_hold = std::move(m_block);
             m_hold.hold();
-            m_block = Block(true);
+            createNewBlock();
         }else{
             if(!m_block.hasBeenHeld()){
                 Block tmp = m_hold;
-                m_hold = m_block;
+                m_hold = std::move(m_block);
                 m_hold.hold();
                 m_block = tmp;
             }
@@ -177,6 +180,15 @@ Block Board::getHold(){
     return m_hold;
 }
 
+
+Block Board::getNext(){
+    return m_next;
+}
+
+int Board::getScore(){
+    return m_score;
+}
+
 bool Board::isOnBoard(int x, int y){
     return ((x <= BOARD_WIDTH - 1) && (x >= 0) && (y <= BOARD_HEIGHT - 1) && (y >= 0));
 }
@@ -186,6 +198,7 @@ void Board::placeBlock(){
     //ScreenHandler::addStringAt(stdscr,std::string("Collision detected"),0,0);
     addBlockToBoard(m_block);
     removeCompleteRows();
+    updateLevel();
     //checkForGameOver();
     createNewBlock();
 }
@@ -194,6 +207,50 @@ void Board::placeBlock(){
 bool Board::isGameOver(){
     return m_gameOver;
 }
+
+void Board::updateLevel(){
+    int level = static_cast<int>(m_linesCleared/10);
+    
+    if (level < MAX_LEVEL){
+        m_level = level;
+    }else{
+        m_level = MAX_LEVEL;
+    }
+}
+
+//After level 10, the game speed only increases on levels 13, 16, 19, and 29, at which point the speed no longer increases. On level 29, pieces fall at 1 grid cell every frame, which is too fast for almost all players,
+
+int Board::getFramesPerTick(){
+
+    //LEVEL 0-8
+    if(m_level < 9){
+        return 48-(5*m_level);
+    }
+    //LEVEL 9
+    else if(m_level < 10){
+        return 5;
+    }
+    //LEVEL 10-12
+    else if(m_level < 13){ 
+        return 4;
+    }
+    //LEVEL 13-15
+    else if(m_level < 16){
+        return 3;
+    }
+    //LEVEL 16-18
+    else if(m_level < 19){
+        return 2;
+    }
+    //LEVEL 19-28
+    else if(m_level < 29){
+        return 1;
+    }
+    else{
+        return 0;
+    }
+}
+
 
 void Board::removeCompleteRows(){
     // Check how many (for score) rows and what rows to remove
@@ -211,6 +268,27 @@ void Board::removeCompleteRows(){
             removeRow(y);
         }
     }
+    switch (rowsRemoved)
+    {
+        case 0:
+            break;
+        case 1:
+            m_score += 40*(m_level+1);
+            break;
+        case 2:
+            m_score += 100*(m_level+1);
+            break;
+        case 3:
+            m_score += 300*(m_level+1);
+            break;
+        case 4:
+            m_score += 1200*(m_level+1);
+            break;
+        default:
+            break;
+    }
+    m_linesCleared += rowsRemoved;
+    
     //std::clog << "COMPLETED COUNTING" << std::endl;
     //HERE REMOVE ROWS ONE BY ONE AND MOVE ALL OTHER ROWS DOWN
     // OPTIMIZE BY REMOVING MULTIPE ROWS
@@ -247,7 +325,8 @@ void Board::removeRows(int start,int stop){
 }
 */
 void Board::createNewBlock(){
-    m_block = Block();
+    m_block = std::move(m_next);
+    m_next = Block();
 }
 
 void Board::draw(WINDOW*& screen){
