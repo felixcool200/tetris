@@ -141,14 +141,14 @@ void Board::update(char ch){
 
     switch (ch)
     {
-    case ' ':
+    case DROP_KEY:
         while(!checkForObstruction(testMove(m_block,'s'))){
             m_block.move('s');
             m_score += 1;
             }
         placeBlock();
         break;
-    case 'c':
+    case HOLD_KEY:
         if(m_hold.getY() == -2){ // Same as never been held (no real block will have -2 in Y)
             m_hold = std::move(m_block);
             m_hold.hold();
@@ -162,7 +162,7 @@ void Board::update(char ch){
             }
         }
         break;
-    case 'p':
+    case TOGGLE_PREVIEW_KEY:
         m_showPreview = !m_showPreview;
         break;
     default:

@@ -1,4 +1,5 @@
 #include "../include/ui.hpp"
+#include "../include/constants.hpp"
 #include "../include/block.hpp"
 #include "../include/screenHandler.hpp"
 #include <string>
@@ -21,6 +22,10 @@ void UI::drawStats(WINDOW*& screen,unsigned int score,unsigned int lines){
 
     //Lines Cleared
     ScreenHandler::addStringAt("lines: ",offset,4,screen);
+    ScreenHandler::addStringAt(std::to_string(lines),offset,5,screen);
+
+    //Controls
+        ScreenHandler::addStringAt("lines: ",offset,4,screen);
     ScreenHandler::addStringAt(std::to_string(lines),offset,5,screen);
 }
 

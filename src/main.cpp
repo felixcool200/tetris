@@ -19,10 +19,6 @@
 //#include <chrono>
 #include "../include/timer.hpp"
 
-//Convertion for usleep
-const int microsecondTosecond = 1000000; 
-const double secoundsPerFrame = 1.0/60.0;
-
 /* Structure
  * board owns a block
  * a block is the currently moving piece
@@ -56,7 +52,7 @@ int mainLoop(){
 	while(true) {
 		timer.start();
 		if ((ch = getch()) != ERR) {
-			if(ch == 'q' || ch == 'Q'){
+			if(ch == QUIT_KEY){
 				//endwin();
 				//std::cout << "Terminated" << std::endl;
 				break;

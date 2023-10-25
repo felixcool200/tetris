@@ -63,27 +63,23 @@ void Block::reset(){
 void Block::move(int ch){
     switch (ch) {   
         //Rotate the Block
-        case 'w':
-        case 'W':
+        case ROTATE_BLOCK_KEY:
             this->rotateRight();
         break;
 
         //Speed up block
         // TODO: Change this to a factor(2) that is multiplied when a tick is performed.
-        case 's':
-        case 'S':
+        case MOVE_DOWN_KEY:
             m_y += 1;
         break;
 
         //Move block one step to the right
-        case 'd':
-        case 'D':
+        case MOVE_RIGHT_KEY:
             m_x += 1;
         break;
 
         //Move block one step to the left
-        case 'a':
-        case 'A':
+        case MOVE_LEFT_KEY:
             m_x -= 1;
         break;
      }
