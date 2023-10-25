@@ -17,4 +17,5 @@ class Shape{
         void reset();
         void rotateLeft();
         int getColor();
+        int getPreviewColor();
 };

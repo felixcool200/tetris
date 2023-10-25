@@ -6,13 +6,15 @@ class Block{
         int m_x;
         int m_y;
         bool m_beenHeld;
+        bool m_isPreview;
 
         Shape m_shape; 
     public:
-        Block() : Block((BOARD_WIDTH-SHAPESIZE)/2,-1,false){};
-        Block(int y) : Block((BOARD_WIDTH-SHAPESIZE)/2,y,false){};
-        Block(bool held) : Block((BOARD_WIDTH-SHAPESIZE)/2,-1, held){};
-        Block(int x, int y, bool held);
+        Block() : Block((BOARD_WIDTH-SHAPESIZE)/2,-1,false,false){};
+        Block(int y) : Block((BOARD_WIDTH-SHAPESIZE)/2,y,false,false){};
+        Block(bool held) : Block((BOARD_WIDTH-SHAPESIZE)/2,-1, held,false){};
+        Block(bool held, bool isPreview) : Block((BOARD_WIDTH-SHAPESIZE)/2,-1, held, isPreview){};
+        Block(int x, int y, bool held, bool isPreview);
         Block(const Block &o);
         
         bool isFilledAt(int x, int y);
@@ -31,6 +33,8 @@ class Block{
         int getY();
         int getColor();
         char getShape();
+
+        void setPreview(bool state);
 
 };
 Block testMove(Block bl,int ch);

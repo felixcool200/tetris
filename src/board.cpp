@@ -44,8 +44,7 @@ bool Board::wasBlockJustPlaced(){
     return m_blockJustPlaced;
 }
 
-
-void Board::addBlockToBoard(Block bl){
+void Board::addBlockToBoard(Block &bl){
     int x = bl.getX();
     int y = bl.getY();
     for(int dy = 0; dy < SHAPESIZE; ++dy){
@@ -119,9 +118,18 @@ bool Board::checkForObstruction(Block bl){
 
 void Board::createPreview(){
     m_blockPreview = m_block;
+    m_blockPreview.setPreview(true);
     while(!checkForObstruction(testMove(m_blockPreview,'s'))){
         m_blockPreview.move('s');
     }
+}
+
+void Board::dropBlock(){
+    while(!checkForObstruction(testMove(m_block,'s'))){
+        m_block.move('s');
+        m_score += 1;
+    }
+    placeBlock();
 }
 
 void Board::update(char ch){
@@ -134,11 +142,7 @@ void Board::update(char ch){
     switch (ch)
     {
     case DROP_KEY:
-        while(!checkForObstruction(testMove(m_block,'s'))){
-            m_block.move('s');
-            m_score += 1;
-            }
-        placeBlock();
+        dropBlock();
         break;
     case HOLD_KEY:
         if(m_hold.getY() == -2){ // Same as never been held (no real block will have -2 in Y)
@@ -147,10 +151,10 @@ void Board::update(char ch){
             createNewBlock();
         }else{
             if(!m_block.hasBeenHeld()){
-                Block tmp = m_hold;
+                Block tmp = std::move(m_hold);
                 m_hold = std::move(m_block);
                 m_hold.hold();
-                m_block = tmp;
+                m_block = std::move(tmp);
             }
         }
         break;
@@ -200,6 +204,9 @@ void Board::placeBlock(){
     updateLevel();
     //checkForGameOver();
     createNewBlock();
+    if(m_showPreview){
+        createPreview();   
+    }
 }
 
 
@@ -326,6 +333,7 @@ void Board::removeRows(int start,int stop){
 void Board::createNewBlock(){
     m_block = std::move(m_next);
     m_next = Block();
+    
 }
 
 void Board::draw(WINDOW*& screen){
@@ -338,8 +346,9 @@ void Board::draw(WINDOW*& screen){
         }
     }
 
-    m_block.draw(screen);    
     if(m_showPreview){
         m_blockPreview.draw(screen);
     }
+
+    m_block.draw(screen);    
 }

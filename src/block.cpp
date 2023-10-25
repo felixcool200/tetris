@@ -4,11 +4,12 @@
 #include "../include/screenHandler.hpp"
 
 #include <iostream>
-Block::Block(int x, int y, bool held){
+Block::Block(int x, int y, bool held,bool isPreview){
     m_shape = Shape();
     m_x = x;
     m_y = y;
     m_beenHeld = held;
+    m_isPreview = isPreview;
 }
 
 Block::Block(const Block &o){
@@ -16,6 +17,7 @@ Block::Block(const Block &o){
     m_x = o.m_x;
     m_y = o.m_y;
     m_beenHeld = o.m_beenHeld;
+    m_isPreview = o.m_isPreview;
 }
 bool Block::isFilledAt(int x, int y){
     return m_shape.isFilledAt(x,y);
@@ -29,6 +31,10 @@ void Block::rotateRight(){
     m_shape.rotateRight();
 }
 
+void Block::setPreview(bool state){
+    m_isPreview = state;
+}
+
 int Block::getX(){
     return m_x;
 }
@@ -38,7 +44,11 @@ int Block::getY(){
 }
 
 int Block::getColor(){
-    return m_shape.getColor();;
+    if(m_isPreview){
+        return m_shape.getPreviewColor();
+    }else{
+        return m_shape.getColor();
+    }
 }
 
 void Block::tick(){
@@ -87,6 +97,7 @@ void Block::move(int ch){
 
 void Block::draw(WINDOW*& screen){
     //ScreenHandler::moveCurserBoard(screen, m_y, m_x);
+
     for(int dx = 0; dx < SHAPESIZE; ++dx){
         for(int dy = 0; dy < SHAPESIZE; ++dy){
             if(m_shape.isFilledAt(dx,dy)){

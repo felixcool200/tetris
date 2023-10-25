@@ -4,6 +4,8 @@
 #include <string>
 // For sleep
 #include <unistd.h>
+#include <stdlib.h>		 /* srand, rand */
+#include <random>
 
 #include "../include/constants.hpp"
 
@@ -63,9 +65,31 @@ void initColors(){
 	init_pair(COLOR_TEXT_MAGENTA, COLOR_MAGENTA, COLOR_BLACK);
 	init_pair(COLOR_TEXT_CYAN, COLOR_CYAN, COLOR_BLACK);
 	init_pair(COLOR_TEXT_WHITE, COLOR_WHITE, COLOR_BLACK);
+
+	// Preview Colors
+	const int FACTOR = 500;
+	init_color(COLOR_PREVIEW_RED    ,FACTOR,0,0);
+	init_color(COLOR_PREVIEW_GREEN  ,0,FACTOR,0);
+	init_color(COLOR_PREVIEW_YELLOW ,FACTOR,FACTOR,0);
+	init_color(COLOR_PREVIEW_BLUE   ,0,0,FACTOR);
+	init_color(COLOR_PREVIEW_MAGENTA,FACTOR,0,FACTOR);
+	init_color(COLOR_PREVIEW_CYAN   ,0,FACTOR,FACTOR);
+	init_color(COLOR_PREVIEW_WHITE  ,FACTOR,FACTOR,FACTOR);
+
+	init_pair(COLOR_PREVIEW_RED, COLOR_PREVIEW_RED, COLOR_PREVIEW_RED);
+	init_pair(COLOR_PREVIEW_GREEN, COLOR_PREVIEW_GREEN, COLOR_PREVIEW_GREEN);
+	init_pair(COLOR_PREVIEW_YELLOW, COLOR_PREVIEW_YELLOW, COLOR_PREVIEW_YELLOW);
+	init_pair(COLOR_PREVIEW_BLUE, COLOR_PREVIEW_BLUE, COLOR_PREVIEW_BLUE);
+	init_pair(COLOR_PREVIEW_MAGENTA, COLOR_PREVIEW_MAGENTA, COLOR_PREVIEW_MAGENTA);
+	init_pair(COLOR_PREVIEW_CYAN, COLOR_PREVIEW_CYAN, COLOR_PREVIEW_CYAN);
+	init_pair(COLOR_PREVIEW_WHITE, COLOR_PREVIEW_WHITE, COLOR_PREVIEW_WHITE);
 }
 
 int mainLoop(){
+
+	std::random_device os_seed;
+	srand(os_seed());
+	
 	char ch = ERR;
 	int delay_in_frames = 0 , height = 0, width = 0;
 	Board board;

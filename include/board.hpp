@@ -23,9 +23,10 @@ class Board{
  
         //int amountOfRowsFilled();
 
-        void createPreview();        
+        void createPreview();     
+        void dropBlock();   
         void placeBlock();
-        void addBlockToBoard(Block bl);
+        void addBlockToBoard(Block &bl);
         void removeCompleteRows();
         void createNewBlock();
         void removeRow(int index);

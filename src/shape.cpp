@@ -128,3 +128,7 @@ void Shape::reset(){
 int Shape::getColor(){
 	return BLOCK_COLORS[m_index];
 }
+
+int Shape::getPreviewColor(){
+	return PREVIEW_COLORS[m_index];
+}
