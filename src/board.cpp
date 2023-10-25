@@ -12,21 +12,15 @@ Board::Board(){
     m_level = 0;
     m_linesCleared = 0;
     m_showPreview = true;
+    m_gameOver = false;
+    if(m_showPreview){
+        createPreview();   
+    }
+
     for(int y = 0; y < BOARD_HEIGHT; ++y){
         for(int x = 0; x < BOARD_WIDTH; ++x){
             m_board[x][y] = Square();
         }
-    }
-    // TODO: REMOVE ALL BELOW ONLY FOR TEXTING
-    for(int y = 0; y < 4; ++y){
-        for(int x = 0; x < BOARD_WIDTH; ++x){
-            m_board[x][BOARD_HEIGHT-1-y].place(4);
-            m_board[0][BOARD_HEIGHT-1-y].remove();
-        }
-    }
-    m_gameOver = false;
-    if(m_showPreview){
-        createPreview();   
     }
 }
 
@@ -36,10 +30,8 @@ void Board::tick(){
     m_blockJustPlaced = false;
     if(checkForObstruction(m_block)){
         m_gameOver = true;
+        return;
     }
-    /*if(checkForObstruction(m_block)){
-        m_gameOver = true;
-    }*/
     //See if we can move the block down one if not place it.
     if(checkForObstruction(testTick(m_block))){
         placeBlock();
@@ -110,7 +102,7 @@ bool Board::checkForObstruction(Block bl){
     for(int dy = 0; dy < SHAPESIZE; ++dy){
         for(int dx = 0; dx < SHAPESIZE; ++dx){
             // If there is a block at that position
-            if(bl.isFilledAt(dx, dy)){ // Only check if the block is 
+            if(bl.isFilledAt(dx, dy)){ // Only check squares the block fills 
                 //Check that the piece does not leave the game board
                 if(!isOnBoard(x + dx,y + dy)){
                     return true;
