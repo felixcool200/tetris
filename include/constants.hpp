@@ -10,7 +10,7 @@ const int UI_HEIGHT = 0;
 const int BORDER_TOP = 1;
 const int BORDER_LEFT = 6;
 const int BORDER_BOTTOM = 1;
-const int BORDER_RIGHT = 1;
+const int BORDER_RIGHT = 10;
 
 const int MAX_LEVEL = 29;
 

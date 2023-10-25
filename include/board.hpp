@@ -13,8 +13,8 @@ class Board{
         Block m_hold;
         Block m_next;   
         Block m_blockPreview;
-        unsigned long m_score;
-        unsigned long m_linesCleared;
+        unsigned int m_score;
+        unsigned int m_linesCleared;
         unsigned int m_level;
         bool m_showPreview;
         
@@ -41,7 +41,8 @@ class Board{
         void draw(WINDOW*& screen);
         Block getHold();
         Block getNext();
-        int getScore();
+        unsigned int getScore();
+        unsigned int getLines();
         static bool isOnBoard(int x,int y);
         bool wasBlockJustPlaced();
 };

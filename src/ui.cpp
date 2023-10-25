@@ -4,31 +4,39 @@
 #include <string>
 #include <iostream>
 
-void UI::update(){
-    //Should update score and nextblock.
-}
-
-void UI::draw(WINDOW*& screen,Block hold,Block next,int score){
-    drawBoardBorders(screen);
-    drawBorder(screen);
+void UI::draw(WINDOW*& screen,Block hold,Block next,unsigned int score,unsigned int lines){
+    drawBorders(screen);
     drawHold(screen,hold);
     drawNext(screen,next);
-    drawScore(screen,score);
+    drawStats(screen,score,lines);
 }
 
-void UI::drawScore(WINDOW*& screen,int score){
-    ScreenHandler::addStringAt("Score: ",1,1,screen);
-    ScreenHandler::addStringAt(std::to_string(score),7,1,screen);
+void UI::drawStats(WINDOW*& screen,unsigned int score,unsigned int lines){
+
+    const int offset = BOARD_WIDTH + BORDER_LEFT + 1;
+    
+    //Score
+    ScreenHandler::addStringAt("Score: ",offset,1,screen);
+    ScreenHandler::addStringAt(std::to_string(score),offset,2,screen);
+
+    //Lines Cleared
+    ScreenHandler::addStringAt("lines: ",offset,4,screen);
+    ScreenHandler::addStringAt(std::to_string(lines),offset,5,screen);
 }
 
-
-void UI::drawBorder(WINDOW*& screen){
+void UI::drawBorders(WINDOW*& screen){
+    //std::string hline = std::string(BOARD_WIDTH+2, '#');
     std::string hline = std::string(BOARD_WIDTH + BORDER_LEFT + BORDER_RIGHT, '#');
-    ScreenHandler::addStringAt(hline,0,0,screen);
-    ScreenHandler::addStringAt(hline,0,BOARD_HEIGHT + BORDER_TOP + BORDER_BOTTOM - 1,screen);
+    
+    ScreenHandler::addStringAt(hline,0,0,screen); // Top border
+    ScreenHandler::addStringAt(hline,0,BOARD_HEIGHT + BORDER_TOP + BORDER_BOTTOM - 1,screen); // Bottom border
+
+    //Vertical Lines
     for(int i = 1; i < BOARD_HEIGHT + 1; ++i){
-        ScreenHandler::addCharAt('#',0,i,-1,screen);
-        ScreenHandler::addCharAt('#',(BOARD_WIDTH + BORDER_LEFT),i,-1,screen);
+        ScreenHandler::addCharAt('#',0,i,-1,screen); //Left border
+        ScreenHandler::addCharAt('#',BORDER_LEFT - 1,i,-1,screen); //Left Game border
+        ScreenHandler::addCharAt('#',(BOARD_WIDTH + BORDER_LEFT),i,-1,screen); // Right Game border
+        ScreenHandler::addCharAt('#',(BOARD_WIDTH + BORDER_LEFT+BORDER_RIGHT - 1),i,-1,screen); //Right border
     }
 }
 
@@ -59,15 +67,5 @@ void UI::drawNext(WINDOW*& screen,Block bl){
         }
         bl.rotateRight();
         bl.drawAt(screen,1,2+SHAPESIZE+3);
-    }
-}
-
-void UI::drawBoardBorders(WINDOW*& screen){
-    std::string hline = std::string(BOARD_WIDTH+2, '#');
-    ScreenHandler::addStringAt(hline,BORDER_LEFT-1,0, screen);
-    ScreenHandler::addStringAt(hline,BORDER_LEFT-1,BOARD_HEIGHT + BORDER_TOP + BORDER_BOTTOM - 1, screen);
-    for(int i = 1; i < BOARD_HEIGHT + 1; ++i){
-        ScreenHandler::addCharAt('#',BORDER_LEFT - 1,i,-1,screen);
-        ScreenHandler::addCharAt('#',(BOARD_WIDTH + BORDER_LEFT),i,-1,screen);
     }
 }

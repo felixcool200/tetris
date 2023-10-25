@@ -185,8 +185,12 @@ Block Board::getNext(){
     return m_next;
 }
 
-int Board::getScore(){
+unsigned int Board::getScore(){
     return m_score;
+}
+
+unsigned int Board::getLines(){
+    return m_linesCleared;
 }
 
 bool Board::isOnBoard(int x, int y){

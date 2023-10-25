@@ -30,9 +30,8 @@ const double secoundsPerFrame = 1.0/60.0;
 */
 
 void updateUI(Board &board){
-	UI::update();
 	board.draw(stdscr);
-	UI::draw(stdscr, board.getHold(),board.getNext(),board.getScore());
+	UI::draw(stdscr, board.getHold(),board.getNext(),board.getScore(),board.getLines());
 	refresh();
 }
 
@@ -53,9 +52,7 @@ int mainLoop(){
 	int delay_in_frames = 0 , height = 0, width = 0;
 	Board board;
 	Timer timer(false);
-	board.draw(stdscr);
-	UI::draw(stdscr, board.getHold(),board.getNext(),board.getScore());
-	refresh();
+	updateUI(board);
 	while(true) {
 		timer.start();
 		if ((ch = getch()) != ERR) {
@@ -95,9 +92,9 @@ int mainLoop(){
 		usleep(deltaTime);
     }
 	endwin();
-	std::cout << "Game over" << std::endl;
 	exit_curses;
 	delwin(stdscr);
+	std::cout << "Game over \nResult:\nLines cleared:" << board.getLines() << "\nScore: " << board.getScore() << std::endl;
 	return 0;
 }
 
