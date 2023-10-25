@@ -68,7 +68,7 @@ void Block::move(int ch){
         break;
 
         //Speed up block
-        // TODO: Change this to a factor(2) that is multiplied when a tick is performed.
+        //TODO: Change this to a factor(2) that is multiplied when a tick is performed.
         case MOVE_DOWN_KEY:
             m_y += 1;
         break;
@@ -90,7 +90,7 @@ void Block::draw(WINDOW*& screen){
     for(int dx = 0; dx < SHAPESIZE; ++dx){
         for(int dy = 0; dy < SHAPESIZE; ++dy){
             if(m_shape.isFilledAt(dx,dy)){
-                ScreenHandler::addCharAtBoard('B',(m_x + dx),(m_y + dy), this->getColor(),screen);
+                ScreenHandler::addColoredCharAtBoard('B',(m_x + dx),(m_y + dy), this->getColor(),screen);
             }
         }
     }
@@ -101,7 +101,7 @@ void Block::drawAt(WINDOW*& screen,int x, int y){
     for(int dx = 0; dx < SHAPESIZE; ++dx){
         for(int dy = 0; dy < SHAPESIZE; ++dy){
             if(m_shape.isFilledAt(dx,dy)){
-                ScreenHandler::addCharAt('B',(x + dx),(y + dy), this->getColor(),screen);
+                ScreenHandler::addColoredCharAt('B',(x + dx),(y + dy), this->getColor(),screen);
             }
         }
     }

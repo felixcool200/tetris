@@ -193,6 +193,10 @@ unsigned int Board::getLines(){
     return m_linesCleared;
 }
 
+unsigned short Board::getLevel(){
+    return m_level;
+}
+
 bool Board::isOnBoard(int x, int y){
     return ((x <= BOARD_WIDTH - 1) && (x >= 0) && (y <= BOARD_HEIGHT - 1) && (y >= 0));
 }
@@ -338,7 +342,7 @@ void Board::draw(WINDOW*& screen){
     for(int y = 0; y < BOARD_HEIGHT; ++y){
         for(int x = 0; x < BOARD_WIDTH; ++x){
             if(m_board[x][y].isPlaced()){
-                ScreenHandler::addCharAtBoard('B', x, y,m_board[x][y].getColor(),screen);
+                ScreenHandler::addColoredCharAtBoard('B', x, y,m_board[x][y].getColor(),screen);
             }
         }
     }

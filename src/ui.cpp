@@ -5,28 +5,61 @@
 #include <string>
 #include <iostream>
 
-void UI::draw(WINDOW*& screen,Block hold,Block next,unsigned int score,unsigned int lines){
+void UI::draw(WINDOW*& screen,Block hold,Block next,unsigned int score,unsigned int lines,unsigned short level){
     drawBorders(screen);
     drawHold(screen,hold);
     drawNext(screen,next);
-    drawStats(screen,score,lines);
+    drawStats(screen,score,lines,level);
 }
 
-void UI::drawStats(WINDOW*& screen,unsigned int score,unsigned int lines){
+void UI::drawStats(WINDOW*& screen,unsigned int score,unsigned int lines,unsigned short level){
 
     const int offset = BOARD_WIDTH + BORDER_LEFT + 1;
-    
+    const int SCORE_OFFSET =  1;
+    const int LINES_OFFSET =  3;
+    const int LEVEL_OFFSET =  5;
+    const int CONTROL_OFFSET = 10;
+
     //Score
-    ScreenHandler::addStringAt("Score: ",offset,1,screen);
-    ScreenHandler::addStringAt(std::to_string(score),offset,2,screen);
+    ScreenHandler::addStringAt("Score:",offset,SCORE_OFFSET,screen);
+    ScreenHandler::addColoredStringAt(std::to_string(score),offset,SCORE_OFFSET+1,COLOR_TEXT_CYAN,screen);
 
     //Lines Cleared
-    ScreenHandler::addStringAt("lines: ",offset,4,screen);
-    ScreenHandler::addStringAt(std::to_string(lines),offset,5,screen);
+    ScreenHandler::addStringAt("Lines:",offset,LINES_OFFSET,screen);
+    ScreenHandler::addColoredStringAt(std::to_string(lines),offset,LINES_OFFSET+1,COLOR_TEXT_GREEN,screen);
+
+    //Level
+    ScreenHandler::addStringAt("Score:",offset,LEVEL_OFFSET,screen);
+    ScreenHandler::addColoredStringAt(std::to_string(level),offset,LEVEL_OFFSET+1,COLOR_TEXT_CYAN,screen);
 
     //Controls
-        ScreenHandler::addStringAt("lines: ",offset,4,screen);
-    ScreenHandler::addStringAt(std::to_string(lines),offset,5,screen);
+    ScreenHandler::addColoredStringAt("Controls",offset,CONTROL_OFFSET,COLOR_TEXT_RED,screen);
+
+    //TODO: Fix hardcoding since the char is a whitespace
+    ScreenHandler::addStringAt("Drop:\"", offset, CONTROL_OFFSET+1,screen);
+    ScreenHandler::addCharAt(DROP_KEY, offset + 6,CONTROL_OFFSET+1, screen);
+    ScreenHandler::addStringAt("\"", offset+7, CONTROL_OFFSET+1,screen);
+
+    ScreenHandler::addStringAt("Preview:", offset, CONTROL_OFFSET+2,screen);
+    ScreenHandler::addColoredCharAt(TOGGLE_PREVIEW_KEY, offset + 8,CONTROL_OFFSET+2,COLOR_TEXT_YELLOW, screen);
+
+    ScreenHandler::addStringAt("Rotate:", offset, CONTROL_OFFSET+3,screen);
+    ScreenHandler::addColoredCharAt(ROTATE_BLOCK_KEY, offset + 8,CONTROL_OFFSET+3, COLOR_TEXT_YELLOW, screen);
+
+    ScreenHandler::addStringAt("Left:", offset, CONTROL_OFFSET+4,screen);
+    ScreenHandler::addColoredCharAt(MOVE_LEFT_KEY, offset + 8,CONTROL_OFFSET+4, COLOR_TEXT_YELLOW, screen);
+
+    ScreenHandler::addStringAt("Right:", offset,CONTROL_OFFSET+5,screen);
+    ScreenHandler::addColoredCharAt(MOVE_RIGHT_KEY, offset + 8,CONTROL_OFFSET+5, COLOR_TEXT_YELLOW, screen);
+
+    ScreenHandler::addStringAt("Down:", offset, CONTROL_OFFSET+6,screen);
+    ScreenHandler::addColoredCharAt(MOVE_DOWN_KEY, offset + 8,CONTROL_OFFSET+6, COLOR_TEXT_YELLOW, screen);
+
+    ScreenHandler::addStringAt("Quit:", offset, CONTROL_OFFSET+7,screen);
+    ScreenHandler::addColoredCharAt(QUIT_KEY, offset + 8,CONTROL_OFFSET+7,COLOR_TEXT_YELLOW, screen);
+
+    ScreenHandler::addStringAt("Hold:", offset, CONTROL_OFFSET+8,screen);
+    ScreenHandler::addColoredCharAt(HOLD_KEY, offset + 8,CONTROL_OFFSET+8, COLOR_TEXT_YELLOW, screen);
 }
 
 void UI::drawBorders(WINDOW*& screen){
@@ -38,10 +71,10 @@ void UI::drawBorders(WINDOW*& screen){
 
     //Vertical Lines
     for(int i = 1; i < BOARD_HEIGHT + 1; ++i){
-        ScreenHandler::addCharAt('#',0,i,-1,screen); //Left border
-        ScreenHandler::addCharAt('#',BORDER_LEFT - 1,i,-1,screen); //Left Game border
-        ScreenHandler::addCharAt('#',(BOARD_WIDTH + BORDER_LEFT),i,-1,screen); // Right Game border
-        ScreenHandler::addCharAt('#',(BOARD_WIDTH + BORDER_LEFT+BORDER_RIGHT - 1),i,-1,screen); //Right border
+        ScreenHandler::addCharAt('#',0,i,screen); //Left border
+        ScreenHandler::addCharAt('#',BORDER_LEFT - 1,i,screen); //Left Game border
+        ScreenHandler::addCharAt('#',(BOARD_WIDTH + BORDER_LEFT),i,screen); // Right Game border
+        ScreenHandler::addCharAt('#',(BOARD_WIDTH + BORDER_LEFT+BORDER_RIGHT - 1),i,screen); //Right border
     }
 }
 

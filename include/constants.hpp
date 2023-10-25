@@ -1,4 +1,5 @@
 #pragma once
+
 //========== Controls ==========
 const char QUIT_KEY = 'q';
 const char HOLD_KEY = 'c';
@@ -21,7 +22,7 @@ const int UI_HEIGHT = 0;
 const int BORDER_TOP = 1;
 const int BORDER_LEFT = 6;
 const int BORDER_BOTTOM = 1;
-const int BORDER_RIGHT = 10;
+const int BORDER_RIGHT = 11;
 
 //========== Game logic ========== 
 const int MAX_LEVEL = 29;
@@ -34,6 +35,7 @@ const int microsecondTosecond = 1000000;
 const double secoundsPerFrame = 1.0/60.0;
 
 //========== COLOR ==========
+const int COLOR_BLOCK_BLACK = 0;
 const int COLOR_BLOCK_YELLOW = 1;
 const int COLOR_BLOCK_CYAN = 2;
 const int COLOR_BLOCK_GREEN = 3;
@@ -41,7 +43,15 @@ const int COLOR_BLOCK_RED = 4;
 const int COLOR_BLOCK_WHITE = 5;
 const int COLOR_BLOCK_BLUE = 6;
 const int COLOR_BLOCK_MAGENTA = 7;
-const int COLOR_BLOCK_BLACK = 8;
+
+const int COLOR_TEXT_BLACK = 8;
+const int COLOR_TEXT_YELLOW = 9;
+const int COLOR_TEXT_CYAN = 10;
+const int COLOR_TEXT_GREEN = 11;
+const int COLOR_TEXT_RED = 12;
+const int COLOR_TEXT_WHITE = 13;
+const int COLOR_TEXT_BLUE = 14;
+const int COLOR_TEXT_MAGENTA = 15;
 
 //========== BLOCKS ==========
 const int BLOCKS = 7;

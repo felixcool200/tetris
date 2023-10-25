@@ -15,7 +15,7 @@ class Board{
         Block m_blockPreview;
         unsigned int m_score;
         unsigned int m_linesCleared;
-        unsigned int m_level;
+        unsigned short m_level;
         bool m_showPreview;
         
         //bool checkForFinalLocation(Block bl);
@@ -43,6 +43,7 @@ class Board{
         Block getNext();
         unsigned int getScore();
         unsigned int getLines();
+        unsigned short getLevel();
         static bool isOnBoard(int x,int y);
         bool wasBlockJustPlaced();
 };

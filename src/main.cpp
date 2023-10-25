@@ -27,7 +27,7 @@
 
 void updateUI(Board &board){
 	board.draw(stdscr);
-	UI::draw(stdscr, board.getHold(),board.getNext(),board.getScore(),board.getLines());
+	UI::draw(stdscr, board.getHold(),board.getNext(),board.getScore(),board.getLines(),board.getLevel());
 	refresh();
 }
 
@@ -41,6 +41,28 @@ void tick(Board &board){
 	clear();
 	board.tick();
 	updateUI(board);
+}
+
+void initColors(){
+	//Block Colors
+	init_pair(COLOR_BLOCK_BLACK, COLOR_BLACK, COLOR_BLACK);
+	init_pair(COLOR_BLOCK_RED, COLOR_RED, COLOR_RED);
+	init_pair(COLOR_BLOCK_GREEN, COLOR_GREEN, COLOR_GREEN);
+	init_pair(COLOR_BLOCK_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
+	init_pair(COLOR_BLOCK_BLUE, COLOR_BLUE, COLOR_BLUE);
+	init_pair(COLOR_BLOCK_MAGENTA, COLOR_MAGENTA, COLOR_MAGENTA);
+	init_pair(COLOR_BLOCK_CYAN, COLOR_CYAN, COLOR_CYAN);
+	init_pair(COLOR_BLOCK_WHITE, COLOR_WHITE, COLOR_WHITE);
+
+	// Text Colors
+	init_pair(COLOR_TEXT_BLACK, COLOR_BLACK, COLOR_BLACK);
+	init_pair(COLOR_TEXT_RED, COLOR_RED, COLOR_BLACK);
+	init_pair(COLOR_TEXT_GREEN, COLOR_GREEN, COLOR_BLACK);
+	init_pair(COLOR_TEXT_YELLOW, COLOR_YELLOW, COLOR_BLACK);
+	init_pair(COLOR_TEXT_BLUE, COLOR_BLUE, COLOR_BLACK);
+	init_pair(COLOR_TEXT_MAGENTA, COLOR_MAGENTA, COLOR_BLACK);
+	init_pair(COLOR_TEXT_CYAN, COLOR_CYAN, COLOR_BLACK);
+	init_pair(COLOR_TEXT_WHITE, COLOR_WHITE, COLOR_BLACK);
 }
 
 int mainLoop(){
@@ -101,15 +123,7 @@ int initNCURSES(){
 	initscr(); // Create the screen
 	curs_set(0);
 	start_color();
-	init_pair(COLOR_BLOCK_BLACK, COLOR_BLACK, COLOR_BLACK);
-	init_pair(COLOR_BLOCK_RED, COLOR_RED, COLOR_RED);
-  init_pair(COLOR_BLOCK_GREEN, COLOR_GREEN, COLOR_GREEN);
-  init_pair(COLOR_BLOCK_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-  init_pair(COLOR_BLOCK_BLUE, COLOR_BLUE, COLOR_BLUE);
-	init_pair(COLOR_BLOCK_MAGENTA, COLOR_MAGENTA, COLOR_MAGENTA);
-	init_pair(COLOR_BLOCK_CYAN, COLOR_CYAN, COLOR_CYAN);
-	init_pair(COLOR_BLOCK_WHITE, COLOR_WHITE, COLOR_WHITE);
-
+	initColors();
 	nodelay(stdscr, TRUE); // Read inputs all the time.
 	
 	int height, width;
