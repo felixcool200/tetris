@@ -132,15 +132,18 @@ void Board::dropBlock(){
     placeBlock();
 }
 
-void Board::update(char ch){
+int Board::update(char ch){
     m_blockJustPlaced = false;
     if(checkForObstruction(m_block)){
         m_gameOver = true;
-        return;
+        return -1;
     }
 
     switch (ch)
     {
+    case QUIT_KEY:
+        return -1;
+        break; //Unnecessary but makes it easier to read
     case DROP_KEY:
         dropBlock();
         break;
@@ -170,6 +173,7 @@ void Board::update(char ch){
     if(m_showPreview){
         createPreview();   
     }
+    return 0;
 }
 
 Block Board::getHold(){
@@ -223,8 +227,6 @@ void Board::updateLevel(){
         m_level = MAX_LEVEL;
     }
 }
-
-//After level 10, the game speed only increases on levels 13, 16, 19, and 29, at which point the speed no longer increases. On level 29, pieces fall at 1 grid cell every frame, which is too fast for almost all players,
 
 int Board::getFramesPerTick(){
 

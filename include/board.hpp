@@ -29,15 +29,15 @@ class Board{
         void removeCompleteRows();
         void createNewBlock();
         void removeRow(int index);
+        void updateLevel();
         /*void removeRows(int start,int stop);*/
 
     public:
         Board();
         bool isGameOver();
-        void tick();
         int getFramesPerTick();
-        void updateLevel();
-        void update(char ch);
+        int update(char ch);
+        void tick();
         void draw();
         Block getHold();
         Block getNext();

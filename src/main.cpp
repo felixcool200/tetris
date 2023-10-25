@@ -33,10 +33,11 @@ void updateUI(Board &board){
 	refresh();
 }
 
-void update(char input, Board &board){
+int update(char input, Board &board){
 	clear();
-	board.update(input);
+	int val = board.update(input);
 	updateUI(board);
+	return val;
 }
 
 void tick(Board &board){
@@ -99,15 +100,15 @@ int mainLoop(){
 	while(true) {
 		timer.start();
 		if ((ch = getch()) != ERR) {
-			if(ch == QUIT_KEY){
+			if(update(ch, board) == -1){
 				break;
 			}
-			update(ch, board);
 			//Reset clock for the new block. Stops the first tick of block placed manually "via pressing space" to be random.
 			if(board.wasBlockJustPlaced()){
 				delay_in_frames = 0;
 			}
-			refresh();
+			//refresh();
+			updateUI(board);
 		}
 
 		// Game the block move (This controlles the speed)
