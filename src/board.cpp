@@ -228,33 +228,36 @@ void Board::updateLevel(){
 
 int Board::getFramesPerTick(){
 
+    int frameOn60 = 0;
     //LEVEL 0-8
     if(m_level < 9){
-        return 48-(5*m_level);
+        frameOn60 = 48-(5*m_level);
     }
     //LEVEL 9
     else if(m_level < 10){
-        return 5;
+        frameOn60 = 5;
     }
     //LEVEL 10-12
     else if(m_level < 13){ 
-        return 4;
+        frameOn60 = 4;
     }
     //LEVEL 13-15
     else if(m_level < 16){
-        return 3;
+        frameOn60 = 3;
     }
     //LEVEL 16-18
     else if(m_level < 19){
-        return 2;
+        frameOn60 = 2;
     }
     //LEVEL 19-28
     else if(m_level < 29){
-        return 1;
+        frameOn60 = 1;
     }
     else{
-        return 0;
+        frameOn60 = 0;
     }
+    //This removes the correlation between fps and game speed.
+    return (frameOn60 + 0.5)/(60*secoundsPerFrame);
 }
 
 
@@ -336,19 +339,19 @@ void Board::createNewBlock(){
     
 }
 
-void Board::draw(WINDOW*& screen){
+void Board::draw(){
     //Draw board
     for(int y = 0; y < BOARD_HEIGHT; ++y){
         for(int x = 0; x < BOARD_WIDTH; ++x){
             if(m_board[x][y].isPlaced()){
-                ScreenHandler::addCharAtBoard('B', x, y,m_board[x][y].getColor(),screen);
+                ScreenHandler::addCharAtBoard('B', x, y,m_board[x][y].getColor());
             }
         }
     }
 
     if(m_showPreview){
-        m_blockPreview.draw(screen);
+        m_blockPreview.draw();
     }
 
-    m_block.draw(screen);    
+    m_block.draw();    
 }

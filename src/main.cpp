@@ -28,8 +28,8 @@
 */
 
 void updateUI(Board &board){
-	board.draw(stdscr);
-	UI::draw(stdscr, board.getHold(),board.getNext(),board.getScore(),board.getLines(),board.getLevel());
+	board.draw();
+	UI::draw(board.getHold(),board.getNext(),board.getScore(),board.getLines(),board.getLevel());
 	refresh();
 }
 
@@ -94,13 +94,12 @@ int mainLoop(){
 	int delay_in_frames = 0 , height = 0, width = 0;
 	Board board;
 	Timer timer(false);
+
 	updateUI(board);
 	while(true) {
 		timer.start();
 		if ((ch = getch()) != ERR) {
 			if(ch == QUIT_KEY){
-				//endwin();
-				//std::cout << "Terminated" << std::endl;
 				break;
 			}
 			update(ch, board);
@@ -117,9 +116,6 @@ int mainLoop(){
 			tick(board); // Tick down
 		}
 		if(board.isGameOver()){
-			//endwin();
-			//std::cout << "Game over" << std::endl;
-			//return 0;
 			break;
 		}
 		delay_in_frames++;
@@ -127,9 +123,8 @@ int mainLoop(){
 		double deltaTime = (secoundsPerFrame - timer.stop())*microsecondTosecond;
 		if(deltaTime <= 0){
 			endwin();
-			std::cout << "Error: Game to slow for 60 fps" << std::endl;
-			break;
-			//return 0;
+			std::cout << "Error: Game to slow for "<< 1/secoundsPerFrame << " fps" << std::endl;
+			return -1;
 		}
 		usleep(deltaTime);
     }

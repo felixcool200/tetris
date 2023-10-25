@@ -32,7 +32,7 @@ const int DEFAULT_SHAPE_DIRECTION = 1;
 
 //========== DeltaTime ==========
 const int microsecondTosecond = 1000000; 
-const double secoundsPerFrame = 1.0/60.0;
+const double secoundsPerFrame = 1.0/1000.0;
 
 //========== COLOR ==========
 const int COLOR_BLOCK_BLACK = 0;

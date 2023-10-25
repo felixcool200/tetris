@@ -1,6 +1,5 @@
 #pragma once
 #include "shape.hpp"
-#include <ncurses.h>
 class Block{
     private:
         int m_x;
@@ -24,8 +23,8 @@ class Block{
         void reset();
         void tick();
         void move(int ch);
-        void draw(WINDOW*& screen);
-        void drawAt(WINDOW*& screen,int x, int y);
+        void draw();
+        void drawAt(int x, int y);
         void rotateRight();
         void update();
         

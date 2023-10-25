@@ -95,24 +95,24 @@ void Block::move(int ch){
      }
 }
 
-void Block::draw(WINDOW*& screen){
+void Block::draw(){
     //ScreenHandler::moveCurserBoard(screen, m_y, m_x);
 
     for(int dx = 0; dx < SHAPESIZE; ++dx){
         for(int dy = 0; dy < SHAPESIZE; ++dy){
             if(m_shape.isFilledAt(dx,dy)){
-                ScreenHandler::addCharAtBoard('B',(m_x + dx),(m_y + dy), this->getColor(),screen);
+                ScreenHandler::addCharAtBoard('B',(m_x + dx),(m_y + dy), this->getColor());
             }
         }
     }
 }
 
-void Block::drawAt(WINDOW*& screen,int x, int y){
+void Block::drawAt(int x, int y){
     //ScreenHandler::moveCurserBoard(screen, m_y, m_x);
     for(int dx = 0; dx < SHAPESIZE; ++dx){
         for(int dy = 0; dy < SHAPESIZE; ++dy){
             if(m_shape.isFilledAt(dx,dy)){
-                ScreenHandler::addCharAt('B',(x + dx),(y + dy), this->getColor(),screen);
+                ScreenHandler::addCharAt('B',(x + dx),(y + dy), this->getColor());
             }
         }
     }

@@ -2,7 +2,6 @@
 #include "constants.hpp"
 #include "block.hpp"
 #include "square.hpp"
-#include <ncurses.h> // To get WINDOW*&
 class Board{
     private:
         //bool m_board[BOARD_WIDTH][BOARD_HEIGHT];
@@ -39,7 +38,7 @@ class Board{
         int getFramesPerTick();
         void updateLevel();
         void update(char ch);
-        void draw(WINDOW*& screen);
+        void draw();
         Block getHold();
         Block getNext();
         unsigned int getScore();
