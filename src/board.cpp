@@ -341,7 +341,7 @@ void Board::draw(WINDOW*& screen){
     for(int y = 0; y < BOARD_HEIGHT; ++y){
         for(int x = 0; x < BOARD_WIDTH; ++x){
             if(m_board[x][y].isPlaced()){
-                ScreenHandler::addColoredCharAtBoard('B', x, y,m_board[x][y].getColor(),screen);
+                ScreenHandler::addCharAtBoard('B', x, y,m_board[x][y].getColor(),screen);
             }
         }
     }

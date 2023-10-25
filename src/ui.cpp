@@ -22,18 +22,18 @@ void UI::drawStats(WINDOW*& screen,unsigned int score,unsigned int lines,unsigne
 
     //Score
     ScreenHandler::addStringAt("Score:",offset,SCORE_OFFSET,screen);
-    ScreenHandler::addColoredStringAt(std::to_string(score),offset,SCORE_OFFSET+1,COLOR_TEXT_CYAN,screen);
+    ScreenHandler::addStringAt(std::to_string(score),offset,SCORE_OFFSET+1,COLOR_TEXT_CYAN,screen);
 
     //Lines Cleared
     ScreenHandler::addStringAt("Lines:",offset,LINES_OFFSET,screen);
-    ScreenHandler::addColoredStringAt(std::to_string(lines),offset,LINES_OFFSET+1,COLOR_TEXT_GREEN,screen);
+    ScreenHandler::addStringAt(std::to_string(lines),offset,LINES_OFFSET+1,COLOR_TEXT_GREEN,screen);
 
     //Level
     ScreenHandler::addStringAt("Score:",offset,LEVEL_OFFSET,screen);
-    ScreenHandler::addColoredStringAt(std::to_string(level),offset,LEVEL_OFFSET+1,COLOR_TEXT_CYAN,screen);
+    ScreenHandler::addStringAt(std::to_string(level),offset,LEVEL_OFFSET+1,COLOR_TEXT_CYAN,screen);
 
     //Controls
-    ScreenHandler::addColoredStringAt("Controls",offset,CONTROL_OFFSET,COLOR_TEXT_RED,screen);
+    ScreenHandler::addStringAt("Controls",offset,CONTROL_OFFSET,COLOR_TEXT_RED,screen);
 
     //TODO: Fix hardcoding since the char is a whitespace
     ScreenHandler::addStringAt("Drop:\"", offset, CONTROL_OFFSET+1,screen);
@@ -41,25 +41,25 @@ void UI::drawStats(WINDOW*& screen,unsigned int score,unsigned int lines,unsigne
     ScreenHandler::addStringAt("\"", offset+7, CONTROL_OFFSET+1,screen);
 
     ScreenHandler::addStringAt("Preview:", offset, CONTROL_OFFSET+2,screen);
-    ScreenHandler::addColoredCharAt(TOGGLE_PREVIEW_KEY, offset + 8,CONTROL_OFFSET+2,COLOR_TEXT_YELLOW, screen);
+    ScreenHandler::addCharAt(TOGGLE_PREVIEW_KEY, offset + 8,CONTROL_OFFSET+2,COLOR_TEXT_YELLOW, screen);
 
     ScreenHandler::addStringAt("Rotate:", offset, CONTROL_OFFSET+3,screen);
-    ScreenHandler::addColoredCharAt(ROTATE_BLOCK_KEY, offset + 8,CONTROL_OFFSET+3, COLOR_TEXT_YELLOW, screen);
+    ScreenHandler::addCharAt(ROTATE_BLOCK_KEY, offset + 8,CONTROL_OFFSET+3, COLOR_TEXT_YELLOW, screen);
 
     ScreenHandler::addStringAt("Left:", offset, CONTROL_OFFSET+4,screen);
-    ScreenHandler::addColoredCharAt(MOVE_LEFT_KEY, offset + 8,CONTROL_OFFSET+4, COLOR_TEXT_YELLOW, screen);
+    ScreenHandler::addCharAt(MOVE_LEFT_KEY, offset + 8,CONTROL_OFFSET+4, COLOR_TEXT_YELLOW, screen);
 
     ScreenHandler::addStringAt("Right:", offset,CONTROL_OFFSET+5,screen);
-    ScreenHandler::addColoredCharAt(MOVE_RIGHT_KEY, offset + 8,CONTROL_OFFSET+5, COLOR_TEXT_YELLOW, screen);
+    ScreenHandler::addCharAt(MOVE_RIGHT_KEY, offset + 8,CONTROL_OFFSET+5, COLOR_TEXT_YELLOW, screen);
 
     ScreenHandler::addStringAt("Down:", offset, CONTROL_OFFSET+6,screen);
-    ScreenHandler::addColoredCharAt(MOVE_DOWN_KEY, offset + 8,CONTROL_OFFSET+6, COLOR_TEXT_YELLOW, screen);
+    ScreenHandler::addCharAt(MOVE_DOWN_KEY, offset + 8,CONTROL_OFFSET+6, COLOR_TEXT_YELLOW, screen);
 
     ScreenHandler::addStringAt("Quit:", offset, CONTROL_OFFSET+7,screen);
-    ScreenHandler::addColoredCharAt(QUIT_KEY, offset + 8,CONTROL_OFFSET+7,COLOR_TEXT_YELLOW, screen);
+    ScreenHandler::addCharAt(QUIT_KEY, offset + 8,CONTROL_OFFSET+7,COLOR_TEXT_YELLOW, screen);
 
     ScreenHandler::addStringAt("Hold:", offset, CONTROL_OFFSET+8,screen);
-    ScreenHandler::addColoredCharAt(HOLD_KEY, offset + 8,CONTROL_OFFSET+8, COLOR_TEXT_YELLOW, screen);
+    ScreenHandler::addCharAt(HOLD_KEY, offset + 8,CONTROL_OFFSET+8, COLOR_TEXT_YELLOW, screen);
 }
 
 void UI::drawBorders(WINDOW*& screen){

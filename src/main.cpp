@@ -144,10 +144,11 @@ int initNCURSES(){
 	timeout(-1); // Do not wait for input
 	noecho(); // Dont echo key pressed
 	keypad(stdscr, TRUE); //enable "special" characters
-	initscr(); // Create the screen
 	curs_set(0);
+	initscr(); // Create the screen
 	start_color();
 	initColors();
+	
 	nodelay(stdscr, TRUE); // Read inputs all the time.
 	
 	int height, width;
