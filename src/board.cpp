@@ -180,7 +180,6 @@ Block Board::getHold(){
     return m_hold;
 }
 
-
 Block Board::getNext(){
     return m_next;
 }
