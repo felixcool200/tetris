@@ -12,7 +12,7 @@ Game::Game(){
     m_level = 0;
     m_linesCleared = 0;
     m_showPreview = true;
-    m_gameOver = false;
+    m_tetrominoJustPlaced = false;
     if(m_showPreview){
         createPreview();   
     }
@@ -25,12 +25,11 @@ Game::Game(){
 }
 
 // TODO: Optimize
-void Game::tick(){
+bool Game::tick(){
     // If the tetromino that is going to move is already tetrominoed
     m_tetrominoJustPlaced = false;
     if(checkForObstruction(m_tetromino)){
-        m_gameOver = true;
-        return;
+        return true; // Game over
     }
     //See if we can move the tetromino down one if not place it.
     if(checkForObstruction(testTick(m_tetromino))){
@@ -38,6 +37,7 @@ void Game::tick(){
     }else{   
         m_tetromino.tick();
     }
+    return false; //Game continues
 }
 
 bool Game::wasTetrominoJustPlaced(){
@@ -118,7 +118,6 @@ bool Game::checkForObstruction(Tetromino bl){
 
 void Game::createPreview(){
     m_tetrominoPreview = m_tetromino;
-    m_tetrominoPreview.setPreview(true);
     while(!checkForObstruction(testMove(m_tetrominoPreview,'s'))){
         m_tetrominoPreview.move('s');
     }
@@ -132,17 +131,16 @@ void Game::dropTetromino(){
     placeTetromino();
 }
 
-int Game::update(char ch){
+bool Game::update(char ch){
     m_tetrominoJustPlaced = false;
     if(checkForObstruction(m_tetromino)){
-        m_gameOver = true;
-        return -1;
+        return true; //Game over
     }
 
     switch (ch)
     {
     case QUIT_KEY:
-        return -1;
+        return true; //Game over
         break; //Unnecessary but makes it easier to read
     case DROP_KEY:
         dropTetromino();
@@ -173,7 +171,7 @@ int Game::update(char ch){
     if(m_showPreview){
         createPreview();   
     }
-    return 0;
+    return false; //Game continues
 }
 
 Tetromino Game::getHold(){
@@ -213,10 +211,6 @@ void Game::placeTetromino(){
     }
 }
 
-
-bool Game::isGameOver(){
-    return m_gameOver;
-}
 
 void Game::updateLevel(){
     int level = static_cast<int>(m_linesCleared/10);
@@ -352,7 +346,7 @@ void Game::draw(){
     }
 
     if(m_showPreview){
-        m_tetrominoPreview.draw();
+        m_tetrominoPreview.draw(true);
     }
 
     m_tetromino.draw();    

@@ -3,13 +3,12 @@
 #include "../include/screenHandler.hpp"
 
 #include <iostream>
-Tetromino::Tetromino(int x, int y, bool held,bool isPreview){
+Tetromino::Tetromino(int x, int y, bool held){
     m_shapeIndex = rand() % TETROMINOS;
     m_direction = DEFAULT_SHAPE_DIRECTION;
     m_x = x;
     m_y = y;
     m_beenHeld = held;
-    m_isPreview = isPreview;
 }
 
 Tetromino::Tetromino(const Tetromino &o){
@@ -18,7 +17,6 @@ Tetromino::Tetromino(const Tetromino &o){
     m_x = o.m_x;
     m_y = o.m_y;
     m_beenHeld = o.m_beenHeld;
-    m_isPreview = o.m_isPreview;
 }
 
 
@@ -90,10 +88,6 @@ void Tetromino::rotateRight(){
     m_direction = (m_direction + 1) % 4;
 }
 
-void Tetromino::setPreview(bool state){
-    m_isPreview = state;
-}
-
 int Tetromino::getX(){
     return m_x;
 }
@@ -103,11 +97,11 @@ int Tetromino::getY(){
 }
 
 int Tetromino::getColor(){
-    if(m_isPreview){
-	    return PREVIEW_COLORS[m_shapeIndex];
-    }else{
-        return TETROMINO_COLORS[m_shapeIndex];
-    }
+    return TETROMINO_COLORS[m_shapeIndex];
+}
+
+int Tetromino::getPreviewColor(){
+	return PREVIEW_COLORS[m_shapeIndex];
 }
 
 void Tetromino::tick(){
@@ -154,19 +148,26 @@ void Tetromino::move(int ch){
      }
 }
 
-void Tetromino::draw(){
+void Tetromino::draw(bool isPreview){
     //ScreenHandler::moveCurserBoard(screen, m_y, m_x);
+    int color = -1;
+
+    if(isPreview){
+        color = this->getPreviewColor();
+    }else{
+        color = this->getColor();
+    }
 
     for(int dx = 0; dx < SHAPESIZE; ++dx){
         for(int dy = 0; dy < SHAPESIZE; ++dy){
             if(this->isFilledAt(dx,dy)){
-                ScreenHandler::addCharAtBoard('B',(m_x + dx),(m_y + dy), this->getColor());
+                ScreenHandler::addCharAtBoard('B',(m_x + dx),(m_y + dy),color);
             }
         }
     }
 }
 
-void Tetromino::drawAt(int x, int y){
+void Tetromino::drawAt(int x, int y,bool isPreview){
     //ScreenHandler::moveCurserBoard(screen, m_y, m_x);
     for(int dx = 0; dx < SHAPESIZE; ++dx){
         for(int dy = 0; dy < SHAPESIZE; ++dy){

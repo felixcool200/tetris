@@ -9,11 +9,10 @@ class Tetromino{
         int m_shapeIndex;
         int m_direction;
     public:
-        Tetromino() : Tetromino((BOARD_WIDTH-SHAPESIZE)/2,-1,false,false){};
-        Tetromino(int y) : Tetromino((BOARD_WIDTH-SHAPESIZE)/2,y,false,false){};
-        Tetromino(bool held) : Tetromino((BOARD_WIDTH-SHAPESIZE)/2,-1, held,false){};
-        Tetromino(bool held, bool isPreview) : Tetromino((BOARD_WIDTH-SHAPESIZE)/2,-1, held, isPreview){};
-        Tetromino(int x, int y, bool held, bool isPreview);
+        Tetromino() : Tetromino((BOARD_WIDTH-SHAPESIZE)/2,-1,false){};
+        Tetromino(int y) : Tetromino((BOARD_WIDTH-SHAPESIZE)/2,y,false){};
+        Tetromino(bool held) : Tetromino((BOARD_WIDTH-SHAPESIZE)/2,-1, held){};
+        Tetromino(int x, int y, bool held);
         Tetromino(const Tetromino &o);
         
         bool isFilledAt(int x, int y);
@@ -23,18 +22,16 @@ class Tetromino{
         void reset();
         void tick();
         void move(int ch);
-        void draw();
-        void drawAt(int x, int y);
+        void draw(bool isPreview=false);
+        void drawAt(int x, int y,bool isPreview=false);
         void rotateRight();
         void update();
         
         int getX();
         int getY();
         int getColor();
+        int getPreviewColor();
         char getShape();
-
-        void setPreview(bool state);
-
 };
 Tetromino testMove(Tetromino bl,int ch);
 Tetromino testTick(Tetromino bl);

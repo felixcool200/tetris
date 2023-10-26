@@ -28,23 +28,11 @@
  * a block has a shape
 */
 
-void updateUI(Game &game){
+void redrawFrame(Game &game){
+	clear();
 	game.draw();
 	UI::draw(game.getHold(),game.getNext(),game.getScore(),game.getLines(),game.getLevel());
 	refresh();
-}
-
-int update(char input, Game &game){
-	clear();
-	int val = game.update(input);
-	updateUI(game);
-	return val;
-}
-
-void tick(Game &game){
-	clear();
-	game.tick();
-	updateUI(game);
 }
 
 void initColors(){
@@ -94,40 +82,57 @@ int mainLoop(){
 	
 	char ch = ERR;
 	int delay_in_frames = 0 , height = 0, width = 0;
+	bool redrawThisFrame = false;
+	
 	Game game;
 	Timer timer(false);
 
-	updateUI(game);
+	redrawFrame(game);
 	while(true) {
+		//The frame timer starts here
 		timer.start();
+		
+		//Check if a key is pressed
 		if ((ch = getch()) != ERR) {
-			if(update(ch, game) == -1){
+			const bool isGameOver = game.update(ch); 
+			if(isGameOver){
 				break;
 			}
+
 			//Reset clock for the new block. Stops the first tick of block placed manually "via pressing space" to be random.
+			//Can only happen after a key is pressed
 			if(game.wasTetrominoJustPlaced()){
 				delay_in_frames = 0;
 			}
-			//refresh();
-			updateUI(game);
+			redrawThisFrame = true;
 		}
 
-		// Game the block move (This controlles the speed)
-		if(delay_in_frames == int(game.getFramesPerTick())){
+		//Check if it is time for the block to fall one space
+		if(delay_in_frames == game.getFramesPerTick()){
+			redrawThisFrame = true;
 			delay_in_frames = 0;
-			tick(game); // Tick down
+			
+			const bool isGameOver = game.tick();
+			if(isGameOver){
+				break;
+			}
+		}else{
+			++delay_in_frames;
 		}
-		if(game.isGameOver()){
-			break;
+		
+		if(redrawThisFrame){
+			redrawFrame(game);
+			redrawThisFrame = false;
 		}
-		delay_in_frames++;
-		//getmaxyx(stdscr, height, width); // Se if the terminal changed size
+
 		double deltaTime = (secoundsPerFrame - timer.stop())*microsecondTosecond;
-		if(deltaTime <= 0){
+
+		if(deltaTime < 0){
 			endwin();
 			std::cout << "Error: Game to slow for "<< 1/secoundsPerFrame << " fps" << std::endl;
 			return -1;
 		}
+
 		usleep(deltaTime);
     }
 	endwin();

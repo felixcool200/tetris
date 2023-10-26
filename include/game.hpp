@@ -9,7 +9,6 @@ class Game{
         //bool m_board[BOARD_WIDTH][BOARD_HEIGHT];
         Square m_board[BOARD_WIDTH][BOARD_HEIGHT];
         Tetromino m_tetromino;
-        bool m_gameOver;
         bool m_tetrominoJustPlaced;
         Tetromino m_hold;
         Tetromino m_next;   
@@ -36,10 +35,9 @@ class Game{
 
     public:
         Game();
-        bool isGameOver();
         int getFramesPerTick();
-        int update(char ch);
-        void tick();
+        bool update(char ch);
+        bool tick();
         void draw();
         Tetromino getHold();
         Tetromino getNext();
