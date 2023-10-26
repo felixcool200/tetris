@@ -1,11 +1,11 @@
 #include "../include/ui.hpp"
 #include "../include/constants.hpp"
-#include "../include/block.hpp"
+#include "../include/tetromino.hpp"
 #include "../include/screenHandler.hpp"
 #include <string>
 #include <iostream>
 
-void UI::draw(Block hold,Block next,unsigned int score,unsigned int lines,unsigned short level){
+void UI::draw(Tetromino hold,Tetromino next,unsigned int score,unsigned int lines,unsigned short level){
     drawBorders();
     drawHold(hold);
     drawNext(next);
@@ -29,7 +29,7 @@ void UI::drawStats(unsigned int score,unsigned int lines,unsigned short level){
     ScreenHandler::addStringAt(std::to_string(lines),offset,LINES_OFFSET+1,COLOR_TEXT_GREEN);
 
     //Level
-    ScreenHandler::addStringAt("Score:",offset,LEVEL_OFFSET);
+    ScreenHandler::addStringAt("Level:",offset,LEVEL_OFFSET);
     ScreenHandler::addStringAt(std::to_string(level),offset,LEVEL_OFFSET+1,COLOR_TEXT_CYAN);
 
     //Controls
@@ -44,7 +44,7 @@ void UI::drawStats(unsigned int score,unsigned int lines,unsigned short level){
     ScreenHandler::addCharAt(TOGGLE_PREVIEW_KEY, offset + 8,CONTROL_OFFSET+2,COLOR_TEXT_YELLOW);
 
     ScreenHandler::addStringAt("Rotate:", offset, CONTROL_OFFSET+3);
-    ScreenHandler::addCharAt(ROTATE_BLOCK_KEY, offset + 8,CONTROL_OFFSET+3, COLOR_TEXT_YELLOW);
+    ScreenHandler::addCharAt(ROTATE_TETROMINO_KEY, offset + 8,CONTROL_OFFSET+3, COLOR_TEXT_YELLOW);
 
     ScreenHandler::addStringAt("Left:", offset, CONTROL_OFFSET+4);
     ScreenHandler::addCharAt(MOVE_LEFT_KEY, offset + 8,CONTROL_OFFSET+4, COLOR_TEXT_YELLOW);
@@ -78,7 +78,7 @@ void UI::drawBorders(){
     }
 }
 
-void UI::drawHold(Block bl){
+void UI::drawHold(Tetromino bl){
     std::string hline = std::string(BORDER_LEFT, '#');
     ScreenHandler::addStringAt("Hold",1,1);
     ScreenHandler::addStringAt(hline,0,SHAPESIZE+3);
@@ -93,7 +93,7 @@ void UI::drawHold(Block bl){
     }
 }
 
-void UI::drawNext(Block bl){
+void UI::drawNext(Tetromino bl){
     std::string hline = std::string(BORDER_LEFT, '#');
     ScreenHandler::addStringAt("Next",1,1+SHAPESIZE+3);
     ScreenHandler::addStringAt(hline,0,2*(SHAPESIZE+3));

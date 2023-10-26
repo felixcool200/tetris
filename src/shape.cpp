@@ -2,59 +2,6 @@
 #include <stdlib.h>		 /* srand, rand */
 #include <iostream>
 
-Shape::Shape(){
-	//srand(19);
-	m_index = rand() % BLOCKS;
-	m_direction = DEFAULT_SHAPE_DIRECTION;
-	setShape(m_index);
-}
-
-//TODO: CHANGE To a list of pointers that index to the correct shape
-void Shape::setShape(int index){
-	switch (index){
-		case 0:
-			setMatrix(O_PIECE);
-			break;
-		case 1:
-			setMatrix(I_PIECE);
-			break;
-		case 2:
-			setMatrix(S_PIECE);
-			break;
-		case 3:
-			setMatrix(Z_PIECE);
-			break;
-		case 4:
-			setMatrix(L_PIECE);
-			break;
-		case 5:
-			setMatrix(J_PIECE);
-			break;
-		case 6:
-			setMatrix(T_PIECE);
-			break;
-	}
-}
-
-char Shape::getShape(){
-	switch (m_index){
-		case 0:
-			return 'O';
-		case 1:
-			return 'I';
-		case 2:
-			return 'S';
-		case 3:
-			return 'Z';
-		case 4:
-			return 'L';
-		case 5:
-			return 'J';
-		case 6:
-			return 'T';
-		}
-	return 'O';
-}
 
 void Shape::setMatrix(const bool matrix[SHAPESIZE][SHAPESIZE]){
 	for(int dy = 0; dy < SHAPESIZE; ++dy){
@@ -95,40 +42,3 @@ m_dir = 3
 		1 5 9 D
 		0 4 8 C
 */
-bool Shape::isFilledAt(int x, int y){
-	switch (m_direction)
-	{
-		case 0:
-			return m_matrix[x][y];
-			break;
-		case 1:
-			return m_matrix[y][SHAPESIZE - 1 - x];
-			break;
-		case 2:
-			return m_matrix[SHAPESIZE - 1 - x][SHAPESIZE - 1 - y];
-			break;
-		case 3:
-			return m_matrix[SHAPESIZE - 1 - y][SHAPESIZE - 1 - (SHAPESIZE - 1 - x)];
-			break;	
-	}
-	return m_matrix[x][y]; // Default is zero rotation (should never happen) 
-}
-
-void Shape::rotateRight(){
-	m_direction = (m_direction + 1) % 4;
-}
-
-void Shape::rotateLeft(){
-	m_direction = (m_direction - 1) % 4;
-}
-void Shape::reset(){
-	m_direction = DEFAULT_SHAPE_DIRECTION;
-}
-
-int Shape::getColor(){
-	return BLOCK_COLORS[m_index];
-}
-
-int Shape::getPreviewColor(){
-	return PREVIEW_COLORS[m_index];
-}

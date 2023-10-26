@@ -8,9 +8,10 @@
 #include <random>
 
 #include "../include/constants.hpp"
+//const bool (*PIECES[TETROMINOS])[SHAPESIZE][SHAPESIZE] = {&O_PIECE, &I_PIECE, &S_PIECE, &Z_PIECE, &L_PIECE, &J_PIECE, &T_PIECE};
 
 //Blocks
-#include "../include/board.hpp"
+#include "../include/game.hpp"
 
 //UI
 #include "../include/ui.hpp"
@@ -22,40 +23,40 @@
 #include "../include/timer.hpp"
 
 /* Structure
- * board owns a block
+ * game owns a block
  * a block is the currently moving piece
  * a block has a shape
 */
 
-void updateUI(Board &board){
-	board.draw();
-	UI::draw(board.getHold(),board.getNext(),board.getScore(),board.getLines(),board.getLevel());
+void updateUI(Game &game){
+	game.draw();
+	UI::draw(game.getHold(),game.getNext(),game.getScore(),game.getLines(),game.getLevel());
 	refresh();
 }
 
-int update(char input, Board &board){
+int update(char input, Game &game){
 	clear();
-	int val = board.update(input);
-	updateUI(board);
+	int val = game.update(input);
+	updateUI(game);
 	return val;
 }
 
-void tick(Board &board){
+void tick(Game &game){
 	clear();
-	board.tick();
-	updateUI(board);
+	game.tick();
+	updateUI(game);
 }
 
 void initColors(){
 	//Block Colors
-	init_pair(COLOR_BLOCK_BLACK, COLOR_BLACK, COLOR_BLACK);
-	init_pair(COLOR_BLOCK_RED, COLOR_RED, COLOR_RED);
-	init_pair(COLOR_BLOCK_GREEN, COLOR_GREEN, COLOR_GREEN);
-	init_pair(COLOR_BLOCK_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-	init_pair(COLOR_BLOCK_BLUE, COLOR_BLUE, COLOR_BLUE);
-	init_pair(COLOR_BLOCK_MAGENTA, COLOR_MAGENTA, COLOR_MAGENTA);
-	init_pair(COLOR_BLOCK_CYAN, COLOR_CYAN, COLOR_CYAN);
-	init_pair(COLOR_BLOCK_WHITE, COLOR_WHITE, COLOR_WHITE);
+	init_pair(COLOR_TETROMINO_BLACK, COLOR_BLACK, COLOR_BLACK);
+	init_pair(COLOR_TETROMINO_RED, COLOR_RED, COLOR_RED);
+	init_pair(COLOR_TETROMINO_GREEN, COLOR_GREEN, COLOR_GREEN);
+	init_pair(COLOR_TETROMINO_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
+	init_pair(COLOR_TETROMINO_BLUE, COLOR_BLUE, COLOR_BLUE);
+	init_pair(COLOR_TETROMINO_MAGENTA, COLOR_MAGENTA, COLOR_MAGENTA);
+	init_pair(COLOR_TETROMINO_CYAN, COLOR_CYAN, COLOR_CYAN);
+	init_pair(COLOR_TETROMINO_WHITE, COLOR_WHITE, COLOR_WHITE);
 
 	// Text Colors
 	init_pair(COLOR_TEXT_BLACK, COLOR_BLACK, COLOR_BLACK);
@@ -93,30 +94,30 @@ int mainLoop(){
 	
 	char ch = ERR;
 	int delay_in_frames = 0 , height = 0, width = 0;
-	Board board;
+	Game game;
 	Timer timer(false);
 
-	updateUI(board);
+	updateUI(game);
 	while(true) {
 		timer.start();
 		if ((ch = getch()) != ERR) {
-			if(update(ch, board) == -1){
+			if(update(ch, game) == -1){
 				break;
 			}
 			//Reset clock for the new block. Stops the first tick of block placed manually "via pressing space" to be random.
-			if(board.wasBlockJustPlaced()){
+			if(game.wasTetrominoJustPlaced()){
 				delay_in_frames = 0;
 			}
 			//refresh();
-			updateUI(board);
+			updateUI(game);
 		}
 
 		// Game the block move (This controlles the speed)
-		if(delay_in_frames == int(board.getFramesPerTick())){
+		if(delay_in_frames == int(game.getFramesPerTick())){
 			delay_in_frames = 0;
-			tick(board); // Tick down
+			tick(game); // Tick down
 		}
-		if(board.isGameOver()){
+		if(game.isGameOver()){
 			break;
 		}
 		delay_in_frames++;
@@ -132,7 +133,7 @@ int mainLoop(){
 	endwin();
 	exit_curses;
 	delwin(stdscr);
-	std::cout << "Game over \nResult:\nLines cleared:" << board.getLines() << "\nScore: " << board.getScore() << std::endl;
+	std::cout << "Game over \nResult:\nLines cleared:" << game.getLines() << "\nScore: " << game.getScore() << std::endl;
 	return 0;
 }
 

@@ -1,9 +1,8 @@
 #pragma once
-#include "constants.hpp"
 
 class Square{
     private:
-        bool m_board;
+        bool m_filled;
         int m_color;
         
     public:

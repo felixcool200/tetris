@@ -1,10 +1,9 @@
 #pragma once
-#include "constants.hpp"
-#include "block.hpp"
+#include "tetromino.hpp"
 namespace UI{
-    void drawHold(Block hold);
-    void drawNext(Block hold);
+    void drawHold(Tetromino hold);
+    void drawNext(Tetromino hold);
     void drawBorders();
-    void draw(Block hold,Block next,unsigned int score,unsigned int lines,unsigned short level);
+    void draw(Tetromino hold,Tetromino next,unsigned int score,unsigned int lines,unsigned short level);
     void drawStats(unsigned int score,unsigned int lines,unsigned short level);
 }

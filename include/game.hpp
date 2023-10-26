@@ -1,49 +1,51 @@
 #pragma once
+
 #include "constants.hpp"
-#include "block.hpp"
+#include "tetromino.hpp"
 #include "square.hpp"
-class Board{
+
+class Game{
     private:
         //bool m_board[BOARD_WIDTH][BOARD_HEIGHT];
         Square m_board[BOARD_WIDTH][BOARD_HEIGHT];
-        Block m_block;
+        Tetromino m_tetromino;
         bool m_gameOver;
-        bool m_blockJustPlaced;
-        Block m_hold;
-        Block m_next;   
-        Block m_blockPreview;
+        bool m_tetrominoJustPlaced;
+        Tetromino m_hold;
+        Tetromino m_next;   
+        Tetromino m_tetrominoPreview;
         unsigned int m_score;
         unsigned int m_linesCleared;
         unsigned short m_level;
         bool m_showPreview;
         
-        //bool checkForFinalLocation(Block bl);
-        bool checkForObstruction(Block bl);
+        //bool checkForFinalLocation(Tetromino bl);
+        bool checkForObstruction(Tetromino bl);
  
         //int amountOfRowsFilled();
 
         void createPreview();     
-        void dropBlock();   
-        void placeBlock();
-        void addBlockToBoard(Block &bl);
+        void dropTetromino();   
+        void placeTetromino();
+        void addTetrominoToBoard(Tetromino &bl);
         void removeCompleteRows();
-        void createNewBlock();
+        void createNewTetromino();
         void removeRow(int index);
         void updateLevel();
         /*void removeRows(int start,int stop);*/
 
     public:
-        Board();
+        Game();
         bool isGameOver();
         int getFramesPerTick();
         int update(char ch);
         void tick();
         void draw();
-        Block getHold();
-        Block getNext();
+        Tetromino getHold();
+        Tetromino getNext();
         unsigned int getScore();
         unsigned int getLines();
         unsigned short getLevel();
         static bool isOnBoard(int x,int y);
-        bool wasBlockJustPlaced();
+        bool wasTetrominoJustPlaced();
 };

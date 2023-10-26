@@ -1,13 +1,13 @@
-#include "../include/board.hpp"
+#include "../include/game.hpp"
 #include "../include/square.hpp"
-#include "../include/block.hpp"
+#include "../include/tetromino.hpp"
 #include "../include/screenHandler.hpp"
 #include <iostream>
 
-Board::Board(){
-    m_block = Block();
-    m_hold = Block(-2);
-    m_next = Block();
+Game::Game(){
+    m_tetromino = Tetromino();
+    m_hold = Tetromino(-2);
+    m_next = Tetromino();
     m_score = 0;
     m_level = 0;
     m_linesCleared = 0;
@@ -25,26 +25,26 @@ Board::Board(){
 }
 
 // TODO: Optimize
-void Board::tick(){
-    // If the block that is going to move is already blocked
-    m_blockJustPlaced = false;
-    if(checkForObstruction(m_block)){
+void Game::tick(){
+    // If the tetromino that is going to move is already tetrominoed
+    m_tetrominoJustPlaced = false;
+    if(checkForObstruction(m_tetromino)){
         m_gameOver = true;
         return;
     }
-    //See if we can move the block down one if not place it.
-    if(checkForObstruction(testTick(m_block))){
-        placeBlock();
+    //See if we can move the tetromino down one if not place it.
+    if(checkForObstruction(testTick(m_tetromino))){
+        placeTetromino();
     }else{   
-        m_block.tick();
+        m_tetromino.tick();
     }
 }
 
-bool Board::wasBlockJustPlaced(){
-    return m_blockJustPlaced;
+bool Game::wasTetrominoJustPlaced(){
+    return m_tetrominoJustPlaced;
 }
 
-void Board::addBlockToBoard(Block &bl){
+void Game::addTetrominoToBoard(Tetromino &bl){
     int x = bl.getX();
     int y = bl.getY();
     for(int dy = 0; dy < SHAPESIZE; ++dy){
@@ -59,7 +59,7 @@ void Board::addBlockToBoard(Block &bl){
 }
 
 /*
-int Board::amountOfRowsFilled(){
+int Game::amountOfRowsFilled(){
     int numberOfRowsFilled = 0;
     for(int i = 0; i < BOARD_HEIGHT; ++i){
         int rowSum = 0;
@@ -76,14 +76,14 @@ int Board::amountOfRowsFilled(){
     return numberOfRowsFilled;
 }
 
-bool Board::checkForFinalLocation(Block bl){
+bool Game::checkForFinalLocation(Tetromino bl){
     int x = bl.getX();
     int y = bl.getY();
     for(int dy = 0; dy < SHAPESIZE; ++dy){
         for(int dx = 0; dx < SHAPESIZE; ++dx){
-            // If there is a block at that position
+            // If there is a tetromino at that position
             if(bl.isFilledAt(dx, dy)){
-                //And if we move one more block there is another block there
+                //And if we move one more tetromino there is another tetromino there
                 if(isOnBoard(x + dx,y + dy)){ // Remove? is it unnecessary?
                     if(m_board[x + dx][y + dy + 1] || y + dy == BOARD_HEIGHT - 1){
                         return true;
@@ -95,13 +95,13 @@ bool Board::checkForFinalLocation(Block bl){
     return false;
 }*/
 
-bool Board::checkForObstruction(Block bl){
+bool Game::checkForObstruction(Tetromino bl){
     int x = bl.getX();
     int y = bl.getY();
     for(int dy = 0; dy < SHAPESIZE; ++dy){
         for(int dx = 0; dx < SHAPESIZE; ++dx){
-            // If there is a block at that position
-            if(bl.isFilledAt(dx, dy)){ // Only check squares the block fills 
+            // If there is a tetromino at that position
+            if(bl.isFilledAt(dx, dy)){ // Only check squares the tetromino fills 
                 //Check that the piece does not leave the game board
                 if(!isOnBoard(x + dx,y + dy)){
                     return true;
@@ -116,25 +116,25 @@ bool Board::checkForObstruction(Block bl){
     return false;
 }
 
-void Board::createPreview(){
-    m_blockPreview = m_block;
-    m_blockPreview.setPreview(true);
-    while(!checkForObstruction(testMove(m_blockPreview,'s'))){
-        m_blockPreview.move('s');
+void Game::createPreview(){
+    m_tetrominoPreview = m_tetromino;
+    m_tetrominoPreview.setPreview(true);
+    while(!checkForObstruction(testMove(m_tetrominoPreview,'s'))){
+        m_tetrominoPreview.move('s');
     }
 }
 
-void Board::dropBlock(){
-    while(!checkForObstruction(testMove(m_block,'s'))){
-        m_block.move('s');
+void Game::dropTetromino(){
+    while(!checkForObstruction(testMove(m_tetromino,'s'))){
+        m_tetromino.move('s');
         m_score += 1;
     }
-    placeBlock();
+    placeTetromino();
 }
 
-int Board::update(char ch){
-    m_blockJustPlaced = false;
-    if(checkForObstruction(m_block)){
+int Game::update(char ch){
+    m_tetrominoJustPlaced = false;
+    if(checkForObstruction(m_tetromino)){
         m_gameOver = true;
         return -1;
     }
@@ -145,19 +145,19 @@ int Board::update(char ch){
         return -1;
         break; //Unnecessary but makes it easier to read
     case DROP_KEY:
-        dropBlock();
+        dropTetromino();
         break;
     case HOLD_KEY:
-        if(m_hold.getY() == -2){ // Same as never been held (no real block will have -2 in Y)
-            m_hold = std::move(m_block);
+        if(m_hold.getY() == -2){ // Same as never been held (no real tetromino will have -2 in Y)
+            m_hold = std::move(m_tetromino);
             m_hold.hold();
-            createNewBlock();
+            createNewTetromino();
         }else{
-            if(!m_block.hasBeenHeld()){
-                Block tmp = std::move(m_hold);
-                m_hold = std::move(m_block);
+            if(!m_tetromino.hasBeenHeld()){
+                Tetromino tmp = std::move(m_hold);
+                m_hold = std::move(m_tetromino);
                 m_hold.hold();
-                m_block = std::move(tmp);
+                m_tetromino = std::move(tmp);
             }
         }
         break;
@@ -165,8 +165,8 @@ int Board::update(char ch){
         m_showPreview = !m_showPreview;
         break;
     default:
-        if(!checkForObstruction(testMove(m_block,ch))){
-            m_block.move(ch);
+        if(!checkForObstruction(testMove(m_tetromino,ch))){
+            m_tetromino.move(ch);
         }
         break;
     }
@@ -176,49 +176,49 @@ int Board::update(char ch){
     return 0;
 }
 
-Block Board::getHold(){
+Tetromino Game::getHold(){
     return m_hold;
 }
 
-Block Board::getNext(){
+Tetromino Game::getNext(){
     return m_next;
 }
 
-unsigned int Board::getScore(){
+unsigned int Game::getScore(){
     return m_score;
 }
 
-unsigned int Board::getLines(){
+unsigned int Game::getLines(){
     return m_linesCleared;
 }
 
-unsigned short Board::getLevel(){
+unsigned short Game::getLevel(){
     return m_level;
 }
 
-bool Board::isOnBoard(int x, int y){
+bool Game::isOnBoard(int x, int y){
     return ((x <= BOARD_WIDTH - 1) && (x >= 0) && (y <= BOARD_HEIGHT - 1) && (y >= 0));
 }
 
-void Board::placeBlock(){
-    m_blockJustPlaced = true;
+void Game::placeTetromino(){
+    m_tetrominoJustPlaced = true;
     //ScreenHandler::addStringAt(stdscr,std::string("Collision detected"),0,0);
-    addBlockToBoard(m_block);
+    addTetrominoToBoard(m_tetromino);
     removeCompleteRows();
     updateLevel();
     //checkForGameOver();
-    createNewBlock();
+    createNewTetromino();
     if(m_showPreview){
         createPreview();   
     }
 }
 
 
-bool Board::isGameOver(){
+bool Game::isGameOver(){
     return m_gameOver;
 }
 
-void Board::updateLevel(){
+void Game::updateLevel(){
     int level = static_cast<int>(m_linesCleared/10);
     
     if (level < MAX_LEVEL){
@@ -228,7 +228,7 @@ void Board::updateLevel(){
     }
 }
 
-int Board::getFramesPerTick(){
+int Game::getFramesPerTick(){
 
     int frameOn60 = 0;
     //LEVEL 0-8
@@ -263,7 +263,7 @@ int Board::getFramesPerTick(){
 }
 
 
-void Board::removeCompleteRows(){
+void Game::removeCompleteRows(){
     // Check how many (for score) rows and what rows to remove
     int rowsRemoved = 0;
     for(int y = 0; y < BOARD_HEIGHT; ++y){
@@ -305,7 +305,7 @@ void Board::removeCompleteRows(){
     // OPTIMIZE BY REMOVING MULTIPE ROWS
 }
 
-void Board::removeRow(int index){
+void Game::removeRow(int index){
     for(int y = 0; y <= index-1; ++y){
         for(int x = 0; x < BOARD_WIDTH; ++x){
             //std::cout << "x:" << x << " y: "<< y << std::endl;
@@ -314,7 +314,7 @@ void Board::removeRow(int index){
     }
 }
 /*
-void Board::removeRows(int start,int stop){
+void Game::removeRows(int start,int stop){
     //std::clog << "COMPLETED REMOVE" << std::endl;
     
     if(rowIndexToRemove[0] == rowIndexToRemove[1] + 1){
@@ -335,13 +335,13 @@ void Board::removeRows(int start,int stop){
 
 }
 */
-void Board::createNewBlock(){
-    m_block = std::move(m_next);
-    m_next = Block();
+void Game::createNewTetromino(){
+    m_tetromino = std::move(m_next);
+    m_next = Tetromino();
     
 }
 
-void Board::draw(){
+void Game::draw(){
     //Draw board
     for(int y = 0; y < BOARD_HEIGHT; ++y){
         for(int x = 0; x < BOARD_WIDTH; ++x){
@@ -352,8 +352,8 @@ void Board::draw(){
     }
 
     if(m_showPreview){
-        m_blockPreview.draw();
+        m_tetrominoPreview.draw();
     }
 
-    m_block.draw();    
+    m_tetromino.draw();    
 }

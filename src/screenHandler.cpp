@@ -1,6 +1,6 @@
 #include "../include/screenHandler.hpp"
 #include "../include/constants.hpp"
-#include "../include/board.hpp"
+#include "../include/game.hpp"
 #include <ncurses.h>
 #include <string>
 
@@ -40,7 +40,7 @@ namespace ScreenHandler{
     }
 
     void addCharAtBoard(char ch, int x, int y, int color, WINDOW*& screen){
-        if(Board::isOnBoard(x,y)){
+        if(Game::isOnBoard(x,y)){
             if (has_colors() == TRUE && color != -1) {
                 attron(COLOR_PAIR(color));
                 addCharAt(ch, (x + BORDER_LEFT),(y+ BORDER_TOP), color, screen);
