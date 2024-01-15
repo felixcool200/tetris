@@ -35,31 +35,18 @@ void UI::drawStats(unsigned int score,unsigned int lines,unsigned short level){
     //Controls
     ScreenHandler::addStringAt("Controls",offset,CONTROL_OFFSET,COLOR_TEXT_RED);
 
-    //TODO: Fix hardcoding since the char is a whitespace
     ScreenHandler::addStringAt("Drop:\"", offset, CONTROL_OFFSET+1);
     ScreenHandler::addCharAt(DROP_KEY, offset + 6,CONTROL_OFFSET+1);
     ScreenHandler::addStringAt("\"", offset+7, CONTROL_OFFSET+1);
 
-    ScreenHandler::addStringAt("Preview:", offset, CONTROL_OFFSET+2);
-    ScreenHandler::addCharAt(TOGGLE_PREVIEW_KEY, offset + 8,CONTROL_OFFSET+2,COLOR_TEXT_YELLOW);
+    const int length = 7;
+    const std::string key_names[length] = {"Preview:","Rotate:","Left:","Right:","Down:","Quit:","Hold"};
+    const char keys[length] = {TOGGLE_PREVIEW_KEY,ROTATE_TETROMINO_KEY,MOVE_LEFT_KEY,MOVE_RIGHT_KEY,MOVE_DOWN_KEY,QUIT_KEY,HOLD_KEY};
 
-    ScreenHandler::addStringAt("Rotate:", offset, CONTROL_OFFSET+3);
-    ScreenHandler::addCharAt(ROTATE_TETROMINO_KEY, offset + 8,CONTROL_OFFSET+3, COLOR_TEXT_YELLOW);
-
-    ScreenHandler::addStringAt("Left:", offset, CONTROL_OFFSET+4);
-    ScreenHandler::addCharAt(MOVE_LEFT_KEY, offset + 8,CONTROL_OFFSET+4, COLOR_TEXT_YELLOW);
-
-    ScreenHandler::addStringAt("Right:", offset,CONTROL_OFFSET+5);
-    ScreenHandler::addCharAt(MOVE_RIGHT_KEY, offset + 8,CONTROL_OFFSET+5, COLOR_TEXT_YELLOW);
-
-    ScreenHandler::addStringAt("Down:", offset, CONTROL_OFFSET+6);
-    ScreenHandler::addCharAt(MOVE_DOWN_KEY, offset + 8,CONTROL_OFFSET+6, COLOR_TEXT_YELLOW);
-
-    ScreenHandler::addStringAt("Quit:", offset, CONTROL_OFFSET+7);
-    ScreenHandler::addCharAt(QUIT_KEY, offset + 8,CONTROL_OFFSET+7,COLOR_TEXT_YELLOW);
-
-    ScreenHandler::addStringAt("Hold:", offset, CONTROL_OFFSET+8);
-    ScreenHandler::addCharAt(HOLD_KEY, offset + 8,CONTROL_OFFSET+8, COLOR_TEXT_YELLOW);
+    for(int i=0; i < length;++i){
+        ScreenHandler::addStringAt(key_names[i], offset, CONTROL_OFFSET+2+i);
+        ScreenHandler::addCharAt(keys[i], offset + 8,CONTROL_OFFSET+2+i,COLOR_TEXT_YELLOW);
+    }
 }
 
 void UI::drawBorders(){
