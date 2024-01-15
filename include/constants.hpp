@@ -26,7 +26,7 @@ const int BORDER_RIGHT = 11;
 
 //========== DeltaTime ==========
 const int microsecondTosecond = 1000000; 
-const double secoundsPerFrame = 1.0/1000.0;
+const double secoundsPerFrame = 1.0/120.0;
 
 //========== COLOR ==========
 const int COLOR_TETROMINO_BLACK = 0;
