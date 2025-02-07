@@ -1,21 +1,16 @@
-#include "../include/square.hpp"
+#include <square.hpp>
 
-Square::Square(){
-	m_filled = false;
-    m_color = -1;
-}
-
-void Square::place(int color){
+void Square::place(tetris::Color color){
 	m_filled = true;
     m_color = color;
 }
 
 void Square::remove(){
 	m_filled = false;
-    m_color = -1;
+    m_color = tetris::Color::NONE;
 }
 
-bool Square::isPlaced(){
+bool Square::isPlaced() const{
 	return m_filled;
 }
 
@@ -24,6 +19,6 @@ void Square::replace(Square s){
     m_color = s.m_color;
 }
 
-int Square::getColor(){
+tetris::Color Square::getColor() const{
     return m_color;
 }

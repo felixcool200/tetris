@@ -1,26 +1,20 @@
 #include <iostream>
-//#include <vector>
-#include <ncurses.h>
 #include <string>
-// For sleep
-#include <unistd.h>
-#include <stdlib.h>		 /* srand, rand */
+#include <vector>
+#include <tuple>
+#include <cassert>
+
 #include <random>
 
-#include "../include/constants.hpp"
-//const bool (*PIECES[TETROMINOS])[SHAPESIZE][SHAPESIZE] = {&O_PIECE, &I_PIECE, &S_PIECE, &Z_PIECE, &L_PIECE, &J_PIECE, &T_PIECE};
+#include <thread>
+#include <chrono>
 
-//Blocks
-#include "../include/game.hpp"
+#include <ncurses.h>
 
-//UI
-#include "../include/ui.hpp"
-//#include "../include/block.h"
-//#include "../include/shape.h"
-
-//Timing
-//#include <chrono>
-#include "../include/timer.hpp"
+#include <common.hpp>
+#include <game.hpp>
+#include <timer.hpp>
+#include <ui.hpp>
 
 /* Structure
  * game owns a block
@@ -32,54 +26,71 @@ void redrawFrame(Game &game){
 	clear();
 	game.draw();
 	UI::draw(game.getHold(),game.getNext(),game.getScore(),game.getLines(),game.getLevel());
-	refresh();
+	refresh(); //Redraw the ncurses screen
 }
 
 void initColors(){
 	//Block Colors
-	init_pair(COLOR_TETROMINO_BLACK, COLOR_BLACK, COLOR_BLACK);
-	init_pair(COLOR_TETROMINO_RED, COLOR_RED, COLOR_RED);
-	init_pair(COLOR_TETROMINO_GREEN, COLOR_GREEN, COLOR_GREEN);
-	init_pair(COLOR_TETROMINO_YELLOW, COLOR_YELLOW, COLOR_YELLOW);
-	init_pair(COLOR_TETROMINO_BLUE, COLOR_BLUE, COLOR_BLUE);
-	init_pair(COLOR_TETROMINO_MAGENTA, COLOR_MAGENTA, COLOR_MAGENTA);
-	init_pair(COLOR_TETROMINO_CYAN, COLOR_CYAN, COLOR_CYAN);
-	init_pair(COLOR_TETROMINO_WHITE, COLOR_WHITE, COLOR_WHITE);
-
-	// Text Colors
-	init_pair(COLOR_TEXT_BLACK, COLOR_BLACK, COLOR_BLACK);
-	init_pair(COLOR_TEXT_RED, COLOR_RED, COLOR_BLACK);
-	init_pair(COLOR_TEXT_GREEN, COLOR_GREEN, COLOR_BLACK);
-	init_pair(COLOR_TEXT_YELLOW, COLOR_YELLOW, COLOR_BLACK);
-	init_pair(COLOR_TEXT_BLUE, COLOR_BLUE, COLOR_BLACK);
-	init_pair(COLOR_TEXT_MAGENTA, COLOR_MAGENTA, COLOR_BLACK);
-	init_pair(COLOR_TEXT_CYAN, COLOR_CYAN, COLOR_BLACK);
-	init_pair(COLOR_TEXT_WHITE, COLOR_WHITE, COLOR_BLACK);
-
-	// Preview Colors
+	using namespace tetris;
+	// Initilize new colors
 	const int FACTOR = 500;
-	init_color(COLOR_PREVIEW_RED    ,FACTOR,0,0);
-	init_color(COLOR_PREVIEW_GREEN  ,0,FACTOR,0);
-	init_color(COLOR_PREVIEW_YELLOW ,FACTOR,FACTOR,0);
-	init_color(COLOR_PREVIEW_BLUE   ,0,0,FACTOR);
-	init_color(COLOR_PREVIEW_MAGENTA,FACTOR,0,FACTOR);
-	init_color(COLOR_PREVIEW_CYAN   ,0,FACTOR,FACTOR);
-	init_color(COLOR_PREVIEW_WHITE  ,FACTOR,FACTOR,FACTOR);
 
-	init_pair(COLOR_PREVIEW_RED, COLOR_PREVIEW_RED, COLOR_PREVIEW_RED);
-	init_pair(COLOR_PREVIEW_GREEN, COLOR_PREVIEW_GREEN, COLOR_PREVIEW_GREEN);
-	init_pair(COLOR_PREVIEW_YELLOW, COLOR_PREVIEW_YELLOW, COLOR_PREVIEW_YELLOW);
-	init_pair(COLOR_PREVIEW_BLUE, COLOR_PREVIEW_BLUE, COLOR_PREVIEW_BLUE);
-	init_pair(COLOR_PREVIEW_MAGENTA, COLOR_PREVIEW_MAGENTA, COLOR_PREVIEW_MAGENTA);
-	init_pair(COLOR_PREVIEW_CYAN, COLOR_PREVIEW_CYAN, COLOR_PREVIEW_CYAN);
-	init_pair(COLOR_PREVIEW_WHITE, COLOR_PREVIEW_WHITE, COLOR_PREVIEW_WHITE);
+	const std::vector<std::tuple<NcurseColor, short, short, short>> newColors = {
+		{NcurseColor::PREVIEW_RED     ,FACTOR, 0,      0},
+		{NcurseColor::PREVIEW_GREEN   ,0,      FACTOR, 0},
+		{NcurseColor::PREVIEW_YELLOW  ,FACTOR, FACTOR, 0},
+		{NcurseColor::PREVIEW_BLUE    ,0,      0,      FACTOR},
+		{NcurseColor::PREVIEW_MAGENTA ,FACTOR, 0,      FACTOR},
+		{NcurseColor::PREVIEW_CYAN    ,0,      FACTOR, FACTOR},
+		{NcurseColor::PREVIEW_WHITE   ,FACTOR, FACTOR, FACTOR},
+	};
+
+	const std::vector<std::tuple<Color, NcurseColor, NcurseColor>> colors = {
+		//TETROMINO Colors
+		{Color::TETROMINO_BLACK,   NcurseColor::BLACK,	 NcurseColor::BLACK},
+		{Color::TETROMINO_RED, 	   NcurseColor::RED,	 NcurseColor::RED},
+		{Color::TETROMINO_GREEN,   NcurseColor::GREEN,	 NcurseColor::GREEN},
+		{Color::TETROMINO_YELLOW,  NcurseColor::YELLOW,	 NcurseColor::YELLOW},
+		{Color::TETROMINO_BLUE,    NcurseColor::BLUE,	 NcurseColor::BLUE},
+		{Color::TETROMINO_MAGENTA, NcurseColor::MAGENTA, NcurseColor::MAGENTA},
+		{Color::TETROMINO_CYAN,    NcurseColor::CYAN,	 NcurseColor::CYAN},
+		{Color::TETROMINO_WHITE,   NcurseColor::WHITE,	 NcurseColor::WHITE},
+
+		//TEXT Colors
+		{Color::TEXT_BLACK,	  NcurseColor::BLACK,   NcurseColor::BLACK},
+		{Color::TEXT_RED,	  NcurseColor::RED,     NcurseColor::BLACK},
+		{Color::TEXT_GREEN,	  NcurseColor::GREEN,   NcurseColor::BLACK},
+		{Color::TEXT_YELLOW,  NcurseColor::YELLOW,  NcurseColor::BLACK},
+		{Color::TEXT_BLUE,    NcurseColor::BLUE,    NcurseColor::BLACK},
+		{Color::TEXT_MAGENTA, NcurseColor::MAGENTA, NcurseColor::BLACK},
+		{Color::TEXT_CYAN,	  NcurseColor::CYAN,    NcurseColor::BLACK},
+		{Color::TEXT_WHITE,	  NcurseColor::WHITE,   NcurseColor::BLACK},
+
+		//TETROMINO Preview Colors
+		{Color::PREVIEW_RED, 	 NcurseColor::PREVIEW_RED, 	   NcurseColor::PREVIEW_RED},
+		{Color::PREVIEW_GREEN,   NcurseColor::PREVIEW_GREEN,   NcurseColor::PREVIEW_GREEN},
+		{Color::PREVIEW_YELLOW,  NcurseColor::PREVIEW_YELLOW,  NcurseColor::PREVIEW_YELLOW},
+		{Color::PREVIEW_BLUE,    NcurseColor::PREVIEW_BLUE,    NcurseColor::PREVIEW_BLUE},
+		{Color::PREVIEW_MAGENTA, NcurseColor::PREVIEW_MAGENTA, NcurseColor::PREVIEW_MAGENTA},
+		{Color::PREVIEW_CYAN,    NcurseColor::PREVIEW_CYAN,    NcurseColor::PREVIEW_CYAN},
+		{Color::PREVIEW_WHITE,   NcurseColor::PREVIEW_WHITE,   NcurseColor::PREVIEW_WHITE},
+	};
+
+	for(const auto& color: newColors)
+		init_color((ColorTools::enumToValue(static_cast<Color>(std::get<0>(color)))), 
+			static_cast<short>(std::get<1>(color)),
+			static_cast<short>(std::get<2>(color)),
+			static_cast<short>(std::get<3>(color)));
+
+	for(const auto& color: colors)
+		init_pair((ColorTools::enumToValue(static_cast<Color>(std::get<0>(color)))), 
+			static_cast<short>(std::get<1>(color)),
+			static_cast<short>(std::get<2>(color)));
+
 }
 
-int mainLoop(){
 
-	std::random_device os_seed;
-	srand(os_seed());
-	
+int mainLoop(){
 	char ch = ERR;
 	int delay_in_frames = 0 , height = 0, width = 0;
 	bool redrawThisFrame = false;
@@ -94,8 +105,9 @@ int mainLoop(){
 		
 		//Check if a key is pressed
 		if ((ch = getch()) != ERR) {
-			const bool isGameOver = game.update(ch); 
-			if(isGameOver){
+			auto keyPressed = tetris::ControlTools::valueToEnum(ch);
+			game.update(keyPressed); 
+			if(game.isGameOver()){
 				break;
 			}
 
@@ -112,8 +124,8 @@ int mainLoop(){
 			redrawThisFrame = true;
 			delay_in_frames = 0;
 			
-			const bool isGameOver = game.tick();
-			if(isGameOver){
+			game.tick();
+			if(game.isGameOver()){
 				break;
 			}
 		}else{
@@ -125,15 +137,14 @@ int mainLoop(){
 			redrawThisFrame = false;
 		}
 
-		double deltaTime = (secoundsPerFrame - timer.stop())*microsecondTosecond;
+		std::chrono::duration<double> deltaTime = (tetris::frameDuration - std::chrono::duration_cast<std::chrono::microseconds>(timer.stop()));
 
-		if(deltaTime < 0){
+		if(deltaTime.count() < 0){
 			endwin();
-			std::cout << "Error: Game to slow for "<< 1/secoundsPerFrame << " fps" << std::endl;
+			std::cout << "Error: Game to slow for "<< 1/std::chrono::duration_cast<std::chrono::seconds>(tetris::frameDuration).count() << " fps " << deltaTime <<  std::endl;
 			return -1;
 		}
-
-		usleep(deltaTime);
+		std::this_thread::sleep_for(deltaTime);
     }
 	endwin();
 	exit_curses;
@@ -155,7 +166,7 @@ int initNCURSES(){
 	
 	int height, width;
 	getmaxyx(stdscr, height, width);
-	if(height < BOARD_HEIGHT + UI_HEIGHT + 2 || width < BOARD_WIDTH + UI_WIDTH +  2){
+	if(height < tetris::BOARD_HEIGHT + tetris::UI_HEIGHT + 2 || width < tetris::BOARD_WIDTH + tetris::UI_WIDTH +  2){
 		endwin();
 		std::cout << "To small terminal" << std::endl;
 		std::cout << "Height: " << height << ", Width: " << width << std::endl;
@@ -172,7 +183,7 @@ int initNCURSES(){
 
 int main(){
 	//cbreak(); // One char at a time
-	srand(1);
+
 	if(initNCURSES() == -1){
 		return -1;
 	}

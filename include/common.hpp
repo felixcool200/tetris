@@ -1,0 +1,254 @@
+#pragma once
+
+#include <array>
+#include <chrono>
+#include <random>
+#include <stdexcept>
+
+namespace tetris{
+
+enum class Color {
+    NONE,
+    TETROMINO_BLACK,
+    TETROMINO_YELLOW,
+    TETROMINO_CYAN,
+    TETROMINO_GREEN,
+    TETROMINO_RED,
+    TETROMINO_WHITE,
+    TETROMINO_BLUE,
+    TETROMINO_MAGENTA,
+    TEXT_BLACK,
+    TEXT_YELLOW,
+    TEXT_CYAN,
+    TEXT_GREEN,
+    TEXT_RED,
+    TEXT_WHITE,
+    TEXT_BLUE,
+    TEXT_MAGENTA,
+    PREVIEW_YELLOW,
+    PREVIEW_CYAN,
+    PREVIEW_GREEN,
+    PREVIEW_RED,
+    PREVIEW_WHITE,
+    PREVIEW_BLUE,
+    PREVIEW_MAGENTA,
+};
+
+enum class NcurseColor : short {
+    // Default colors
+    BLACK   = 0,
+    RED     = 1,
+    GREEN	= 2,
+    YELLOW  = 3,
+    BLUE	= 4,
+    MAGENTA	= 5,
+    CYAN	= 6,
+    WHITE	= 7,
+
+    //User defined colors
+    PREVIEW_YELLOW = 8,
+    PREVIEW_CYAN = 9,
+    PREVIEW_GREEN = 10,
+    PREVIEW_RED = 11,
+    PREVIEW_WHITE = 12,
+    PREVIEW_BLUE = 13,
+    PREVIEW_MAGENTA = 14,
+};
+
+namespace ColorTools {
+    constexpr std::array<std::pair<short, Color>, 24> colorMappings = {{
+        {-1, Color::NONE},
+        {0,  Color::TETROMINO_BLACK},
+        {1,  Color::TETROMINO_YELLOW},
+        {2,  Color::TETROMINO_CYAN},
+        {3,  Color::TETROMINO_GREEN},
+        {4,  Color::TETROMINO_RED},
+        {5,  Color::TETROMINO_WHITE},
+        {6,  Color::TETROMINO_BLUE},
+        {7,  Color::TETROMINO_MAGENTA},
+        {8,  Color::TEXT_BLACK},
+        {9,  Color::TEXT_YELLOW},
+        {10, Color::TEXT_CYAN},
+        {11, Color::TEXT_GREEN},
+        {12, Color::TEXT_RED},
+        {13, Color::TEXT_WHITE},
+        {14, Color::TEXT_BLUE},
+        {15, Color::TEXT_MAGENTA},
+        {16, Color::PREVIEW_YELLOW},
+        {17, Color::PREVIEW_CYAN},
+        {18, Color::PREVIEW_GREEN},
+        {19, Color::PREVIEW_RED},
+        {20, Color::PREVIEW_WHITE},
+        {21, Color::PREVIEW_BLUE},
+        {22, Color::PREVIEW_MAGENTA},
+    }};
+
+    // Short-to-Enum conversion
+    constexpr Color valueToEnum(short toFind) {
+        for (const auto& [key, element] : colorMappings) {
+            if (key == toFind)
+                return element;
+        }
+        throw std::invalid_argument("Invalid input to converter");
+    }
+
+    // Enum-to-Short conversion
+    constexpr short enumToValue(Color toFind) {
+        for (const auto& [key, element] : colorMappings) {
+            if (element == toFind)
+                return key;
+        }
+        throw std::invalid_argument("Invalid input to converter");
+    }
+   
+} // namespace ColorTools
+
+enum class Control {
+    QUIT_KEY,
+    HOLD_KEY,
+    TOGGLE_PREVIEW_KEY,
+    ROTATE_TETROMINO_KEY,
+    DROP_KEY,
+    MOVE_LEFT_KEY,
+    MOVE_RIGHT_KEY,
+    MOVE_DOWN_KEY,
+};
+
+namespace ControlTools
+{
+
+    // Character map
+    constexpr std::array<std::pair<char, Control>, 8> controlMappings = {{
+        {'q', Control::QUIT_KEY},
+        {'c', Control::HOLD_KEY},
+        {'p', Control::TOGGLE_PREVIEW_KEY},
+        {'w', Control::ROTATE_TETROMINO_KEY},
+        {' ', Control::DROP_KEY},
+        {'a', Control::MOVE_LEFT_KEY},
+        {'d', Control::MOVE_RIGHT_KEY},
+        {'s', Control::MOVE_DOWN_KEY}
+    }};
+
+    // Char-to-Enum conversion
+    constexpr Control valueToEnum(char toFind) {
+        for (const auto& [key, element] : controlMappings) {
+            if (key == toFind)
+                return element;
+        }
+        throw std::invalid_argument("Invalid input to converter");
+    }
+
+    // Enum-to-Short conversion
+    constexpr char enumToValue(Control toFind) {
+        for (const auto& [key, element] : controlMappings) {
+            if (element == toFind)
+                return key;
+        }
+        throw std::invalid_argument("Invalid input to converter");
+    }
+
+} // namespace ControlsTools
+
+    //========== UI ==========
+    constexpr int BOARD_WIDTH = 10;
+    constexpr int BOARD_HEIGHT = 20;
+    constexpr int START_DELAY_FRAMES = 60;
+    constexpr int UI_WIDTH = 0;
+    constexpr int UI_HEIGHT = 0;
+    constexpr int BORDER_TOP = 1;
+    constexpr int BORDER_LEFT = 6;
+    constexpr int BORDER_BOTTOM = 1;
+    constexpr int BORDER_RIGHT = 11;
+
+    //========== DeltaTime ==========
+    constexpr auto frameDuration = std::chrono::duration<double>(1.0 / 120);
+
+    //========== Game logic ========== 
+    constexpr int MAX_LEVEL = 29;
+
+    constexpr int SHAPESIZE = 4;
+    constexpr int DEFAULT_SHAPE_DIRECTION = 1;
+
+    //========== Tetrominos ==========
+    constexpr int TETROMINOS = 7;
+    constexpr std::array<Color, TETROMINOS> TETROMINO_COLORS = {
+        Color::TETROMINO_YELLOW,
+        Color::TETROMINO_CYAN,
+        Color::TETROMINO_GREEN,
+        Color::TETROMINO_RED,
+        Color::TETROMINO_WHITE,
+        Color::TETROMINO_BLUE,
+        Color::TETROMINO_MAGENTA,
+    };
+
+    constexpr std::array<Color, TETROMINOS> PREVIEW_COLORS = {
+        Color::PREVIEW_YELLOW,
+        Color::PREVIEW_CYAN,
+        Color::PREVIEW_GREEN,
+        Color::PREVIEW_RED,
+        Color::PREVIEW_WHITE,
+        Color::PREVIEW_BLUE,
+        Color::PREVIEW_MAGENTA,
+    };
+
+    inline int randomTetrominoIndex() {
+        static std::random_device rd;
+        static std::mt19937 gen(rd());
+        static std::uniform_int_distribution<int> dist(0, TETROMINOS);
+
+        return dist(gen);
+    }
+
+    constexpr std::array<std::array<std::array<bool, SHAPESIZE>, SHAPESIZE>, TETROMINOS> PIECES = {{
+        // O_PIECE
+        {{
+            {false, false, false, false},
+            {false, true, true, false},
+            {false, true, true, false},
+            {false, false, false, false},
+        }},
+        // I_PIECE
+        {{
+            {false, false, false, false},
+            {true, true, true, true},
+            {false, false, false, false},
+            {false, false, false, false},
+        }},
+        // S_PIECE
+        {{
+            {false, false, false, false},
+            {false, true, true, false},
+            {true, true, false, false},
+            {false, false, false, false},
+        }},
+        // Z_PIECE
+        {{
+            {false, false, false, false},
+            {true, true, false, false},
+            {false, true, true, false},
+            {false, false, false, false},
+        }},
+        // L_PIECE
+        {{
+            {false, false, false, false},
+            {true, true, true, false},
+            {true, false, false, false},
+            {false, false, false, false},
+        }},
+        // J_PIECE
+        {{
+            {false, false, false, false},
+            {true, true, true, false},
+            {false, false, true, false},
+            {false, false, false, false},
+        }},
+        // T_PIECE
+        {{
+            {false, false, false, false},
+            {true, true, true, false},
+            {false, true, false, false},
+            {false, false, false, false},
+        }},
+    }};
+
+} // namespcea tetris

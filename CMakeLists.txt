@@ -1,20 +1,26 @@
 cmake_minimum_required(VERSION 3.10)
 
-# set the project name
+# Set the project name
 project(Tetris)
 
-set(CMAKE_CXX_STANDARD 17)
-# add the executable
+# C++ standard
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-include_directories(include/)
-add_executable(Tetris.out src/main.cpp src/tetromino.cpp src/game.cpp src/timer.cpp src/ui.cpp src/screenHandler.cpp src/square.cpp)
+# Include directories
+set(INCLUDE_DIR "include/")
+set(SOURCE_FILES src/main.cpp src/tetromino.cpp src/game.cpp src/timer.cpp src/ui.cpp src/screenHandler.cpp src/square.cpp)
 
-#File for profiler
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pg")
-SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pg")
-SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -pg")
-add_compile_options(-pg -no-pie -fno-builtin)
-
-add_executable(TetrisProfiler.out src/main.cpp src/tetromino.cpp src/game.cpp src/timer.cpp src/ui.cpp src/screenHandler.cpp src/square.cpp)
+# Create main executable
+add_executable(Tetris.out ${SOURCE_FILES})
+target_include_directories(Tetris.out PRIVATE ${INCLUDE_DIR})
 target_link_libraries(Tetris.out ncurses)
+
+# Create profiler executable
+add_executable(TetrisProfiler.out ${SOURCE_FILES})
+target_include_directories(TetrisProfiler.out PRIVATE ${INCLUDE_DIR})
 target_link_libraries(TetrisProfiler.out ncurses)
+
+# Profiling options for the profiler build
+target_compile_options(TetrisProfiler.out PRIVATE -pg -no-pie -fno-builtin)
+target_link_options(TetrisProfiler.out PRIVATE -pg)

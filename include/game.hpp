@@ -1,22 +1,24 @@
 #pragma once
+#include <array>
 
-#include "constants.hpp"
-#include "tetromino.hpp"
-#include "square.hpp"
+#include <common.hpp>
+#include <tetromino.hpp>
+#include <square.hpp>
+#include <screenHandler.hpp>
 
 class Game{
     private:
-        //bool m_board[BOARD_WIDTH][BOARD_HEIGHT];
-        Square m_board[BOARD_WIDTH][BOARD_HEIGHT];
+        std::array<std::array<Square,tetris::BOARD_WIDTH>,tetris::BOARD_HEIGHT> m_board;
         Tetromino m_tetromino;
-        bool m_tetrominoJustPlaced;
         Tetromino m_hold;
         Tetromino m_next;   
         Tetromino m_tetrominoPreview;
-        unsigned int m_score;
-        unsigned int m_linesCleared;
-        unsigned short m_level;
-        bool m_showPreview;
+        unsigned int m_score = 0;
+        unsigned int m_linesCleared = 0;
+        unsigned short m_level = 0;
+        bool m_showPreview = true;
+        bool m_isGameOver = false;
+        bool m_tetrominoJustPlaced = true;
         
         //bool checkForFinalLocation(Tetromino bl);
         bool checkForObstruction(Tetromino bl);
@@ -35,15 +37,17 @@ class Game{
 
     public:
         Game();
-        int getFramesPerTick();
-        bool update(char ch);
-        bool tick();
-        void draw();
-        Tetromino getHold();
-        Tetromino getNext();
-        unsigned int getScore();
-        unsigned int getLines();
-        unsigned short getLevel();
+        int getFramesPerTick() const;
+        void update(tetris::Control ch);
+        void tick();
+        void draw() const;
+        Tetromino getHold() const;
+        Tetromino getNext() const;
+        unsigned int getScore() const;
+        unsigned int getLines() const;
+        unsigned short getLevel() const;
+        bool wasTetrominoJustPlaced() const;
+        bool isGameOver() const;
+
         static bool isOnBoard(int x,int y);
-        bool wasTetrominoJustPlaced();
 };
