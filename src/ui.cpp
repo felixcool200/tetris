@@ -44,7 +44,7 @@ void UI::drawStats(unsigned int score,unsigned int lines,unsigned short level){
     ScreenHandler::addCharAt(tetris::ControlTools::enumToValue(tetris::Control::DROP_KEY), offset + 6,CONTROL_OFFSET+1);
     ScreenHandler::addStringAt("\"", offset+7, CONTROL_OFFSET+1);
 
-    std::array<std::pair<std::string_view,tetris::Control>,tetris::TETROMINOS> controls= 
+    std::array<std::pair<std::string_view, tetris::Control>, 8> controls= 
     {{
         {"Preview:"sv, tetris::Control::TOGGLE_PREVIEW_KEY},
         {"Rotate:"sv,  tetris::Control::ROTATE_TETROMINO_KEY},
@@ -53,7 +53,7 @@ void UI::drawStats(unsigned int score,unsigned int lines,unsigned short level){
         {"Down:"sv,    tetris::Control::MOVE_DOWN_KEY},
         {"Quit:"sv,    tetris::Control::QUIT_KEY},
         {"Hold"sv,     tetris::Control::HOLD_KEY},
-
+        {"Pause"sv,    tetris::Control::PAUSE_KEY},
     }};
 
     for (auto const [index, control] : std::views::enumerate(controls)){

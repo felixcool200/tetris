@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <tuple>
-#include <cassert>
+#include <chrono>
 
 #include <random>
 
@@ -22,18 +22,11 @@
  * a block has a shape
 */
 
-void redrawFrame(Game &game){
-	clear();
-	game.draw();
-	UI::draw(game.getHold(),game.getNext(),game.getScore(),game.getLines(),game.getLevel());
-	refresh(); //Redraw the ncurses screen
-}
-
 void initColors(){
 	//Block Colors
 	using namespace tetris;
 	// Initilize new colors
-	const int FACTOR = 500;
+	const short FACTOR = 500;
 
 	const std::vector<std::tuple<NcurseColor, short, short, short>> newColors = {
 		{NcurseColor::PREVIEW_RED     ,FACTOR, 0,      0},
@@ -76,37 +69,57 @@ void initColors(){
 		{Color::PREVIEW_WHITE,   NcurseColor::PREVIEW_WHITE,   NcurseColor::PREVIEW_WHITE},
 	};
 
-	for(const auto& color: newColors)
-		init_color((ColorTools::enumToValue(static_cast<Color>(std::get<0>(color)))), 
-			static_cast<short>(std::get<1>(color)),
-			static_cast<short>(std::get<2>(color)),
-			static_cast<short>(std::get<3>(color)));
+	for(const auto& color: newColors){
+		init_color(
+			NcurseColorTools::enumToValue(static_cast<NcurseColor>(std::get<0>(color))), 
+			static_cast<short>(std::get<1>(color)), // R
+			static_cast<short>(std::get<2>(color)), // G
+			static_cast<short>(std::get<3>(color))  // B
+		);
+	}
 
-	for(const auto& color: colors)
-		init_pair((ColorTools::enumToValue(static_cast<Color>(std::get<0>(color)))), 
-			static_cast<short>(std::get<1>(color)),
-			static_cast<short>(std::get<2>(color)));
-
+	for(const auto& color: colors){
+		init_pair(
+			ColorTools::enumToValue(static_cast<Color>(std::get<0>(color))), 
+			NcurseColorTools::enumToValue(static_cast<NcurseColor>(std::get<1>(color))),
+			NcurseColorTools::enumToValue(static_cast<NcurseColor>(std::get<2>(color)))
+		);
+	}
 }
 
+void redrawFrame(Game &game){
+	clear(); // Clear the ncurses screen
+	game.draw();
+	UI::draw(game.getHold(),game.getNext(),game.getScore(),game.getLines(),game.getLevel());
+	refresh(); // Redraw the ncurses screen
+}
 
 int mainLoop(){
+	using namespace std::chrono_literals;
 	char ch = ERR;
 	int delay_in_frames = 0 , height = 0, width = 0;
 	bool redrawThisFrame = false;
-	
+	bool isPaused = false;
+
 	Game game;
 	Timer timer(false);
 
 	redrawFrame(game);
 	while(true) {
+
 		//The frame timer starts here
 		timer.start();
 		
 		//Check if a key is pressed
 		if ((ch = getch()) != ERR) {
 			auto keyPressed = tetris::ControlTools::valueToEnum(ch);
-			game.update(keyPressed); 
+			if (keyPressed == tetris::Control::PAUSE_KEY){
+				isPaused = !isPaused;
+			}
+			if (isPaused) {
+				continue;
+			}
+			game.update(keyPressed);
 			if(game.isGameOver()){
 				break;
 			}
@@ -117,6 +130,11 @@ int mainLoop(){
 				delay_in_frames = 0;
 			}
 			redrawThisFrame = true;
+		}
+		
+		if (isPaused) {
+			std::this_thread::sleep_for(0.1s);
+			continue;
 		}
 
 		//Check if it is time for the block to fall one space
@@ -141,7 +159,7 @@ int mainLoop(){
 
 		if(deltaTime.count() < 0){
 			endwin();
-			std::cout << "Error: Game to slow for "<< 1/std::chrono::duration_cast<std::chrono::seconds>(tetris::frameDuration).count() << " fps " << deltaTime <<  std::endl;
+			std::cout << "Error: Game to slow for "<< 1/tetris::frameDuration.count() << " fps " << deltaTime.count() <<  std::endl;
 			return -1;
 		}
 		std::this_thread::sleep_for(deltaTime);

@@ -8,7 +8,7 @@
 
 class Game{
     private:
-        std::array<std::array<Square,tetris::BOARD_WIDTH>,tetris::BOARD_HEIGHT> m_board;
+        std::array<std::array<Square,tetris::BOARD_HEIGHT>,tetris::BOARD_WIDTH> m_board;
         Tetromino m_tetromino;
         Tetromino m_hold;
         Tetromino m_next;   
@@ -20,11 +20,8 @@ class Game{
         bool m_isGameOver = false;
         bool m_tetrominoJustPlaced = true;
         
-        //bool checkForFinalLocation(Tetromino bl);
         bool checkForObstruction(Tetromino bl);
  
-        //int amountOfRowsFilled();
-
         void createPreview();     
         void dropTetromino();   
         void placeTetromino();
@@ -33,12 +30,11 @@ class Game{
         void createNewTetromino();
         void removeRow(int index);
         void updateLevel();
-        /*void removeRows(int start,int stop);*/
 
     public:
         Game();
         int getFramesPerTick() const;
-        void update(tetris::Control ch);
+        void update(tetris::Control keyPressed);
         void tick();
         void draw() const;
         Tetromino getHold() const;

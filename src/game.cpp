@@ -74,30 +74,31 @@ bool Game::checkForObstruction(Tetromino bl){
 
 void Game::createPreview(){
     m_tetrominoPreview = m_tetromino;
-    while(!checkForObstruction(testMove(m_tetrominoPreview, tetris::Control::MOVE_DOWN_KEY))){
-        m_tetrominoPreview.move(tetris::Control::MOVE_DOWN_KEY);
+    while(!checkForObstruction(testMove(m_tetrominoPreview, tetris::Direction::South))){
+        m_tetrominoPreview.move(tetris::Direction::South);
     }
 }
 
 void Game::dropTetromino(){
-    while(!checkForObstruction(testMove(m_tetromino, tetris::Control::MOVE_DOWN_KEY))){
-        m_tetromino.move(tetris::Control::MOVE_DOWN_KEY);
+    while(!checkForObstruction(testMove(m_tetromino, tetris::Direction::South))){
+        m_tetromino.move(tetris::Direction::South);
         m_score += 1;
     }
     placeTetromino();
 }
+
 bool Game::isGameOver() const{
     return m_isGameOver;
 }
 
-void Game::update(tetris::Control ch){
+void Game::update(tetris::Control keyPressed){
     m_tetrominoJustPlaced = false;
     if(checkForObstruction(m_tetromino)){
         m_isGameOver = true; //Game over
         return;
     }
 
-    switch (ch)
+    switch (keyPressed)
     {
     case tetris::Control::QUIT_KEY:
         m_isGameOver = true; //Game over
@@ -122,12 +123,28 @@ void Game::update(tetris::Control ch){
     case tetris::Control::TOGGLE_PREVIEW_KEY:
         m_showPreview = !m_showPreview;
         break;
-    default:
-        if(!checkForObstruction(testMove(m_tetromino,ch))){
-            m_tetromino.move(ch);
+    case tetris::Control::ROTATE_TETROMINO_KEY:
+        if(!checkForObstruction(testMove(m_tetromino, tetris::Direction::North))){
+            m_tetromino.move(tetris::Direction::North);
+        }
+        break;
+    case tetris::Control::MOVE_RIGHT_KEY:
+        if(!checkForObstruction(testMove(m_tetromino, tetris::Direction::East))){
+            m_tetromino.move(tetris::Direction::East);
+        }
+        break;
+    case tetris::Control::MOVE_DOWN_KEY:
+        if(!checkForObstruction(testMove(m_tetromino, tetris::Direction::South))){
+            m_tetromino.move(tetris::Direction::South);
+        }
+        break;
+    case tetris::Control::MOVE_LEFT_KEY:
+        if(!checkForObstruction(testMove(m_tetromino, tetris::Direction::West))){
+            m_tetromino.move(tetris::Direction::West);
         }
         break;
     }
+
     if(m_showPreview){
         createPreview();   
     }
@@ -163,8 +180,9 @@ void Game::placeTetromino(){
     removeCompleteRows();
     updateLevel();
     createNewTetromino();
-    if(m_showPreview)
+    if(m_showPreview){
         createPreview();   
+    }
 }
 
 void Game::updateLevel(){
@@ -182,7 +200,7 @@ int Game::getFramesPerTick() const{
         (m_level < 29) ? 1 : 0;
 
     //This removes the correlation between fps and game speed.
-    return (frameOn60 + 0.5)/(60*std::chrono::duration_cast<std::chrono::seconds>(tetris::frameDuration).count());
+    return (frameOn60 + 0.5)/(60*tetris::frameDuration.count());
 }
 
 void Game::removeCompleteRows(){
@@ -221,16 +239,11 @@ void Game::removeCompleteRows(){
             break;
     }
     m_linesCleared += rowsRemoved;
-    
-    //std::clog << "COMPLETED COUNTING" << std::endl;
-    //HERE REMOVE ROWS ONE BY ONE AND MOVE ALL OTHER ROWS DOWN
-    // OPTIMIZE BY REMOVING MULTIPE ROWS
 }
 
 void Game::removeRow(int index){
     for(int y = 0; y <= index-1; ++y){
         for(int x = 0; x < tetris::BOARD_WIDTH; ++x){
-            //std::cout << "x:" << x << " y: "<< y << std::endl;
             m_board[x][index-y].replace(m_board[x][index-y-1]);
         }
     }

@@ -4,19 +4,17 @@
 
 class Tetromino{
     private:
-        int m_x = 0;
-        int m_y = 0;
+        int m_x = (tetris::BOARD_WIDTH - tetris::SHAPESIZE)/2;
+        int m_y = -1;
         bool m_beenHeld = false;
-        bool m_isPreview; 
-        int m_shapeIndex;
-        int m_direction;
+        bool m_isPreview = false; 
+        int m_shapeIndex = tetris::randomTetrominoIndex();
+        tetris::Direction m_direction = tetris::DEFAULT_SHAPE_DIRECTION;
 
     public:
-        Tetromino() : Tetromino((tetris::BOARD_WIDTH-tetris::SHAPESIZE)/2,-1,false){};
-        Tetromino(int y) : Tetromino((tetris::BOARD_WIDTH-tetris::SHAPESIZE)/2,y,false){};
-        Tetromino(bool held) : Tetromino((tetris::BOARD_WIDTH-tetris::SHAPESIZE)/2,-1, held){};
-        Tetromino(int x, int y, bool held);
-        //Tetromino(const Tetromino &o);
+        Tetromino(){};
+        Tetromino(int y) : m_y(y){};
+        Tetromino(int x, int y, bool held) : m_x(x), m_y(y), m_beenHeld(held){};
         
         bool isFilledAt(int x, int y) const;
         void hold();
@@ -24,9 +22,9 @@ class Tetromino{
         
         void reset();
         void tick();
-        void move(tetris::Control ch);
+        void move(tetris::Direction directionToPressed);
         void draw(bool isPreview=false) const;
-        void drawAt(int x, int y,bool isPreview=false);
+        void drawAt(int x, int y,bool isPreview=false) const;
         void rotateRight();
         void update();
         
@@ -36,5 +34,5 @@ class Tetromino{
         int getY() const;
         char getShape() const;
 };
-Tetromino testMove(Tetromino bl,tetris::Control ch);
+Tetromino testMove(Tetromino bl, tetris::Direction directionToMove);
 Tetromino testTick(Tetromino bl);

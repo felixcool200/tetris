@@ -5,23 +5,6 @@
 #include <common.hpp>
 #include <screenHandler.hpp>
 
-Tetromino::Tetromino(int x, int y, bool held){
-    m_shapeIndex = tetris::randomTetrominoIndex();
-    m_direction = tetris::DEFAULT_SHAPE_DIRECTION;
-    m_x = x;
-    m_y = y;
-    m_beenHeld = held;
-}
-
-/*Tetromino::Tetromino(const Tetromino &o){
-    m_shapeIndex = o.m_shapeIndex;
-    m_direction = o.m_direction;
-    m_x = o.m_x;
-    m_y = o.m_y;
-    m_beenHeld = o.m_beenHeld;
-}*/
-
-
 /*
     https://stackoverflow.com/questions/37812817/finding-element-at-x-y-in-a-given-matrix-after-rotation-in-c-c
     m_direction = 0
@@ -52,18 +35,16 @@ Tetromino::Tetromino(int x, int y, bool held){
 bool Tetromino::isFilledAt(int x, int y) const{
     switch (m_direction)
 	{
-		case 0:
+		case tetris::Direction::North:
 			return tetris::PIECES[m_shapeIndex][x][y];
-		case 1:
+		case tetris::Direction::East:
 			return tetris::PIECES[m_shapeIndex][y][tetris::SHAPESIZE - 1 - x];
-		case 2:
+		case tetris::Direction::South:
 			return tetris::PIECES[m_shapeIndex][tetris::SHAPESIZE - 1 - x][tetris::SHAPESIZE - 1 - y];
-		case 3:
+		case tetris::Direction::West:
 			return tetris::PIECES[m_shapeIndex][tetris::SHAPESIZE - 1 - y][tetris::SHAPESIZE - 1 - (tetris::SHAPESIZE - 1 - x)];
-        default:
-	        return tetris::PIECES[m_shapeIndex][x][y]; // Default is zero rotation (should never happen) 
 	}
-    return tetris::PIECES[m_shapeIndex][x][y]; // Default is zero rotation (should never happen) 
+    return false;
 }
 
 char Tetromino::getShape() const{
@@ -88,7 +69,7 @@ char Tetromino::getShape() const{
 
 //To rotate left: m_direction = (m_direction - 1) % 4;
 void Tetromino::rotateRight(){
-    m_direction = (m_direction + 1) % 4;
+    m_direction = static_cast<tetris::Direction>((static_cast<int>(m_direction) + 1) % 4);
 }
 
 int Tetromino::getX() const{
@@ -126,57 +107,47 @@ void Tetromino::reset(){
     m_direction = tetris::DEFAULT_SHAPE_DIRECTION;
 }
 
-void Tetromino::move(tetris::Control ch){
-    switch (ch) {   
+void Tetromino::move(tetris::Direction directionToMove){
+    switch (directionToMove) {   
         //Rotate the Tetromino
-        case tetris::Control::ROTATE_TETROMINO_KEY:
+        case tetris::Direction::North:
             rotateRight();
+        break;
+        //Move Tetromino one step to the right
+        case tetris::Direction::East:
+            m_x += 1;
         break;
 
         //Speed up Tetromino
         //TODO: Change this to a factor(2) that is multiplied when a tick is performed.
-        case tetris::Control::MOVE_DOWN_KEY:
+        case tetris::Direction::South:
             m_y += 1;
         break;
 
-        //Move Tetromino one step to the right
-        case tetris::Control::MOVE_RIGHT_KEY:
-            m_x += 1;
-        break;
-
         //Move Tetromino one step to the left
-        case tetris::Control::MOVE_LEFT_KEY:
+        case tetris::Direction::West:
             m_x -= 1;
-        default:
-            //Do not handle all keys here
         break;
      }
 }
 
 void Tetromino::draw(bool isPreview) const{
-    //ScreenHandler::moveCurserBoard(screen, m_y, m_x);
-    const auto color = std::invoke([&](){
-        if(isPreview)
-            return getPreviewColor();
-        else
-            return getColor();
-    });
-
+    const auto color = isPreview ? getPreviewColor() : getColor();
     for(int dx = 0; dx < tetris::SHAPESIZE; ++dx){
         for(int dy = 0; dy < tetris::SHAPESIZE; ++dy){
-            if(isFilledAt(dx,dy)){
-                ScreenHandler::addCharAtBoard('B',(m_x + dx),(m_y + dy), color);
+            if(this->isFilledAt(dx,dy)){
+                ScreenHandler::addCharAtBoard('B', (m_x + dx), (m_y + dy), color);
             }
         }
     }
 }
 
-void Tetromino::drawAt(int x, int y,bool isPreview){
-    //ScreenHandler::moveCurserBoard(screen, m_y, m_x);
+void Tetromino::drawAt(int x, int y, bool isPreview) const{
+    const auto color = isPreview ? getPreviewColor() : getColor();
     for(int dx = 0; dx < tetris::SHAPESIZE; ++dx){
         for(int dy = 0; dy < tetris::SHAPESIZE; ++dy){
             if(this->isFilledAt(dx,dy)){
-                ScreenHandler::addCharAt('B',(x + dx),(y + dy), this->getColor());
+                ScreenHandler::addCharAt('B', (x + dx), (y + dy), color);
             }
         }
     }
@@ -184,9 +155,9 @@ void Tetromino::drawAt(int x, int y,bool isPreview){
 
 // Functions
 
-Tetromino testMove(Tetromino bl, tetris::Control ch){
+Tetromino testMove(Tetromino bl, tetris::Direction directionToMove){
     // Make sure it is a copy of bl
-    bl.move(ch);
+    bl.move(directionToMove);
     return bl;
 }
 

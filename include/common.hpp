@@ -7,6 +7,13 @@
 
 namespace tetris{
 
+enum class Direction {
+    North = 0,
+    East = 1,
+    South = 2,
+    West = 3,
+};
+
 enum class Color {
     NONE,
     TETROMINO_BLACK,
@@ -34,26 +41,70 @@ enum class Color {
     PREVIEW_MAGENTA,
 };
 
-enum class NcurseColor : short {
+enum class NcurseColor {
+    // Empty value
+    NONE,
+    
     // Default colors
-    BLACK   = 0,
-    RED     = 1,
-    GREEN	= 2,
-    YELLOW  = 3,
-    BLUE	= 4,
-    MAGENTA	= 5,
-    CYAN	= 6,
-    WHITE	= 7,
+    BLACK,
+    RED,
+    GREEN,
+    YELLOW,
+    BLUE,
+    MAGENTA,
+    CYAN,
+    WHITE,
 
     //User defined colors
-    PREVIEW_YELLOW = 8,
-    PREVIEW_CYAN = 9,
-    PREVIEW_GREEN = 10,
-    PREVIEW_RED = 11,
-    PREVIEW_WHITE = 12,
-    PREVIEW_BLUE = 13,
-    PREVIEW_MAGENTA = 14,
+    PREVIEW_YELLOW,
+    PREVIEW_CYAN,
+    PREVIEW_GREEN,
+    PREVIEW_RED,
+    PREVIEW_WHITE,
+    PREVIEW_BLUE,
+    PREVIEW_MAGENTA,
 };
+
+namespace NcurseColorTools {
+    constexpr std::array<std::pair<short, NcurseColor>, 16> colorMappings = {{
+        {-1, NcurseColor::NONE},
+        {0,  NcurseColor::BLACK},
+        {1,  NcurseColor::RED},
+        {2,  NcurseColor::GREEN},
+        {3,  NcurseColor::YELLOW},
+        {4,  NcurseColor::BLUE},
+        {5,  NcurseColor::MAGENTA},
+        {6,  NcurseColor::CYAN},
+        {7,  NcurseColor::WHITE},
+        {8,  NcurseColor::PREVIEW_YELLOW},
+        {9,  NcurseColor::PREVIEW_CYAN},
+        {10, NcurseColor::PREVIEW_GREEN},
+        {11, NcurseColor::PREVIEW_RED},
+        {12, NcurseColor::PREVIEW_WHITE},
+        {13, NcurseColor::PREVIEW_BLUE},
+        {14, NcurseColor::PREVIEW_MAGENTA},
+    }};
+
+    // Short-to-Enum conversion
+    constexpr NcurseColor valueToEnum(short toFind) {
+        for (const auto& [key, element] : colorMappings) {
+            if (key == toFind)
+                return element;
+        }
+        return NcurseColor::NONE;
+        //throw std::invalid_argument("Invalid input to converter");
+    }
+
+    // Enum-to-Short conversion
+    constexpr short enumToValue(NcurseColor toFind) {
+        for (const auto& [key, element] : colorMappings) {
+            if (element == toFind)
+                return key;
+        }
+        throw std::invalid_argument("Invalid input to converter");
+    }
+   
+} // namespace NcurseColorTools
 
 namespace ColorTools {
     constexpr std::array<std::pair<short, Color>, 24> colorMappings = {{
@@ -89,7 +140,8 @@ namespace ColorTools {
             if (key == toFind)
                 return element;
         }
-        throw std::invalid_argument("Invalid input to converter");
+        return Color::NONE;
+        //throw std::invalid_argument("Invalid input to converter");
     }
 
     // Enum-to-Short conversion
@@ -104,6 +156,8 @@ namespace ColorTools {
 } // namespace ColorTools
 
 enum class Control {
+    NONE,
+    PAUSE_KEY,
     QUIT_KEY,
     HOLD_KEY,
     TOGGLE_PREVIEW_KEY,
@@ -118,7 +172,9 @@ namespace ControlTools
 {
 
     // Character map
-    constexpr std::array<std::pair<char, Control>, 8> controlMappings = {{
+    constexpr std::array<std::pair<char, Control>, 10> controlMappings = {{
+        {'\0', Control::NONE},
+        {'b', Control::PAUSE_KEY},
         {'q', Control::QUIT_KEY},
         {'c', Control::HOLD_KEY},
         {'p', Control::TOGGLE_PREVIEW_KEY},
@@ -135,7 +191,8 @@ namespace ControlTools
             if (key == toFind)
                 return element;
         }
-        throw std::invalid_argument("Invalid input to converter");
+        return Control::NONE;
+        //throw std::invalid_argument("Invalid input to converter");
     }
 
     // Enum-to-Short conversion
@@ -167,10 +224,11 @@ namespace ControlTools
     constexpr int MAX_LEVEL = 29;
 
     constexpr int SHAPESIZE = 4;
-    constexpr int DEFAULT_SHAPE_DIRECTION = 1;
+    constexpr Direction DEFAULT_SHAPE_DIRECTION = Direction::East;
 
     //========== Tetrominos ==========
     constexpr int TETROMINOS = 7;
+
     constexpr std::array<Color, TETROMINOS> TETROMINO_COLORS = {
         Color::TETROMINO_YELLOW,
         Color::TETROMINO_CYAN,
@@ -194,7 +252,7 @@ namespace ControlTools
     inline int randomTetrominoIndex() {
         static std::random_device rd;
         static std::mt19937 gen(rd());
-        static std::uniform_int_distribution<int> dist(0, TETROMINOS);
+        static std::uniform_int_distribution<int> dist(0, TETROMINOS-1);
 
         return dist(gen);
     }
