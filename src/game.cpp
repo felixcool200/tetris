@@ -122,49 +122,52 @@ void Game<screenInterface>::update(tetris::Control keyPressed) {
 
     switch (keyPressed)
     {
-    case tetris::Control::QUIT_KEY:
-        m_isGameOver = true; //Game over
-        return;
-    case tetris::Control::DROP_KEY:
-        dropTetromino();
-        break;
-    case tetris::Control::HOLD_KEY:
-        if (m_hold.getY() == -2) { // Same as never been held (no real tetromino will have -2 in Y)
-            m_hold = std::move(m_tetromino);
-            m_hold.hold();
-            createNewTetromino();
-        } else {
-            if (!m_tetromino.hasBeenHeld()) {
-                Tetromino<screenInterface> tmp = std::move(m_hold);
+        case tetris::Control::NONE:
+        case tetris::Control::PAUSE_KEY:
+            break;
+        case tetris::Control::QUIT_KEY:
+            m_isGameOver = true; //Game over
+            return;
+        case tetris::Control::DROP_KEY:
+            dropTetromino();
+            break;
+        case tetris::Control::HOLD_KEY:
+            if (m_hold.getY() == -2) { // Same as never been held (no real tetromino will have -2 in Y)
                 m_hold = std::move(m_tetromino);
                 m_hold.hold();
-                m_tetromino = std::move(tmp);
+                createNewTetromino();
+            } else {
+                if (!m_tetromino.hasBeenHeld()) {
+                    Tetromino<screenInterface> tmp = std::move(m_hold);
+                    m_hold = std::move(m_tetromino);
+                    m_hold.hold();
+                    m_tetromino = std::move(tmp);
+                }
             }
-        }
-        break;
-    case tetris::Control::TOGGLE_PREVIEW_KEY:
-        m_showPreview = !m_showPreview;
-        break;
-    case tetris::Control::ROTATE_TETROMINO_KEY:
-        if (!checkForObstruction(Tetromino<screenInterface>::testMove(m_tetromino, tetris::Direction::North))) {
-            m_tetromino.move(tetris::Direction::North);
-        }
-        break;
-    case tetris::Control::MOVE_RIGHT_KEY:
-        if (!checkForObstruction(Tetromino<screenInterface>::testMove(m_tetromino, tetris::Direction::East))) {
-            m_tetromino.move(tetris::Direction::East);
-        }
-        break;
-    case tetris::Control::MOVE_DOWN_KEY:
-        if (!checkForObstruction(Tetromino<screenInterface>::testMove(m_tetromino, tetris::Direction::South))) {
-            m_tetromino.move(tetris::Direction::South);
-        }
-        break;
-    case tetris::Control::MOVE_LEFT_KEY:
-        if (!checkForObstruction(Tetromino<screenInterface>::testMove(m_tetromino, tetris::Direction::West))) {
-            m_tetromino.move(tetris::Direction::West);
-        }
-        break;
+            break;
+        case tetris::Control::TOGGLE_PREVIEW_KEY:
+            m_showPreview = !m_showPreview;
+            break;
+        case tetris::Control::ROTATE_TETROMINO_KEY:
+            if (!checkForObstruction(Tetromino<screenInterface>::testMove(m_tetromino, tetris::Direction::North))) {
+                m_tetromino.move(tetris::Direction::North);
+            }
+            break;
+        case tetris::Control::MOVE_RIGHT_KEY:
+            if (!checkForObstruction(Tetromino<screenInterface>::testMove(m_tetromino, tetris::Direction::East))) {
+                m_tetromino.move(tetris::Direction::East);
+            }
+            break;
+        case tetris::Control::MOVE_DOWN_KEY:
+            if (!checkForObstruction(Tetromino<screenInterface>::testMove(m_tetromino, tetris::Direction::South))) {
+                m_tetromino.move(tetris::Direction::South);
+            }
+            break;
+        case tetris::Control::MOVE_LEFT_KEY:
+            if (!checkForObstruction(Tetromino<screenInterface>::testMove(m_tetromino, tetris::Direction::West))) {
+                m_tetromino.move(tetris::Direction::West);
+            }
+            break;
     }
 
     if (m_showPreview) {
@@ -198,7 +201,7 @@ unsigned int Game<screenInterface>::getLines() const {
 
 template<typename screenInterface>
 requires Screen::ScreenInterface<screenInterface>
-unsigned short Game<screenInterface>::getLevel() const {
+unsigned int Game<screenInterface>::getLevel() const {
     return m_level;
 }
 
@@ -234,7 +237,7 @@ int Game<screenInterface>::getFramesPerTick() const {
         (m_level < 29) ? 1 : 0;
 
     //This removes the correlation between fps and game speed.
-    return (frameOn60 + 0.5)/(60*tetris::frameDuration.count());
+    return static_cast<int>((frameOn60 + 0.5) / (60 * tetris::frameDuration.count()));
 }
 
 template<typename screenInterface>

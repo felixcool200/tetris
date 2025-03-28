@@ -170,7 +170,7 @@ Screen::StatusCode NcursesScreen::initScreen() {
 }
 
 tetris::Control NcursesScreen::getInput() {
-    char ch = getch();
+    char ch = static_cast<char>(getch());
     if(ch == ERR) {
         return tetris::Control::NONE;
     }
@@ -181,7 +181,7 @@ Screen::StatusCode NcursesScreen::closeScreen() {
     if(endwin() == ERR) {
         return Screen::StatusCode::ERROR;
     }
-	exit_curses;
+	exit_curses(0);
     if(delwin(stdscr) == ERR) {
         return Screen::StatusCode::ERROR;
     }

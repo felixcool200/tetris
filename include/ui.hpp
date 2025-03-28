@@ -9,6 +9,6 @@ class UI {
         static void drawHold(Tetromino<screenInterface> hold);
         static void drawNext(Tetromino<screenInterface> hold);
         static void drawBorders();
-        static void draw(Tetromino<screenInterface> hold,Tetromino<screenInterface> next,unsigned int score,unsigned int lines,unsigned short level);
-        static void drawStats(unsigned int score,unsigned int lines,unsigned short level);
+        static void draw(Tetromino<screenInterface> hold, Tetromino<screenInterface> next, unsigned int score, unsigned int lines, unsigned int level);
+        static void drawStats(unsigned int score, unsigned int lines, unsigned int level);
 };

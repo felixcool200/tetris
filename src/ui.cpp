@@ -12,23 +12,23 @@
 
 template<typename screenInterface>
 requires Screen::ScreenInterface<screenInterface>
-void UI<screenInterface>::draw(Tetromino<screenInterface> hold,Tetromino<screenInterface> next,unsigned int score,unsigned int lines,unsigned short level) {
+void UI<screenInterface>::draw(Tetromino<screenInterface> hold,Tetromino<screenInterface> next,unsigned int score,unsigned int lines, unsigned int level) {
     drawBorders();
     drawHold(hold);
     drawNext(next);
-    drawStats(score,lines,level);
+    drawStats(score, lines, level);
 }
 
 template<typename screenInterface>
 requires Screen::ScreenInterface<screenInterface>
-void UI<screenInterface>::drawStats(unsigned int score,unsigned int lines,unsigned short level) {
+void UI<screenInterface>::drawStats(unsigned int score, unsigned int lines, unsigned int level) {
 
     using namespace std::string_view_literals;
-    constexpr int offset = tetris::BOARD_WIDTH + tetris::BORDER_LEFT + 1;
-    constexpr int SCORE_OFFSET =  1;
-    constexpr int LINES_OFFSET =  3;
-    constexpr int LEVEL_OFFSET =  5;
-    constexpr int CONTROL_OFFSET = 10;
+    constexpr size_t offset = tetris::BOARD_WIDTH + tetris::BORDER_LEFT + 1;
+    constexpr size_t SCORE_OFFSET =  1;
+    constexpr size_t LINES_OFFSET =  3;
+    constexpr size_t LEVEL_OFFSET =  5;
+    constexpr size_t CONTROL_OFFSET = 10;
 
     //Score
     screenInterface::addStringAt("Score:"sv,offset,SCORE_OFFSET);
@@ -49,7 +49,7 @@ void UI<screenInterface>::drawStats(unsigned int score,unsigned int lines,unsign
     screenInterface::addCharAt(tetris::ControlTools::enumToValue(tetris::Control::DROP_KEY), offset + 6,CONTROL_OFFSET+1);
     screenInterface::addStringAt("\"", offset+7, CONTROL_OFFSET+1);
 
-    std::array<std::pair<std::string_view, tetris::Control>, 8> controls= 
+    std::array<std::pair<std::string_view, tetris::Control>, 8> controls = 
     {{
         {"Preview:"sv, tetris::Control::TOGGLE_PREVIEW_KEY},
         {"Rotate:"sv,  tetris::Control::ROTATE_TETROMINO_KEY},
@@ -62,8 +62,9 @@ void UI<screenInterface>::drawStats(unsigned int score,unsigned int lines,unsign
     }};
 
     for (auto const [index, control] : std::views::enumerate(controls)) {
-        screenInterface::addStringAt(control.first, offset, CONTROL_OFFSET+2+index);
-        screenInterface::addCharAt(tetris::ControlTools::enumToValue(control.second), offset + 8,CONTROL_OFFSET+2+index, tetris::Color::TEXT_YELLOW);
+        const auto yOffset = static_cast<int>(CONTROL_OFFSET+2+index);
+        screenInterface::addStringAt(control.first, offset, yOffset);
+        screenInterface::addCharAt(tetris::ControlTools::enumToValue(control.second), offset + 8, yOffset, tetris::Color::TEXT_YELLOW);
     }
 }
 

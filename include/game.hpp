@@ -17,7 +17,7 @@ class Game{
         Tetromino<screenInterface> m_tetrominoPreview;
         unsigned int m_score = 0;
         unsigned int m_linesCleared = 0;
-        unsigned short m_level = 0;
+        unsigned int m_level = 0;
         bool m_showPreview = true;
         bool m_isGameOver = false;
         bool m_tetrominoJustPlaced = true;
@@ -43,7 +43,7 @@ class Game{
         Tetromino<screenInterface> getNext() const;
         unsigned int getScore() const;
         unsigned int getLines() const;
-        unsigned short getLevel() const;
+        unsigned int getLevel() const;
         bool wasTetrominoJustPlaced() const;
         bool isGameOver() const;
 
