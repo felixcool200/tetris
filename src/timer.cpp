@@ -1,32 +1,32 @@
+#include <timer.hpp>
+
 #include <chrono>
 #include <iostream>
 
-#include <timer.hpp>
-
-Timer::Timer(){
+Timer::Timer() {
     start();
 }
 
-Timer::Timer(bool toStart){
-    if(toStart){
+Timer::Timer(bool toStart) {
+    if (toStart) {
         start();
     }
 }
 
-void Timer::start(){
+void Timer::start() {
     m_start = std::chrono::high_resolution_clock::now();
 }
 
-std::chrono::duration<double> Timer::stop(){
+std::chrono::duration<double> Timer::stop() {
     m_stop = std::chrono::high_resolution_clock::now();
     return m_stop - m_start;
     //std::cout << "Time: " << (duration.count() * 1000.0f) << "ms" << std::endl;
 }
 
-void Timer::reset(){
+void Timer::reset() {
    //
 }
 
-Timer::~Timer(){
+Timer::~Timer() {
     stop();
 }

@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # Include directories
 set(INCLUDE_DIR "include/")
-set(SOURCE_FILES src/main.cpp src/tetromino.cpp src/game.cpp src/timer.cpp src/ui.cpp src/screenHandler.cpp src/square.cpp)
+set(SOURCE_FILES src/main.cpp src/tetromino.cpp src/game.cpp src/timer.cpp src/ui.cpp src/ncursesScreen.cpp src/square.cpp)
 
 # Create main executable
 add_executable(Tetris.out ${SOURCE_FILES})
