@@ -13,6 +13,8 @@ class NcursesScreen {
         static Screen::StatusCode initScreen();
         static Screen::StatusCode closeScreen();
 
+        static tetris::Control getInput();
+
         static Screen::StatusCode clearScreen();
         static Screen::StatusCode redrawScreen();
         

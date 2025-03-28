@@ -1,5 +1,3 @@
-#include <ncurses.h>
-
 #include <common.hpp>
 #include <game.hpp>
 #include <timer.hpp>
@@ -15,10 +13,8 @@ template<typename screenInterface>
 requires Screen::ScreenInterface<screenInterface>  // Ensure Screen implements the required interface
 int mainLoop() {
 	using namespace std::chrono_literals;
-	char ch = ERR;
-	int delay_in_frames = 0 , height = 0, width = 0;
-	bool redrawThisFrame = false;
-	bool isPaused = false;
+	int delay_in_frames = 0, height = 0, width = 0;
+	bool redrawThisFrame = false, isPaused = false;
 
 	if (screenInterface::initScreen() == Screen::StatusCode::ERROR) {
 		return -1;
@@ -34,8 +30,7 @@ int mainLoop() {
 		timer.start();
 		
 		//Check if a key is pressed
-		if ((ch = getch()) != ERR) {
-			auto keyPressed = tetris::ControlTools::valueToEnum(ch);
+		if (auto keyPressed = screenInterface::getInput(); keyPressed != tetris::Control::NONE) {
 			if (keyPressed == tetris::Control::PAUSE_KEY) {
 				isPaused = !isPaused;
 			}
@@ -81,7 +76,9 @@ int mainLoop() {
 		std::chrono::duration<double> deltaTime = (tetris::frameDuration - std::chrono::duration_cast<std::chrono::microseconds>(timer.stop()));
 		
 		if (deltaTime.count() < 0) {
-			endwin();
+			if (screenInterface::closeScreen() == Screen::StatusCode::ERROR) {
+				return -1;
+			}
 			std::cout << "Error: Game to slow for "<< 1/tetris::frameDuration.count() << " fps " << deltaTime.count() <<  std::endl;
 			return -1;
 		}

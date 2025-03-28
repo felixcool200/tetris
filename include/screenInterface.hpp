@@ -11,11 +11,15 @@ namespace Screen {
     };
     
     template<typename screenInterface>
-    concept ScreenInterface = requires(screenInterface screen, int x, int y, char ch, std::string_view s, tetris::Color color) {
+    concept ScreenInterface = requires(int x, int y, char ch, std::string_view s, tetris::Color color) {
         
         // Method to configure and start the screen
-        { screenInterface::initScreen()} -> std::same_as<StatusCode>;
-        { screenInterface::closeScreen()} -> std::same_as<StatusCode>;
+        { screenInterface::initScreen() } -> std::same_as<StatusCode>;
+        { screenInterface::closeScreen() } -> std::same_as<StatusCode>;
+
+        // Method for handling user input
+        { screenInterface::getInput() } -> std::same_as<tetris::Control>;
+
         // Methods for clearing and redrawing the screen
         { screenInterface::clearScreen() } -> std::same_as<StatusCode>;
         { screenInterface::redrawScreen() } -> std::same_as<StatusCode>;

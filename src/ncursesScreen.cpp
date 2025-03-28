@@ -10,7 +10,6 @@
 #include <string>
 #include <stdexcept>
 
-
 namespace {
     enum class NcurseColor {
         // Empty value
@@ -168,6 +167,14 @@ Screen::StatusCode NcursesScreen::initScreen() {
         return Screen::StatusCode::ERROR;
     }
     return Screen::StatusCode::OKEY;
+}
+
+tetris::Control NcursesScreen::getInput() {
+    char ch = getch();
+    if(ch == ERR) {
+        return tetris::Control::NONE;
+    }
+    return tetris::ControlTools::valueToEnum(ch);
 }
 
 Screen::StatusCode NcursesScreen::closeScreen() {
