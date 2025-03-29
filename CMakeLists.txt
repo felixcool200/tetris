@@ -16,11 +16,15 @@ add_executable(Tetris.out ${SOURCE_FILES})
 target_include_directories(Tetris.out PRIVATE ${INCLUDE_DIR})
 target_link_libraries(Tetris.out ncurses)
 
+# Options for the profiler build
+target_compile_options(Tetris.out PRIVATE -Werror -Wpedantic -Wuninitialized -Wredundant-decls -Wfloat-equal -Wall -Wextra -Wcast-qual -Wconversion -Wshadow -Wunused-parameter -Wwrite-strings -Wno-variadic-macros)
+target_link_options(Tetris.out PRIVATE -pg)
+
 # Create profiler executable
 add_executable(TetrisProfiler.out ${SOURCE_FILES})
 target_include_directories(TetrisProfiler.out PRIVATE ${INCLUDE_DIR})
 target_link_libraries(TetrisProfiler.out ncurses)
 
 # Profiling options for the profiler build
-target_compile_options(TetrisProfiler.out PRIVATE -pg -no-pie -fno-builtin -Werror -Wpedantic -Wuninitialized -Wredundant-decls -Wfloat-equal -Wall -Wextra -Wcast-qual -Wconversion -Wshadow -Wunused-parameter -Wwrite-strings -Wno-variadic-macros)
+target_compile_options(TetrisProfiler.out PRIVATE -pg -no-pie -fno-builtin)
 target_link_options(TetrisProfiler.out PRIVATE -pg)
