@@ -106,6 +106,21 @@ enum class Control {
 namespace ControlTools
 {
 
+    constexpr Direction controlToDirection(const tetris::Control keyPressed) {
+        switch (keyPressed)
+        {
+            case Control::ROTATE_TETROMINO_KEY:
+                return Direction::North;
+            case Control::MOVE_RIGHT_KEY:
+                return Direction::East;
+            case Control::MOVE_DOWN_KEY:
+                return Direction::South;
+            case Control::MOVE_LEFT_KEY:
+                return Direction::West;
+            default:
+                return Direction::North;
+        }
+    }
     // Character map
     constexpr std::array<std::pair<char, Control>, 10> controlMappings = {{
         {'\0', Control::NONE},

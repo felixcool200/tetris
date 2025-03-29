@@ -9,7 +9,7 @@
 template<typename screenInterface>
 requires Screen::ScreenInterface<screenInterface>
 Game<screenInterface>::Game() {
-    m_hold = Tetromino<screenInterface>(-2);
+    m_hold = std::nullopt;
     if (m_showPreview) {
         createPreview();   
     }
@@ -43,7 +43,7 @@ void Game<screenInterface>::tick() {
 
 template<typename screenInterface>
 requires Screen::ScreenInterface<screenInterface>
-bool Game<screenInterface>::wasTetrominoJustPlaced() const{
+bool Game<screenInterface>::wasTetrominoJustPlaced() const {
     return m_tetrominoJustPlaced;
 }
 
@@ -65,7 +65,7 @@ void Game<screenInterface>::addTetrominoToBoard(const Tetromino<screenInterface>
 
 template<typename screenInterface>
 requires Screen::ScreenInterface<screenInterface>
-bool Game<screenInterface>::checkForObstruction(Tetromino<screenInterface> bl) {
+bool Game<screenInterface>::checkForObstruction(const Tetromino<screenInterface>& bl) const {
     const int x = bl.getX();
     const int y = bl.getY();
     for(int dy = 0; dy < tetris::SHAPESIZE; ++dy) {
@@ -107,7 +107,7 @@ void Game<screenInterface>::dropTetromino() {
 
 template<typename screenInterface>
 requires Screen::ScreenInterface<screenInterface>
-bool Game<screenInterface>::isGameOver() const{
+bool Game<screenInterface>::isGameOver() const {
     return m_isGameOver;
 }
 
@@ -132,40 +132,31 @@ void Game<screenInterface>::update(tetris::Control keyPressed) {
             dropTetromino();
             break;
         case tetris::Control::HOLD_KEY:
-            if (m_hold.getY() == -2) { // Same as never been held (no real tetromino will have -2 in Y)
-                m_hold = std::move(m_tetromino);
-                m_hold.hold();
+            if (!m_hold) {
+                m_hold = std::optional<Tetromino<screenInterface>>(m_tetromino);
+                m_hold->hold();
                 createNewTetromino();
             } else {
-                if (!m_tetromino.hasBeenHeld()) {
-                    Tetromino<screenInterface> tmp = std::move(m_hold);
-                    m_hold = std::move(m_tetromino);
-                    m_hold.hold();
-                    m_tetromino = std::move(tmp);
+                if (m_tetromino.hasBeenHeld()) {
+                    break; 
                 }
+                //TODO use std::swap here std::swap(m_tetromino, m_hold);
+                Tetromino<screenInterface> tmp = std::move(m_hold.value());
+                m_hold = std::optional<Tetromino<screenInterface>>(std::move(m_tetromino));
+                m_hold->hold();
+                m_tetromino = std::move(tmp);
             }
             break;
         case tetris::Control::TOGGLE_PREVIEW_KEY:
             m_showPreview = !m_showPreview;
             break;
         case tetris::Control::ROTATE_TETROMINO_KEY:
-            if (!checkForObstruction(Tetromino<screenInterface>::testMove(m_tetromino, tetris::Direction::North))) {
-                m_tetromino.move(tetris::Direction::North);
-            }
-            break;
         case tetris::Control::MOVE_RIGHT_KEY:
-            if (!checkForObstruction(Tetromino<screenInterface>::testMove(m_tetromino, tetris::Direction::East))) {
-                m_tetromino.move(tetris::Direction::East);
-            }
-            break;
         case tetris::Control::MOVE_DOWN_KEY:
-            if (!checkForObstruction(Tetromino<screenInterface>::testMove(m_tetromino, tetris::Direction::South))) {
-                m_tetromino.move(tetris::Direction::South);
-            }
-            break;
         case tetris::Control::MOVE_LEFT_KEY:
-            if (!checkForObstruction(Tetromino<screenInterface>::testMove(m_tetromino, tetris::Direction::West))) {
-                m_tetromino.move(tetris::Direction::West);
+            const auto direction = tetris::ControlTools::controlToDirection(keyPressed);
+            if (!checkForObstruction(Tetromino<screenInterface>::testMove(m_tetromino, direction))) {
+                m_tetromino.move(direction);
             }
             break;
     }
@@ -177,32 +168,9 @@ void Game<screenInterface>::update(tetris::Control keyPressed) {
 
 template<typename screenInterface>
 requires Screen::ScreenInterface<screenInterface>
-Tetromino<screenInterface> Game<screenInterface>::getHold() const {
-    return m_hold;
-}
+std::string Game<screenInterface>::getResult() const {
+    return std::string("Game over \nResult:\nLines cleared:") + std::to_string(m_linesCleared) + "\nScore: " + std::to_string(m_score);
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
-Tetromino<screenInterface> Game<screenInterface>::getNext() const {
-    return m_next;
-}
-
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
-unsigned int Game<screenInterface>::getScore() const {
-    return m_score;
-}
-
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
-unsigned int Game<screenInterface>::getLines() const {
-    return m_linesCleared;
-}
-
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
-unsigned int Game<screenInterface>::getLevel() const {
-    return m_level;
 }
 
 template<typename screenInterface>
@@ -299,7 +267,7 @@ void Game<screenInterface>::createNewTetromino() {
 
 template<typename screenInterface>
 requires Screen::ScreenInterface<screenInterface>
-void Game<screenInterface>::draw() const{
+void Game<screenInterface>::draw() const {
     screenInterface::clearScreen(); // Clear the screen
     //Draw board
     for(int y = 0; y < tetris::BOARD_HEIGHT; ++y) {
@@ -316,6 +284,6 @@ void Game<screenInterface>::draw() const{
     
     m_tetromino.draw();
     // Draw UI
-    UI<screenInterface>::draw(getHold(), getNext(), getScore(), getLines(), getLevel());
+    UI<screenInterface>::draw(m_hold, m_next, m_score, m_linesCleared, m_level);
     screenInterface::redrawScreen(); // Redraw the screen
 }

@@ -12,7 +12,7 @@
 
 template<typename screenInterface>
 requires Screen::ScreenInterface<screenInterface>
-void UI<screenInterface>::draw(Tetromino<screenInterface> hold,Tetromino<screenInterface> next,unsigned int score,unsigned int lines, unsigned int level) {
+void UI<screenInterface>::draw(std::optional<Tetromino<screenInterface>> hold,Tetromino<screenInterface> next,unsigned int score,unsigned int lines, unsigned int level) {
     drawBorders();
     drawHold(hold);
     drawNext(next);
@@ -88,19 +88,20 @@ void UI<screenInterface>::drawBorders() {
 
 template<typename screenInterface>
 requires Screen::ScreenInterface<screenInterface>
-void UI<screenInterface>::drawHold(Tetromino<screenInterface> bl) {
+void UI<screenInterface>::drawHold(std::optional<Tetromino<screenInterface>> bl) {
     std::string hline = std::string(tetris::BORDER_LEFT, '#');
     screenInterface::addStringAt("Hold",1,1);
     screenInterface::addStringAt(hline,0,tetris::SHAPESIZE+3);
     //screenInterface::addStringAt(screen,hline,0,BOARD_HEIGHT + BORDER_TOP + BORDER_BOTTOM - 1);
-    if (bl.getY() != -2) {
-        //This makes the blocks look better in the holding space
-        if (bl.getShape() == 'I') {
-            bl.rotateRight();
-        }
-        bl.rotateRight();
-        bl.drawAt(1,2);
+    if (!bl) {
+        return;
     }
+    //This makes the blocks look better in the holding space
+    if (bl->getShape() == 'I') {
+        bl->rotateRight();
+    }
+    bl->rotateRight();
+    bl->drawAt(1,2);
 }
 
 template<typename screenInterface>
@@ -109,13 +110,14 @@ void UI<screenInterface>::drawNext(Tetromino<screenInterface> bl) {
     std::string hline = std::string(tetris::BORDER_LEFT, '#');
     screenInterface::addStringAt("Next",1,1+tetris::SHAPESIZE+3);
     screenInterface::addStringAt(hline,0,2*(tetris::SHAPESIZE+3));
-    //screenInterface::addStringAt(screen,hline,0,BOARD_HEIGHT + BORDER_TOP + BORDER_BOTTOM - 1);
-    if (bl.getY() != -2) {
-        //This makes the blocks look better in the holding space
-        if (bl.getShape() == 'I') {
-            bl.rotateRight();
-        }
+    //screenInterface::addStringAt(screen,hline,0,BOARD_HEIGHT + BORDER_TOP + BORDER_BOTTOM - 1);¨
+    // TODO: Should this be a optional? Is there a edge case?
+
+    //This makes the blocks look better in the holding space
+    if (bl.getShape() == 'I') {
         bl.rotateRight();
-        bl.drawAt(1,2+tetris::SHAPESIZE+3);
     }
+    bl.rotateRight();
+    bl.drawAt(1,2+tetris::SHAPESIZE+3);
+
 }

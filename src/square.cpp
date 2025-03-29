@@ -10,7 +10,7 @@ void Square::remove() {
     m_color = tetris::Color::NONE;
 }
 
-bool Square::isPlaced() const{
+bool Square::isPlaced() const {
 	return m_filled;
 }
 
@@ -19,6 +19,6 @@ void Square::replace(Square s) {
     m_color = s.m_color;
 }
 
-tetris::Color Square::getColor() const{
+tetris::Color Square::getColor() const {
     return m_color;
 }

@@ -5,6 +5,7 @@
 #include <square.hpp>
 
 #include <array>
+#include <optional>
 
 template<typename screenInterface>
 requires Screen::ScreenInterface<screenInterface>  // Ensure Screen implements the required interface
@@ -12,7 +13,7 @@ class Game{
     private:
         std::array<std::array<Square,tetris::BOARD_HEIGHT>, tetris::BOARD_WIDTH> m_board;
         Tetromino<screenInterface> m_tetromino;
-        Tetromino<screenInterface> m_hold;
+        std::optional<Tetromino<screenInterface>> m_hold;
         Tetromino<screenInterface> m_next;   
         Tetromino<screenInterface> m_tetrominoPreview;
         unsigned int m_score = 0;
@@ -22,7 +23,7 @@ class Game{
         bool m_isGameOver = false;
         bool m_tetrominoJustPlaced = true;
         
-        bool checkForObstruction(Tetromino<screenInterface> bl);
+        bool checkForObstruction(const Tetromino<screenInterface>& bl) const;
  
         void createPreview();     
         void dropTetromino();   
@@ -39,11 +40,7 @@ class Game{
         void update(tetris::Control keyPressed);
         void tick();
         void draw() const;
-        Tetromino<screenInterface> getHold() const;
-        Tetromino<screenInterface> getNext() const;
-        unsigned int getScore() const;
-        unsigned int getLines() const;
-        unsigned int getLevel() const;
+        std::string getResult() const;
         bool wasTetrominoJustPlaced() const;
         bool isGameOver() const;
 

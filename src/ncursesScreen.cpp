@@ -141,11 +141,11 @@ namespace {
 } // end namespace
 
 Screen::StatusCode NcursesScreen::initScreen() {
+    initscr(); // Create the screen
     timeout(-1); // Do not wait for input
     noecho(); // Dont echo key pressed
     keypad(stdscr, TRUE); //enable "special" characters
     curs_set(0);
-    initscr(); // Create the screen
     start_color();
     initColors();
     

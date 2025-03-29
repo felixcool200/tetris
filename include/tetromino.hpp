@@ -8,7 +8,7 @@ requires Screen::ScreenInterface<screenInterface>  // Ensure Screen implements t
 class Tetromino{
     private:
         int m_x = (tetris::BOARD_WIDTH - tetris::SHAPESIZE)/2;
-        int m_y = -1;
+        int m_y = 0;
         bool m_beenHeld = false;
         bool m_isPreview = false; 
         int m_shapeIndex = tetris::randomTetrominoIndex();

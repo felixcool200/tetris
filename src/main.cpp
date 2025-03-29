@@ -87,7 +87,7 @@ int mainLoop() {
 	if (screenInterface::closeScreen() == Screen::StatusCode::ERROR) {
 		return -1;
 	}
-	std::cout << "Game over \nResult:\nLines cleared:" << game.getLines() << "\nScore: " << game.getScore() << std::endl;
+	std::cout << game.getResult() << std::endl;
 	return 0;
 }
 

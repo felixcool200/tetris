@@ -36,7 +36,7 @@
 */
 template<typename screenInterface>
 requires Screen::ScreenInterface<screenInterface>
-bool Tetromino<screenInterface>::isFilledAt(int x, int y) const{
+bool Tetromino<screenInterface>::isFilledAt(int x, int y) const {
     switch (m_direction)
 	{
 		case tetris::Direction::North:
@@ -53,7 +53,7 @@ bool Tetromino<screenInterface>::isFilledAt(int x, int y) const{
 
 template<typename screenInterface>
 requires Screen::ScreenInterface<screenInterface>
-char Tetromino<screenInterface>::getShape() const{
+char Tetromino<screenInterface>::getShape() const {
     switch (m_shapeIndex) {
 		case 0:
 			return 'O';
@@ -82,25 +82,25 @@ void Tetromino<screenInterface>::rotateRight() {
 
 template<typename screenInterface>
 requires Screen::ScreenInterface<screenInterface>
-int Tetromino<screenInterface>::getX() const{
+int Tetromino<screenInterface>::getX() const {
     return m_x;
 }
 
 template<typename screenInterface>
 requires Screen::ScreenInterface<screenInterface>
-int Tetromino<screenInterface>::getY() const{
+int Tetromino<screenInterface>::getY() const {
     return m_y;
 }
 
 template<typename screenInterface>
 requires Screen::ScreenInterface<screenInterface>
-tetris::Color Tetromino<screenInterface>::getColor() const{
+tetris::Color Tetromino<screenInterface>::getColor() const {
     return tetris::TETROMINO_COLORS[m_shapeIndex];
 }
 
 template<typename screenInterface>
 requires Screen::ScreenInterface<screenInterface>
-tetris::Color Tetromino<screenInterface>::getPreviewColor() const{
+tetris::Color Tetromino<screenInterface>::getPreviewColor() const {
 	return tetris::PREVIEW_COLORS[m_shapeIndex];
 }
 
@@ -112,7 +112,7 @@ void Tetromino<screenInterface>::tick() {
 
 template<typename screenInterface>
 requires Screen::ScreenInterface<screenInterface>
-bool Tetromino<screenInterface>::hasBeenHeld() const{
+bool Tetromino<screenInterface>::hasBeenHeld() const {
     return m_beenHeld;
 }
 
