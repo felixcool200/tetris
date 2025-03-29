@@ -7,18 +7,19 @@
 #include <array>
 #include <optional>
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>  // Ensure Screen implements the required interface
-class Game{
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+class Game {
     private:
-        std::array<std::array<Square,tetris::BOARD_HEIGHT>, tetris::BOARD_WIDTH> m_board;
+        std::array<std::array<Square, tetris::BOARD_HEIGHT>, tetris::BOARD_WIDTH> m_board;
         Tetromino<screenInterface> m_tetromino;
         std::optional<Tetromino<screenInterface>> m_hold;
         Tetromino<screenInterface> m_next;   
         Tetromino<screenInterface> m_tetrominoPreview;
+
         unsigned int m_score = 0;
         unsigned int m_linesCleared = 0;
         unsigned int m_level = 0;
+        unsigned int m_framesPerTick = 0;
         bool m_showPreview = true;
         bool m_isGameOver = false;
         bool m_tetrominoJustPlaced = true;
@@ -33,12 +34,14 @@ class Game{
         void createNewTetromino();
         void removeRow(int index);
         void updateLevel();
+        void updateSpeed();
 
     public:
         Game();
-        int getFramesPerTick() const;
-        void update(tetris::Control keyPressed);
         void tick();
+        void update(tetris::Control keyPressed);
+
+        int getFramesPerTick() const;
         void draw() const;
         std::string getResult() const;
         bool wasTetrominoJustPlaced() const;

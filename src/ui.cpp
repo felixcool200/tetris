@@ -10,17 +10,15 @@
 
 #include <ScreenToUse.hpp>
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
-void UI<screenInterface>::draw(std::optional<Tetromino<screenInterface>> hold,Tetromino<screenInterface> next,unsigned int score,unsigned int lines, unsigned int level) {
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+void UI<screenInterface>::draw(std::optional<Tetromino<screenInterface>> hold, Tetromino<screenInterface> next, unsigned int score, unsigned int lines, unsigned int level) {
     drawBorders();
     drawHold(hold);
     drawNext(next);
     drawStats(score, lines, level);
 }
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 void UI<screenInterface>::drawStats(unsigned int score, unsigned int lines, unsigned int level) {
 
     using namespace std::string_view_literals;
@@ -68,11 +66,10 @@ void UI<screenInterface>::drawStats(unsigned int score, unsigned int lines, unsi
     }
 }
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 void UI<screenInterface>::drawBorders() {
     //std::string hline = std::string(BOARD_WIDTH+2, '#');
-    std::string hline = std::string(tetris::BOARD_WIDTH + tetris::BORDER_LEFT + tetris::BORDER_RIGHT, '#');
+    const std::string hline = std::string(tetris::BOARD_WIDTH + tetris::BORDER_LEFT + tetris::BORDER_RIGHT, '#');
     
     screenInterface::addStringAt(hline,0,0); // Top border
     screenInterface::addStringAt(hline,0,tetris::BOARD_HEIGHT + tetris::BORDER_TOP + tetris::BORDER_BOTTOM - 1); // Bottom border
@@ -86,8 +83,7 @@ void UI<screenInterface>::drawBorders() {
     }
 }
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 void UI<screenInterface>::drawHold(std::optional<Tetromino<screenInterface>> bl) {
     std::string hline = std::string(tetris::BORDER_LEFT, '#');
     screenInterface::addStringAt("Hold",1,1);
@@ -104,14 +100,11 @@ void UI<screenInterface>::drawHold(std::optional<Tetromino<screenInterface>> bl)
     bl->drawAt(1,2);
 }
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
-void UI<screenInterface>::drawNext(Tetromino<screenInterface> bl) {
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+void UI<screenInterface>::drawNext(Tetromino<screenInterface>& bl) {
     std::string hline = std::string(tetris::BORDER_LEFT, '#');
-    screenInterface::addStringAt("Next",1,1+tetris::SHAPESIZE+3);
-    screenInterface::addStringAt(hline,0,2*(tetris::SHAPESIZE+3));
-    //screenInterface::addStringAt(screen,hline,0,BOARD_HEIGHT + BORDER_TOP + BORDER_BOTTOM - 1);¨
-    // TODO: Should this be a optional? Is there a edge case?
+    screenInterface::addStringAt("Next", 1, 1+tetris::SHAPESIZE+3);
+    screenInterface::addStringAt(hline, 0, 2*(tetris::SHAPESIZE+3));
 
     //This makes the blocks look better in the holding space
     if (bl.getShape() == 'I') {
@@ -119,5 +112,4 @@ void UI<screenInterface>::drawNext(Tetromino<screenInterface> bl) {
     }
     bl.rotateRight();
     bl.drawAt(1,2+tetris::SHAPESIZE+3);
-
 }

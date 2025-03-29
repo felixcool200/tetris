@@ -1,7 +1,7 @@
 #pragma once
 #include <common.hpp>
 
-class Square{
+class Square {
     private:
         bool m_filled = false;
         tetris::Color m_color = tetris::Color::NONE;

@@ -6,29 +6,20 @@
 
 #include <ScreenToUse.hpp>
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 Game<screenInterface>::Game() {
-    m_hold = std::nullopt;
-    if (m_showPreview) {
-        createPreview();   
-    }
-
-    for(int y = 0; y < tetris::BOARD_HEIGHT; ++y) {
-        for(int x = 0; x < tetris::BOARD_WIDTH; ++x) {
-            m_board[x][y] = Square();
-        }
-    }
+    updateSpeed();
+    createPreview();
 }
 
-// TODO: Optimize
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 void Game<screenInterface>::tick() {
-    // If the tetromino that is going to move is already tetrominoed
+
+    // The end of a tick is where we check if we are done, this gives the player 
+    // a chance to recover even when the tetromino is touching other blocks
     m_tetrominoJustPlaced = false;
     if (checkForObstruction(m_tetromino)) {
-        m_isGameOver = true; // Game over
+        m_isGameOver = true;
         return;
     }
     
@@ -41,30 +32,25 @@ void Game<screenInterface>::tick() {
     
 }
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 bool Game<screenInterface>::wasTetrominoJustPlaced() const {
     return m_tetrominoJustPlaced;
 }
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 void Game<screenInterface>::addTetrominoToBoard(const Tetromino<screenInterface> &bl) {
     const int x = bl.getX();
     const int y = bl.getY();
     for(int dy = 0; dy < tetris::SHAPESIZE; ++dy) {
         for(int dx = 0; dx < tetris::SHAPESIZE; ++dx) {
-            if (bl.isFilledAt(dx, dy)) {
-                if (isOnBoard(x + dx,y + dy)) {
-                    m_board[x + dx][y + dy].place(bl.getColor());
-                }
+            if (bl.isFilledAt(dx, dy) && isOnBoard(x + dx,y + dy)) {
+                m_board[x + dx][y + dy].place(bl.getColor());
             }
         }
     }
 }
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 bool Game<screenInterface>::checkForObstruction(const Tetromino<screenInterface>& bl) const {
     const int x = bl.getX();
     const int y = bl.getY();
@@ -86,17 +72,20 @@ bool Game<screenInterface>::checkForObstruction(const Tetromino<screenInterface>
     return false;
 }
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 void Game<screenInterface>::createPreview() {
+
+    if (!m_showPreview) {
+        return;   
+    }
+
     m_tetrominoPreview = m_tetromino;
     while(!checkForObstruction(Tetromino<screenInterface>::testMove(m_tetrominoPreview, tetris::Direction::South))) {
         m_tetrominoPreview.move(tetris::Direction::South);
     }
 }
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 void Game<screenInterface>::dropTetromino() {
     while(!checkForObstruction(Tetromino<screenInterface>::testMove(m_tetromino, tetris::Direction::South))) {
         m_tetromino.move(tetris::Direction::South);
@@ -105,18 +94,16 @@ void Game<screenInterface>::dropTetromino() {
     placeTetromino();
 }
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 bool Game<screenInterface>::isGameOver() const {
     return m_isGameOver;
 }
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 void Game<screenInterface>::update(tetris::Control keyPressed) {
     m_tetrominoJustPlaced = false;
     if (checkForObstruction(m_tetromino)) {
-        m_isGameOver = true; //Game over
+        m_isGameOver = true;
         return;
     }
 
@@ -126,7 +113,7 @@ void Game<screenInterface>::update(tetris::Control keyPressed) {
         case tetris::Control::PAUSE_KEY:
             break;
         case tetris::Control::QUIT_KEY:
-            m_isGameOver = true; //Game over
+            m_isGameOver = true;
             return;
         case tetris::Control::DROP_KEY:
             dropTetromino();
@@ -160,42 +147,37 @@ void Game<screenInterface>::update(tetris::Control keyPressed) {
             }
             break;
     }
-
-    if (m_showPreview) {
-        createPreview();   
-    }
+    createPreview();   
 }
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 std::string Game<screenInterface>::getResult() const {
     return std::string("Game over \nResult:\nLines cleared:") + std::to_string(m_linesCleared) + "\nScore: " + std::to_string(m_score);
-
 }
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 void Game<screenInterface>::placeTetromino() {
     m_tetrominoJustPlaced = true;
     addTetrominoToBoard(m_tetromino);
     removeCompleteRows();
     updateLevel();
     createNewTetromino();
-    if (m_showPreview) {
-        createPreview();   
-    }
+    createPreview();
 }
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 void Game<screenInterface>::updateLevel() {
-    m_level = std::min(static_cast<int>(m_linesCleared/10),  tetris::MAX_LEVEL);
+    const unsigned int newLevel = std::min(static_cast<int>(m_linesCleared/10),  tetris::MAX_LEVEL);
+    if(m_level == newLevel) {
+        return;
+    }
+    // Level changed, update level and game speed
+    m_level = newLevel;
+    updateSpeed();
 }
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
-int Game<screenInterface>::getFramesPerTick() const {
-
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+void Game<screenInterface>::updateSpeed() {
     const int frameOn60 = 
         (m_level < 9) ? 48 - (5 * m_level) : 
         (m_level == 9) ? 5 : 
@@ -205,13 +187,17 @@ int Game<screenInterface>::getFramesPerTick() const {
         (m_level < 29) ? 1 : 0;
 
     //This removes the correlation between fps and game speed.
-    return static_cast<int>((frameOn60 + 0.5) / (60 * tetris::frameDuration.count()));
+    m_framesPerTick = static_cast<int>((frameOn60 + 0.5) / (60 * tetris::frameDuration.count()));
 }
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+int Game<screenInterface>::getFramesPerTick() const {
+    return m_framesPerTick;
+}
+
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 void Game<screenInterface>::removeCompleteRows() {
-    // Check how many (for score) rows and what rows to remove
+    // Check how many rows and what rows to remove
     int rowsRemoved = 0;
     for(int y = 0; y < tetris::BOARD_HEIGHT; ++y) {
         int rowSum = 0;
@@ -229,7 +215,7 @@ void Game<screenInterface>::removeCompleteRows() {
     switch (rowsRemoved)
     {
         case 0:
-            break;
+            return;
         case 1:
             m_score += 40*(m_level+1);
             break;
@@ -243,13 +229,12 @@ void Game<screenInterface>::removeCompleteRows() {
             m_score += 1200*(m_level+1);
             break;
         default:
-            break;
+            abort();
     }
     m_linesCleared += rowsRemoved;
 }
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 void Game<screenInterface>::removeRow(int index) {
     for(int y = 0; y <= index-1; ++y) {
         for(int x = 0; x < tetris::BOARD_WIDTH; ++x) {
@@ -258,18 +243,19 @@ void Game<screenInterface>::removeRow(int index) {
     }
 }
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 void Game<screenInterface>::createNewTetromino() {
     m_tetromino = std::move(m_next);
     m_next = Tetromino<screenInterface>();
 }
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 void Game<screenInterface>::draw() const {
-    screenInterface::clearScreen(); // Clear the screen
-    //Draw board
+
+    // Clear the screen
+    screenInterface::clearScreen();
+    
+    // Draw placed blocks board
     for(int y = 0; y < tetris::BOARD_HEIGHT; ++y) {
         for(int x = 0; x < tetris::BOARD_WIDTH; ++x) {
             if (m_board[x][y].isPlaced()) {
@@ -278,12 +264,17 @@ void Game<screenInterface>::draw() const {
         }
     }
     
+    // Draw preview
     if (m_showPreview) {
         m_tetrominoPreview.draw(true);
     }
     
+    // Draw current tetromino
     m_tetromino.draw();
+
     // Draw UI
     UI<screenInterface>::draw(m_hold, m_next, m_score, m_linesCleared, m_level);
-    screenInterface::redrawScreen(); // Redraw the screen
+    
+    // Redraw the screen
+    screenInterface::redrawScreen();
 }

@@ -3,33 +3,28 @@
 #include <common.hpp>
 #include <screenInterface.hpp>
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>  // Ensure Screen implements the required interface
-class Tetromino{
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+class Tetromino {
     private:
-        int m_x = (tetris::BOARD_WIDTH - tetris::SHAPESIZE)/2;
-        int m_y = 0;
+        static constexpr int startX = (tetris::BOARD_WIDTH - tetris::SHAPESIZE)/2;
+        static constexpr int startY = -1; // All block has a line of zeros at the top as they are stored in a 4x4 matrix and rotate around the middle
+        int m_x = startX;
+        int m_y = startY;
         bool m_beenHeld = false;
-        bool m_isPreview = false; 
         int m_shapeIndex = tetris::randomTetrominoIndex();
         tetris::Direction m_direction = tetris::DEFAULT_SHAPE_DIRECTION; 
 
-    public:
-        Tetromino(){};
-        Tetromino(int y) : m_y(y){};
-        Tetromino(int x, int y, bool held) : m_x(x), m_y(y), m_beenHeld(held){};
-        
+    public:        
         bool isFilledAt(int x, int y) const;
         void hold();
         bool hasBeenHeld() const; 
         
-        void reset();
         void tick();
         void move(tetris::Direction directionToMove);
         void rotateRight();
         
         void draw(bool isPreview=false) const;
-        void drawAt(int x, int y,bool isPreview=false) const;
+        void drawAt(int x, int y, bool isPreview=false) const;
         tetris::Color getColor() const;
         tetris::Color getPreviewColor() const;
         int getX() const;

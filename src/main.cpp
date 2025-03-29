@@ -9,8 +9,7 @@
 
 #include <ScreenToUse.hpp>
 
-template<typename screenInterface>
-requires Screen::ScreenInterface<screenInterface>  // Ensure Screen implements the required interface
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 int mainLoop() {
 	using namespace std::chrono_literals;
 	int delay_in_frames = 0;
@@ -42,8 +41,8 @@ int mainLoop() {
 				break;
 			}
 			
-			//Reset clock for the new block. Stops the first tick of block placed manually "via pressing space" to be random.
-			//Can only happen after a key is pressed
+			// Reset clock for the new block. Stops the first tick of block placed manually "via pressing space" to be random.
+			// Can only happen after a key is pressed
 			if (game.wasTetrominoJustPlaced()) {
 				delay_in_frames = 0;
 			}
@@ -84,13 +83,15 @@ int mainLoop() {
 		}
 		std::this_thread::sleep_for(deltaTime);
 	}
+
 	if (screenInterface::closeScreen() == Screen::StatusCode::ERROR) {
 		return -1;
 	}
+	
 	std::cout << game.getResult() << std::endl;
 	return 0;
 }
 
 int main() {
-	return mainLoop<NcursesScreen>();
+	return mainLoop<ScreenType>();
 }
