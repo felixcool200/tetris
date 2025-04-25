@@ -23,8 +23,8 @@ class Tetromino {
         void move(tetris::Direction directionToMove);
         void rotateRight();
         
-        void draw(bool isPreview=false) const;
-        void drawAt(int x, int y, bool isPreview=false) const;
+        void render(bool isPreview=false) const;
+        void renderAt(int x, int y, bool isPreview=false) const;
         tetris::Color getColor() const;
         tetris::Color getPreviewColor() const;
         int getX() const;

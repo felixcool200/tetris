@@ -42,7 +42,8 @@ class Game {
         void update(tetris::Control keyPressed);
 
         int getFramesPerTick() const;
-        void draw() const;
+        void render() const;
+        void renderPauseScreen() const;
         std::string getResult() const;
         bool wasTetrominoJustPlaced() const;
         bool isGameOver() const;

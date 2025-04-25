@@ -71,7 +71,7 @@ namespace {
             }
             throw std::invalid_argument("Invalid input to converter");
         }
-       
+        
     } // namespace NcurseColorTools
 
     void initColors(){
@@ -138,6 +138,9 @@ namespace {
             );
         }
     }
+
+    WINDOW* backBuffer = nullptr;
+    
 } // end namespace
 
 Screen::StatusCode NcursesScreen::initScreen() {
@@ -148,48 +151,68 @@ Screen::StatusCode NcursesScreen::initScreen() {
     curs_set(0);
     start_color();
     initColors();
-    
+
     nodelay(stdscr, TRUE); // Read inputs all the time.
-    
+
     int height = 0;
     int width = 0;
     getmaxyx(stdscr, height, width);
-    if (height < tetris::BOARD_HEIGHT + tetris::UI_HEIGHT + 2 || width < tetris::BOARD_WIDTH + tetris::UI_WIDTH +  2) {
+    if (height < tetris::BOARD_HEIGHT + tetris::UI_HEIGHT + 2 ||
+        width < tetris::BOARD_WIDTH + tetris::UI_WIDTH + 2) {
         endwin();
-        std::cout << "To small terminal" << std::endl;
-        std::cout << "Height: " << height << ", Width: " << width << std::endl;
+        std::cerr << "Terminal too small: Height " << height << ", Width " << width << std::endl;
         return Screen::StatusCode::ERROR;
     }
 
-    if (has_colors() == FALSE) {
+    if (!has_colors()) {
         endwin();
-        std::cout << "Your terminal does not support color" << std::endl;
+        std::cerr << "Terminal doesn't support color\n";
         return Screen::StatusCode::ERROR;
     }
+
+    backBuffer = newwin(height, width, 0, 0);
+    if (!backBuffer) {
+        endwin();
+        std::cerr << "Failed to create back buffer\n";
+        return Screen::StatusCode::ERROR;
+    }
+    keypad(backBuffer, TRUE);
+    wbkgd(backBuffer, COLOR_PAIR(0));
     return Screen::StatusCode::OKEY;
 }
 
 tetris::Control NcursesScreen::getInput() {
-    char ch = static_cast<char>(getch());
-    if(ch == ERR) {
+    const auto key = getch();
+    if(key == ERR) {
         return tetris::Control::NONE;
     }
-    return tetris::ControlTools::valueToEnum(ch);
+    switch (key) {
+        case KEY_UP:
+            return tetris::Control::ROTATE;
+
+        case KEY_DOWN:
+            return tetris::Control::DOWN;
+
+        case KEY_LEFT:
+            return tetris::Control::LEFT;
+
+        case KEY_RIGHT:
+            return tetris::Control::RIGHT;
+    }
+
+    return tetris::ControlTools::valueToEnum(static_cast<char>(key));
 }
 
 Screen::StatusCode NcursesScreen::closeScreen() {
-    if(endwin() == ERR) {
-        return Screen::StatusCode::ERROR;
+    if (backBuffer) {
+        delwin(backBuffer);
+        backBuffer = nullptr;
     }
-	exit_curses(0);
-    if(delwin(stdscr) == ERR) {
-        return Screen::StatusCode::ERROR;
-    }
-    return Screen::StatusCode::OKEY;
+    return endwin() == ERR ? Screen::StatusCode::ERROR : Screen::StatusCode::OKEY;
 }
 
 Screen::StatusCode NcursesScreen::clearScreen() {
-    clear();
+    werase(backBuffer);
     return Screen::StatusCode::OKEY;
 }
 
@@ -197,26 +220,32 @@ Screen::StatusCode NcursesScreen::redrawScreen() {
     if(refresh() == ERR) {
         return Screen::StatusCode::ERROR;
     }
+    wnoutrefresh(backBuffer);
+    doupdate();
     return Screen::StatusCode::OKEY;
 }
 
 Screen::StatusCode NcursesScreen::addCharAt(char ch, int x, int y, tetris::Color color) {
     const bool useColor = (has_colors() == TRUE && color != tetris::Color::NONE);
-    // Change color
+
     if (useColor) {
-        if (attron(COLOR_PAIR(tetris::ColorTools::enumToValue(color))) == ERR) {
-            return Screen::StatusCode::ERROR;
-        }
+        wattron(backBuffer, COLOR_PAIR(tetris::ColorTools::enumToValue(color)));
     }
 
-    // Draw string
-    if (mvwaddch(stdscr, y, x, ch) == ERR) {
+    if (mvwaddch(backBuffer, y, x, ch) == ERR) {
         return Screen::StatusCode::ERROR;
     }
-
-    // Change color
+    
     if (useColor) {
-        if (attroff(COLOR_PAIR(tetris::ColorTools::enumToValue(color))) == ERR) {
+        wattroff(backBuffer, COLOR_PAIR(tetris::ColorTools::enumToValue(color)));
+    }
+
+    return Screen::StatusCode::OKEY;
+}
+
+Screen::StatusCode NcursesScreen::addStringAt(std::string_view s, int x, int y, tetris::Color color) {
+    for (size_t i = 0; i < s.size(); ++i) {
+        if (addCharAt(s[i], x + static_cast<int>(i), y, color) != Screen::StatusCode::OKEY) {
             return Screen::StatusCode::ERROR;
         }
     }
@@ -224,38 +253,15 @@ Screen::StatusCode NcursesScreen::addCharAt(char ch, int x, int y, tetris::Color
 }
 
 Screen::StatusCode NcursesScreen::addCharAtBoard(char ch, int x, int y, tetris::Color color) {
-    if (Game<NcursesScreen>::isOnBoard(x,y)) {
-        return addCharAt(ch, (x + tetris::BORDER_LEFT),(y+ tetris::BORDER_TOP), color);
+    if (Game<NcursesScreen>::isOnBoard(x, y)) {
+        return addCharAt(ch, x + tetris::BORDER_LEFT, y + tetris::BORDER_TOP, color);
     }
     return Screen::StatusCode::ERROR;
 }
 
-Screen::StatusCode NcursesScreen::addStringAt(std::string_view s, int x, int y, tetris::Color color) {
-    const bool useColor = (has_colors() == TRUE && color != tetris::Color::NONE);
-    // Change color
-    if (useColor) {
-        if (attron(COLOR_PAIR(tetris::ColorTools::enumToValue(color))) == ERR) {
-            return Screen::StatusCode::ERROR;
-        }
-    }
-
-    // Draw string
-    if (mvwaddstr(stdscr, y, x, std::string(s).c_str()) == ERR) {
-        return Screen::StatusCode::ERROR;
-    }
-
-    // Change color
-    if (useColor) {
-        if (attroff(COLOR_PAIR(tetris::ColorTools::enumToValue(color))) == ERR) {
-            return Screen::StatusCode::ERROR;
-        }
-    }
-    return Screen::StatusCode::OKEY;
-}
-        
 Screen::StatusCode NcursesScreen::addStringAtBoard(std::string_view s, int x, int y, tetris::Color color) {
-    if (Game<NcursesScreen>::isOnBoard(x,y)) {
-        return addStringAt(s,x+tetris::BORDER_LEFT,y+tetris::BORDER_TOP, color);
+    if (Game<NcursesScreen>::isOnBoard(x, y)){
+        return addStringAt(s, x + tetris::BORDER_LEFT, y + tetris::BORDER_TOP, color);
     }
     return Screen::StatusCode::ERROR;
 }

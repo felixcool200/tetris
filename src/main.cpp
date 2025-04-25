@@ -13,7 +13,7 @@ template<typename screenInterface> requires Screen::ScreenInterface<screenInterf
 int mainLoop() {
 	using namespace std::chrono_literals;
 	int delay_in_frames = 0;
-	bool redrawThisFrame = false, isPaused = false;
+	bool isPaused = false;
 
 	if (screenInterface::initScreen() == Screen::StatusCode::ERROR) {
 		return -1;
@@ -22,21 +22,32 @@ int mainLoop() {
 	Game<screenInterface> game;
 	Timer timer(false);
 	
-	game.draw();
+	screenInterface::clearScreen(); // Clear the screen
+	game.render();
+	screenInterface::redrawScreen(); // Redraw the screen
+	int frame = 0;
 	while(true) {
 		
-		//The frame timer starts here
+		// The frame timer starts here
+		frame++;
 		timer.start();
 		
-		//Check if a key is pressed
+		// Check if a key is pressed
 		if (auto keyPressed = screenInterface::getInput(); keyPressed != tetris::Control::NONE) {
-			if (keyPressed == tetris::Control::PAUSE_KEY) {
+			// Handle toggling of paused menu.
+			if (keyPressed == tetris::Control::PAUSE) {
 				isPaused = !isPaused;
 			}
+
+			// Do not process other input if game is paused
 			if (isPaused) {
 				continue;
 			}
+
+			// Process keypress
 			game.update(keyPressed);
+
+			// Quit if game is over
 			if (game.isGameOver()) {
 				break;
 			}
@@ -46,17 +57,18 @@ int mainLoop() {
 			if (game.wasTetrominoJustPlaced()) {
 				delay_in_frames = 0;
 			}
-			redrawThisFrame = true;
 		}
 		
 		if (isPaused) {
-			std::this_thread::sleep_for(0.1s);
+			screenInterface::clearScreen(); // Clear the screen
+			game.renderPauseScreen();
+			screenInterface::redrawScreen(); // Redraw the screen
+			std::this_thread::sleep_for(50ms);
 			continue;
 		}
 		
 		//Check if it is time for the block to fall one space
 		if (delay_in_frames == game.getFramesPerTick()) {
-			redrawThisFrame = true;
 			delay_in_frames = 0;
 			
 			game.tick();
@@ -67,19 +79,21 @@ int mainLoop() {
 			++delay_in_frames;
 		}
 		
-		if (redrawThisFrame) {
-			game.draw();
-			redrawThisFrame = false;
-		}
-		
+		screenInterface::clearScreen(); // Clear the screen
+		game.render();
+		screenInterface::redrawScreen(); // Redraw the screen
+
 		std::chrono::duration<double> deltaTime = (tetris::frameDuration - std::chrono::duration_cast<std::chrono::microseconds>(timer.stop()));
-		
+		// Allow first frame to be slow/late
 		if (deltaTime.count() < 0) {
-			if (screenInterface::closeScreen() == Screen::StatusCode::ERROR) {
+			if(frame > 5){
+				screenInterface::closeScreen();
+			}
+			std::cout << "Error: Game to slow for " << tetris::fps << " fps " << std::chrono::duration_cast<std::chrono::milliseconds>(deltaTime).count() << "ms" << std::endl;
+			std::cout << "Late frame: " << frame << std::endl;
+			if(frame > 5){
 				return -1;
 			}
-			std::cout << "Error: Game to slow for "<< 1/tetris::frameDuration.count() << " fps " << deltaTime.count() <<  std::endl;
-			return -1;
 		}
 		std::this_thread::sleep_for(deltaTime);
 	}

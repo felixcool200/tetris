@@ -36,12 +36,13 @@ namespace Screen {
     // Example of using the concept
     template <ScreenInterface T>
     void testScreenFunctions() {
+        using namespace std::string_view_literals;
         T::initScreen();
         T::clearScreen();
         T::addCharAt('A', 5, 5, tetris::Color::TEXT_BLACK);
         T::addCharAtBoard('B', 10, 10, tetris::Color::TEXT_GREEN);
-        T::addStringAt("Hello", 15, 15, tetris::Color::TEXT_MAGENTA);
-        T::addStringAtBoard("World", 20, 20, tetris::Color::TEXT_CYAN);
+        T::addStringAt("Hello"sv, 15, 15, tetris::Color::TEXT_MAGENTA);
+        T::addStringAtBoard("World"sv, 20, 20, tetris::Color::TEXT_CYAN);
         T::redrawScreen();
     }
 }

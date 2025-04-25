@@ -4,6 +4,7 @@
 #include <chrono>
 #include <random>
 #include <stdexcept>
+#include <cctype>  // For std::tolower
 
 namespace tetris{
 
@@ -39,10 +40,11 @@ enum class Color {
     PREVIEW_WHITE,
     PREVIEW_BLUE,
     PREVIEW_MAGENTA,
+    PREVIEW_GREY,
 };
 
 namespace ColorTools {
-    constexpr std::array<std::pair<short, Color>, 24> colorMappings = {{
+    constexpr std::array<std::pair<short, Color>, 25> colorMappings = {{
         {-1, Color::NONE},
         {0,  Color::TETROMINO_BLACK},
         {1,  Color::TETROMINO_YELLOW},
@@ -67,6 +69,7 @@ namespace ColorTools {
         {20, Color::PREVIEW_WHITE},
         {21, Color::PREVIEW_BLUE},
         {22, Color::PREVIEW_MAGENTA},
+        {23, Color::PREVIEW_GREY},
     }};
 
     // Short-to-Enum conversion
@@ -92,15 +95,15 @@ namespace ColorTools {
 
 enum class Control {
     NONE,
-    PAUSE_KEY,
-    QUIT_KEY,
-    HOLD_KEY,
-    TOGGLE_PREVIEW_KEY,
-    ROTATE_TETROMINO_KEY,
-    DROP_KEY,
-    MOVE_LEFT_KEY,
-    MOVE_RIGHT_KEY,
-    MOVE_DOWN_KEY,
+    PAUSE,
+    QUIT,
+    HOLD,
+    TOGGLE_PREVIEW,
+    ROTATE,
+    DROP,
+    LEFT,
+    RIGHT,
+    DOWN,
 };
 
 namespace ControlTools
@@ -109,13 +112,13 @@ namespace ControlTools
     constexpr Direction controlToDirection(const tetris::Control keyPressed) {
         switch (keyPressed)
         {
-            case Control::ROTATE_TETROMINO_KEY:
+            case Control::ROTATE:
                 return Direction::North;
-            case Control::MOVE_RIGHT_KEY:
+            case Control::RIGHT:
                 return Direction::East;
-            case Control::MOVE_DOWN_KEY:
+            case Control::DOWN:
                 return Direction::South;
-            case Control::MOVE_LEFT_KEY:
+            case Control::LEFT:
                 return Direction::West;
             default:
                 return Direction::North;
@@ -124,25 +127,24 @@ namespace ControlTools
     // Character map
     constexpr std::array<std::pair<char, Control>, 10> controlMappings = {{
         {'\0', Control::NONE},
-        {'b', Control::PAUSE_KEY},
-        {'q', Control::QUIT_KEY},
-        {'c', Control::HOLD_KEY},
-        {'p', Control::TOGGLE_PREVIEW_KEY},
-        {'w', Control::ROTATE_TETROMINO_KEY},
-        {' ', Control::DROP_KEY},
-        {'a', Control::MOVE_LEFT_KEY},
-        {'d', Control::MOVE_RIGHT_KEY},
-        {'s', Control::MOVE_DOWN_KEY}
+        {'b', Control::PAUSE},
+        {'q', Control::QUIT},
+        {'c', Control::HOLD},
+        {'p', Control::TOGGLE_PREVIEW},
+        {' ', Control::DROP},
+        {'w', Control::ROTATE},
+        {'a', Control::LEFT},
+        {'s', Control::DOWN},
+        {'d', Control::RIGHT},
     }};
 
     // Char-to-Enum conversion
     constexpr Control valueToEnum(char toFind) {
         for (const auto& [key, element] : controlMappings) {
-            if (key == toFind)
+            if (key == std::tolower(toFind))
                 return element;
         }
         return Control::NONE;
-        //throw std::invalid_argument("Invalid input to converter");
     }
 
     // Enum-to-Short conversion
@@ -169,6 +171,7 @@ constexpr int BORDER_RIGHT = 11;
 
 //========== DeltaTime ==========
 constexpr auto frameDuration = std::chrono::duration<double>(1.0 / 120);
+constexpr auto fps = 1/tetris::frameDuration.count();
 
 //========== Game logic ========== 
 constexpr int MAX_LEVEL = 29;

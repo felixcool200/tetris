@@ -11,7 +11,7 @@
 #include <ScreenToUse.hpp>
 
 template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
-void UI<screenInterface>::draw(std::optional<Tetromino<screenInterface>> hold, Tetromino<screenInterface> next, unsigned int score, unsigned int lines, unsigned int level) {
+void UI<screenInterface>::render(std::optional<Tetromino<screenInterface>> hold, Tetromino<screenInterface> next, unsigned int score, unsigned int lines, unsigned int level) {
     drawBorders();
     drawHold(hold);
     drawNext(next);
@@ -44,19 +44,19 @@ void UI<screenInterface>::drawStats(unsigned int score, unsigned int lines, unsi
     screenInterface::addStringAt("Control"sv,offset,CONTROL_OFFSET,tetris::Color::TEXT_RED);
 
     screenInterface::addStringAt("Drop:\""sv, offset, CONTROL_OFFSET+1);
-    screenInterface::addCharAt(tetris::ControlTools::enumToValue(tetris::Control::DROP_KEY), offset + 6,CONTROL_OFFSET+1);
+    screenInterface::addCharAt(tetris::ControlTools::enumToValue(tetris::Control::DROP), offset + 6,CONTROL_OFFSET+1);
     screenInterface::addStringAt("\"", offset+7, CONTROL_OFFSET+1);
 
     std::array<std::pair<std::string_view, tetris::Control>, 8> controls = 
     {{
-        {"Preview:"sv, tetris::Control::TOGGLE_PREVIEW_KEY},
-        {"Rotate:"sv,  tetris::Control::ROTATE_TETROMINO_KEY},
-        {"Left:"sv,    tetris::Control::MOVE_LEFT_KEY},
-        {"Right:"sv,   tetris::Control::MOVE_RIGHT_KEY},
-        {"Down:"sv,    tetris::Control::MOVE_DOWN_KEY},
-        {"Quit:"sv,    tetris::Control::QUIT_KEY},
-        {"Hold"sv,     tetris::Control::HOLD_KEY},
-        {"Pause"sv,    tetris::Control::PAUSE_KEY},
+        {"Preview:"sv, tetris::Control::TOGGLE_PREVIEW},
+        {"Rotate:"sv,  tetris::Control::ROTATE},
+        {"Left:"sv,    tetris::Control::LEFT},
+        {"Right:"sv,   tetris::Control::RIGHT},
+        {"Down:"sv,    tetris::Control::DOWN},
+        {"Quit:"sv,    tetris::Control::QUIT},
+        {"Hold"sv,     tetris::Control::HOLD},
+        {"Pause"sv,    tetris::Control::PAUSE},
     }};
 
     for (auto const [index, control] : std::views::enumerate(controls)) {
@@ -85,8 +85,9 @@ void UI<screenInterface>::drawBorders() {
 
 template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 void UI<screenInterface>::drawHold(std::optional<Tetromino<screenInterface>> bl) {
-    std::string hline = std::string(tetris::BORDER_LEFT, '#');
-    screenInterface::addStringAt("Hold",1,1);
+    using namespace std::string_view_literals;
+    const std::string hline = std::string(tetris::BORDER_LEFT, '#');
+    screenInterface::addStringAt("Hold"sv,1,1);
     screenInterface::addStringAt(hline,0,tetris::SHAPESIZE+3);
     //screenInterface::addStringAt(screen,hline,0,BOARD_HEIGHT + BORDER_TOP + BORDER_BOTTOM - 1);
     if (!bl) {
@@ -97,12 +98,12 @@ void UI<screenInterface>::drawHold(std::optional<Tetromino<screenInterface>> bl)
         bl->rotateRight();
     }
     bl->rotateRight();
-    bl->drawAt(1,2);
+    bl->renderAt(1,2);
 }
 
 template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 void UI<screenInterface>::drawNext(Tetromino<screenInterface>& bl) {
-    std::string hline = std::string(tetris::BORDER_LEFT, '#');
+    const std::string hline = std::string(tetris::BORDER_LEFT, '#');
     screenInterface::addStringAt("Next", 1, 1+tetris::SHAPESIZE+3);
     screenInterface::addStringAt(hline, 0, 2*(tetris::SHAPESIZE+3));
 
@@ -111,5 +112,18 @@ void UI<screenInterface>::drawNext(Tetromino<screenInterface>& bl) {
         bl.rotateRight();
     }
     bl.rotateRight();
-    bl.drawAt(1,2+tetris::SHAPESIZE+3);
+    bl.renderAt(1,2+tetris::SHAPESIZE+3);
+}
+
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+void UI<screenInterface>::renderPauseScreen(unsigned int score, unsigned int lines, unsigned int level) {
+    using namespace std::string_view_literals;
+    drawBorders();
+    constexpr std::array<std::string_view, 2> message = {{"Game is"sv, "paused"sv}};
+    for (auto const [index, text] : std::views::enumerate(message)) {
+        const auto x = tetris::BORDER_LEFT + (tetris::BOARD_WIDTH-text.length())/2;
+        const auto y = tetris::BORDER_TOP + tetris::BOARD_HEIGHT/2 + index;
+        screenInterface::addStringAt(text, static_cast<int>(x), static_cast<int>(y));
+    }
+    drawStats(score, lines, level);
 }

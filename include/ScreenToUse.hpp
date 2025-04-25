@@ -1,16 +1,26 @@
 #pragma once
 
-#include <ncursesScreen.hpp>
-using ScreenType = NcursesScreen;
+// Define the screen type based on the preprocessor macro passed by CMake
+#ifdef SCREEN_NCURSES
+    #include <ncursesScreen.hpp>
+    using ScreenType = NcursesScreen;
 
+#elif defined(SCREEN_RAYLIB)
+    #include <raylibScreen.hpp>
+    using ScreenType = RaylibScreen;
+
+#else
+    #error "No valid SCREEN_TYPE defined!"
+#endif
 
 #include <screenInterface.hpp>
-static_assert(Screen::ScreenInterface<NcursesScreen>, "Selected screen does not implement interface");
+static_assert(Screen::ScreenInterface<ScreenType>, "Selected screen does not implement interface");
 
-// Needed to make sure the instance is created. If possible the headers should be remove to make the dependecy tree easier.
+// Needed to make sure the instance is created. If possible the headers should be removed to make the dependency tree easier.
 #include <tetromino.hpp>
 #include <game.hpp>
 #include <ui.hpp>
+
 template class Game<ScreenType>;
 template class Tetromino<ScreenType>;
 template class UI<ScreenType>;

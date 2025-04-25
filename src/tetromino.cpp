@@ -94,7 +94,8 @@ tetris::Color Tetromino<screenInterface>::getColor() const {
 
 template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
 tetris::Color Tetromino<screenInterface>::getPreviewColor() const {
-	return tetris::PREVIEW_COLORS[m_shapeIndex];
+    return tetris::PREVIEW_COLORS[m_shapeIndex];
+	//return tetris::Color::PREVIEW_COLOR;
 }
 
 template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
@@ -143,7 +144,7 @@ void Tetromino<screenInterface>::move(tetris::Direction directionToMove) {
 }
 
 template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
-void Tetromino<screenInterface>::draw(bool isPreview) const {
+void Tetromino<screenInterface>::render(bool isPreview) const {
     const auto color = isPreview ? getPreviewColor() : getColor();
     for(int dx = 0; dx < tetris::SHAPESIZE; ++dx) {
         for(int dy = 0; dy < tetris::SHAPESIZE; ++dy) {
@@ -155,7 +156,7 @@ void Tetromino<screenInterface>::draw(bool isPreview) const {
 }
 
 template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
-void Tetromino<screenInterface>::drawAt(int x, int y, bool isPreview) const {
+void Tetromino<screenInterface>::renderAt(int x, int y, bool isPreview) const {
     const auto color = isPreview ? getPreviewColor() : getColor();
     for(int dx = 0; dx < tetris::SHAPESIZE; ++dx) {
         for(int dy = 0; dy < tetris::SHAPESIZE; ++dy) {

@@ -110,15 +110,15 @@ void Game<screenInterface>::update(tetris::Control keyPressed) {
     switch (keyPressed)
     {
         case tetris::Control::NONE:
-        case tetris::Control::PAUSE_KEY:
+        case tetris::Control::PAUSE:
             break;
-        case tetris::Control::QUIT_KEY:
+        case tetris::Control::QUIT:
             m_isGameOver = true;
             return;
-        case tetris::Control::DROP_KEY:
+        case tetris::Control::DROP:
             dropTetromino();
             break;
-        case tetris::Control::HOLD_KEY:
+        case tetris::Control::HOLD:
             if (!m_hold) {
                 m_hold = std::optional<Tetromino<screenInterface>>(m_tetromino);
                 m_hold->hold();
@@ -134,13 +134,13 @@ void Game<screenInterface>::update(tetris::Control keyPressed) {
                 m_tetromino = std::move(tmp);
             }
             break;
-        case tetris::Control::TOGGLE_PREVIEW_KEY:
+        case tetris::Control::TOGGLE_PREVIEW:
             m_showPreview = !m_showPreview;
             break;
-        case tetris::Control::ROTATE_TETROMINO_KEY:
-        case tetris::Control::MOVE_RIGHT_KEY:
-        case tetris::Control::MOVE_DOWN_KEY:
-        case tetris::Control::MOVE_LEFT_KEY:
+        case tetris::Control::ROTATE:
+        case tetris::Control::RIGHT:
+        case tetris::Control::DOWN:
+        case tetris::Control::LEFT:
             const auto direction = tetris::ControlTools::controlToDirection(keyPressed);
             if (!checkForObstruction(Tetromino<screenInterface>::testMove(m_tetromino, direction))) {
                 m_tetromino.move(direction);
@@ -250,10 +250,8 @@ void Game<screenInterface>::createNewTetromino() {
 }
 
 template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
-void Game<screenInterface>::draw() const {
+void Game<screenInterface>::render() const {
 
-    // Clear the screen
-    screenInterface::clearScreen();
     
     // Draw placed blocks board
     for(int y = 0; y < tetris::BOARD_HEIGHT; ++y) {
@@ -266,15 +264,18 @@ void Game<screenInterface>::draw() const {
     
     // Draw preview
     if (m_showPreview) {
-        m_tetrominoPreview.draw(true);
+        m_tetrominoPreview.render(true);
     }
     
     // Draw current tetromino
-    m_tetromino.draw();
-
-    // Draw UI
-    UI<screenInterface>::draw(m_hold, m_next, m_score, m_linesCleared, m_level);
+    m_tetromino.render();
     
-    // Redraw the screen
-    screenInterface::redrawScreen();
+    // Draw UI
+    UI<screenInterface>::render(m_hold, m_next, m_score, m_linesCleared, m_level);
 }
+
+template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+void Game<screenInterface>::renderPauseScreen() const {
+    UI<screenInterface>::renderPauseScreen(m_score, m_linesCleared, m_level);
+}
+
