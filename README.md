@@ -1,39 +1,139 @@
-# Terminal Tetris with ncurses in C++ 
-My simple terminal tetris game build using ncurses.
+# 🎮 Tetris Game (C++ with ncurses or raylib)
 
-## Requirements
-### Ncurses
-To install ncurses on: inspired by [How To Install Ncurses Library In Linux](https://ostechnix.com/how-to-install-ncurses-library-in-linux/).
-#### Debian based distros (Debian, Ubuntu, Mint, PopOS):
-    $ sudo apt-get install libncurses5-dev libncursesw5-dev
-#### Arch based distors (Arch, Manjaro)
-    $ sudo pacman -S ncurses
-#### REHL based distros (Fedora,RHEL, CentOS)
-    $ sudo yum install ncurses-devel
-#### Other (install from source):
-Download latest version
+A modern C++ implementation of the classic Tetris game, featuring modular rendering backends with support for either **ncurses** (terminal) or **raylib** (graphical window). Built with **C++23**, **CMake**, and clean code practices.
 
-    $ wget https://ftp.gnu.org/pub/gnu/ncurses/ncurses-6.1.tar.gz
-Extract the file:
+<!-- ![Tetris gameplay preview](assets/tetris-demo.gif) -->
 
-    $ tar xzf ncurses-6.1.tar.gz
-Move to the directory
+## 🏁 Quick Start
 
-    $ cd ncurses-6.1
-Run the config
+```bash
+git clone https://github.com/felixcool200/tetris.git
+cd tetris
+mkdir build && cd build
+cmake -DSCREEN_TYPE=raylib ..
+make
+./Tetris.out
+```
 
-    $ ./configure --prefix=/opt/ncurses
-Compile
+---
 
-    $ make
-    $ sudo make install
-Verify
+## 🧱 Features
 
-    $ ls -la /opt/ncurses
+- 🎮 Classic Tetris gameplay
+- 🔌 Modular design with pluggable rendering backends
+- 🚀 Built using CMake and modern C++23 features
+- 🧼 Compiler warnings treated as errors for code quality
 
-## How to build using CMake
-- Create a directory called build inside the folder
-- Move into the build folder
-- Run "cmake -S ../"
-- The run "make"
-- This creates a executable called Tetris.out
+---
+
+## 🖥️ Supported Platforms
+
+- ✅ Linux (fully tested)
+- ⚠️ macOS (raylib preferred; terminal mode may require tweaks)
+- ⚙️ Windows (via WSL or raylib with MinGW)
+
+---
+
+## 🛠 Requirements
+
+### General
+
+- CMake ≥ 3.14
+- C++23 compatible compiler  
+  (e.g. `g++-13` or newer, `clang++-17` or newer)
+
+### Backend Options
+
+#### 1. 🖼️ raylib (graphical mode)
+
+✅ **No manual installation required**  
+CMake will automatically fetch and build `raylib` from its GitHub repo using `FetchContent`.
+
+#### 2. 📟 ncurses (terminal mode)
+
+Install `ncurses` via your system’s package manager:
+
+- **Debian/Ubuntu/Mint/PopOS**  
+  ```bash
+  sudo apt-get install libncurses5-dev libncursesw5-dev
+  ```
+
+- **Arch/Manjaro**  
+  ```bash
+  sudo pacman -S ncurses
+  ```
+
+- **Fedora/RHEL/CentOS**  
+  ```bash
+  sudo yum install ncurses-devel
+  ```
+
+- **Other / From source**  
+  [Install ncurses manually](https://ostechnix.com/how-to-install-ncurses-library-in-linux/)
+
+---
+
+## ⚙️ Build Instructions
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/felixcool200/tetris.git
+cd tetris
+```
+
+### 2. Create a build directory
+
+```bash
+mkdir build
+cd build
+```
+
+### 3. Configure with CMake
+
+#### Using ncurses (default terminal version)
+
+```bash
+cmake -DSCREEN_TYPE=ncurses ..
+```
+
+#### Using raylib (graphical windowed version)
+
+```bash
+cmake -DSCREEN_TYPE=raylib ..
+```
+
+### 4. Compile the game
+
+```bash
+make
+```
+
+### 5. Run the game
+
+```bash
+./Tetris.out
+```
+
+---
+
+## 📄 License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+<!-- 
+## 🚧 TODO
+
+- [ ] High score system
+- [ ] Sound effects (raylib)
+- [ ] More visual polish for raylib mode
+
+---
+-->
+
+## 🤝 Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss your ideas.
+
+---
