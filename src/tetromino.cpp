@@ -1,12 +1,9 @@
-#include <tetromino.hpp>
-
-#include <common.hpp>
-#include <screenInterface.hpp>
-
-#include <iostream>
-#include <functional>
-
 #include <ScreenToUse.hpp>
+#include <common.hpp>
+#include <functional>
+#include <iostream>
+#include <screenInterface.hpp>
+#include <tetromino.hpp>
 
 /*
     https://stackoverflow.com/questions/37812817/finding-element-at-x-y-in-a-given-matrix-after-rotation-in-c-c
@@ -34,81 +31,92 @@
             1 5 9 D
             0 4 8 C
 */
-template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+template <typename screenInterface>
+    requires Screen::ScreenInterface<screenInterface>
 bool Tetromino<screenInterface>::isFilledAt(int x, int y) const {
-    switch (m_direction)
-	{
-		case tetris::Direction::North:
-			return tetris::PIECES[m_shapeIndex][x][y];
-		case tetris::Direction::East:
-			return tetris::PIECES[m_shapeIndex][y][tetris::SHAPESIZE - 1 - x];
-		case tetris::Direction::South:
-			return tetris::PIECES[m_shapeIndex][tetris::SHAPESIZE - 1 - x][tetris::SHAPESIZE - 1 - y];
-		case tetris::Direction::West:
-			return tetris::PIECES[m_shapeIndex][tetris::SHAPESIZE - 1 - y][tetris::SHAPESIZE - 1 - (tetris::SHAPESIZE - 1 - x)];
-	}
+    switch (m_direction) {
+        case tetris::Direction::North:
+            return tetris::PIECES[m_shapeIndex][x][y];
+        case tetris::Direction::East:
+            return tetris::PIECES[m_shapeIndex][y][tetris::SHAPESIZE - 1 - x];
+        case tetris::Direction::South:
+            return tetris::PIECES[m_shapeIndex][tetris::SHAPESIZE - 1 - x]
+                                 [tetris::SHAPESIZE - 1 - y];
+        case tetris::Direction::West:
+            return tetris::PIECES[m_shapeIndex][tetris::SHAPESIZE - 1 - y]
+                                 [tetris::SHAPESIZE - 1 - (tetris::SHAPESIZE - 1 - x)];
+    }
     return false;
 }
 
-template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+template <typename screenInterface>
+    requires Screen::ScreenInterface<screenInterface>
 char Tetromino<screenInterface>::getShape() const {
     switch (m_shapeIndex) {
-		case 0:
-			return 'O';
-		case 1:
-			return 'I';
-		case 2:
-			return 'S';
-		case 3:
-			return 'Z';
-		case 4:
-			return 'L';
-		case 5:
-			return 'J';
-		case 6:
-			return 'T';
-		}
-	return 'O';
+        case 0:
+            return 'O';
+        case 1:
+            return 'I';
+        case 2:
+            return 'S';
+        case 3:
+            return 'Z';
+        case 4:
+            return 'L';
+        case 5:
+            return 'J';
+        case 6:
+            return 'T';
+    }
+    return 'O';
 }
 
-//To rotate left: m_direction = (m_direction - 1) % 4;
-template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+// To rotate left: m_direction = (m_direction - 1) % 4;
+template <typename screenInterface>
+    requires Screen::ScreenInterface<screenInterface>
 void Tetromino<screenInterface>::rotateRight() {
     m_direction = static_cast<tetris::Direction>((static_cast<int>(m_direction) + 1) % 4);
 }
 
-template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+template <typename screenInterface>
+    requires Screen::ScreenInterface<screenInterface>
 int Tetromino<screenInterface>::getX() const {
     return m_x;
 }
 
-template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+template <typename screenInterface>
+    requires Screen::ScreenInterface<screenInterface>
 int Tetromino<screenInterface>::getY() const {
     return m_y;
 }
 
-template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+template <typename screenInterface>
+    requires Screen::ScreenInterface<screenInterface>
 tetris::Color Tetromino<screenInterface>::getColor() const {
     return tetris::TETROMINO_COLORS[m_shapeIndex];
 }
 
-template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+template <typename screenInterface>
+    requires Screen::ScreenInterface<screenInterface>
 tetris::Color Tetromino<screenInterface>::getPreviewColor() const {
     return tetris::PREVIEW_COLORS[m_shapeIndex];
-	//return tetris::Color::PREVIEW_COLOR;
+    // return tetris::Color::PREVIEW_COLOR;
 }
 
-template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+template <typename screenInterface>
+    requires Screen::ScreenInterface<screenInterface>
 void Tetromino<screenInterface>::tick() {
     m_y += 1;
 }
 
-template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+template <typename screenInterface>
+    requires Screen::ScreenInterface<screenInterface>
 bool Tetromino<screenInterface>::hasBeenHeld() const {
     return m_beenHeld;
 }
 
-template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+template <typename screenInterface>
+    requires Screen::ScreenInterface<screenInterface>
 void Tetromino<screenInterface>::hold() {
     // Reset position
     m_x = startX;
@@ -118,49 +126,52 @@ void Tetromino<screenInterface>::hold() {
     m_beenHeld = true;
 }
 
-template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+template <typename screenInterface>
+    requires Screen::ScreenInterface<screenInterface>
 void Tetromino<screenInterface>::move(tetris::Direction directionToMove) {
-    switch (directionToMove) {   
-        //Rotate the Tetromino
+    switch (directionToMove) {
+        // Rotate the Tetromino
         case tetris::Direction::North:
             rotateRight();
-        break;
-        //Move Tetromino one step to the right
+            break;
+        // Move Tetromino one step to the right
         case tetris::Direction::East:
             m_x += 1;
-        break;
+            break;
 
-        //Speed up Tetromino
-        //TODO: Change this to a factor(2) that is multiplied when a tick is performed.
+        // Speed up Tetromino
+        // TODO: Change this to a factor(2) that is multiplied when a tick is performed.
         case tetris::Direction::South:
             m_y += 1;
-        break;
+            break;
 
-        //Move Tetromino one step to the left
+        // Move Tetromino one step to the left
         case tetris::Direction::West:
             m_x -= 1;
-        break;
-     }
+            break;
+    }
 }
 
-template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+template <typename screenInterface>
+    requires Screen::ScreenInterface<screenInterface>
 void Tetromino<screenInterface>::render(bool isPreview) const {
     const auto color = isPreview ? getPreviewColor() : getColor();
-    for(int dx = 0; dx < tetris::SHAPESIZE; ++dx) {
-        for(int dy = 0; dy < tetris::SHAPESIZE; ++dy) {
-            if (isFilledAt(dx,dy)) {
+    for (int dx = 0; dx < tetris::SHAPESIZE; ++dx) {
+        for (int dy = 0; dy < tetris::SHAPESIZE; ++dy) {
+            if (isFilledAt(dx, dy)) {
                 screenInterface::addCharAtBoard('B', (m_x + dx), (m_y + dy), color);
             }
         }
     }
 }
 
-template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+template <typename screenInterface>
+    requires Screen::ScreenInterface<screenInterface>
 void Tetromino<screenInterface>::renderAt(int x, int y, bool isPreview) const {
     const auto color = isPreview ? getPreviewColor() : getColor();
-    for(int dx = 0; dx < tetris::SHAPESIZE; ++dx) {
-        for(int dy = 0; dy < tetris::SHAPESIZE; ++dy) {
-            if (isFilledAt(dx,dy)) {
+    for (int dx = 0; dx < tetris::SHAPESIZE; ++dx) {
+        for (int dy = 0; dy < tetris::SHAPESIZE; ++dy) {
+            if (isFilledAt(dx, dy)) {
                 screenInterface::addCharAt('B', (x + dx), (y + dy), color);
             }
         }
@@ -168,14 +179,17 @@ void Tetromino<screenInterface>::renderAt(int x, int y, bool isPreview) const {
 }
 
 // Functions
-template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
-Tetromino<screenInterface> Tetromino<screenInterface>::testMove(Tetromino<screenInterface> bl, tetris::Direction directionToMove) {
+template <typename screenInterface>
+    requires Screen::ScreenInterface<screenInterface>
+Tetromino<screenInterface> Tetromino<screenInterface>::testMove(Tetromino<screenInterface> bl,
+                                                                tetris::Direction directionToMove) {
     // Make sure it is a copy of bl
     bl.move(directionToMove);
     return bl;
 }
 
-template<typename screenInterface> requires Screen::ScreenInterface<screenInterface>
+template <typename screenInterface>
+    requires Screen::ScreenInterface<screenInterface>
 Tetromino<screenInterface> Tetromino<screenInterface>::testTick(Tetromino<screenInterface> bl) {
     // Make sure it is a copy of bl
     bl.tick();
