@@ -70,6 +70,12 @@ target_compile_options(Tetris.out PRIVATE
     -Wshadow -Wunused-parameter -Wwrite-strings -Wno-variadic-macros
 )
 
+# Suppress warnings for Raylib
+target_compile_options(raylib PRIVATE 
+    -Wno-unused-result    # Suppress unused return value warnings
+    -Wno-stringop-overflow # Suppress string overflow warnings
+)
+
 # Optionally, you can add a profiling build as before
 #add_executable(TetrisProfiler.out ${SOURCE_FILES})
 #target_include_directories(TetrisProfiler.out PRIVATE ${INCLUDE_DIR})
