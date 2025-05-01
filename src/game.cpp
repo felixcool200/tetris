@@ -111,10 +111,8 @@ void Game<screenInterface>::update(tetris::Control keyPressed) {
     {
         case tetris::Control::NONE:
         case tetris::Control::PAUSE:
-            break;
         case tetris::Control::QUIT:
-            m_isGameOver = true;
-            return;
+            throw std::invalid_argument("Key is not handled in process function");
         case tetris::Control::DROP:
             dropTetromino();
             break;

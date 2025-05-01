@@ -34,9 +34,14 @@ int mainLoop() {
 		
 		// Check if a key is pressed
 		if (auto keyPressed = screenInterface::getInput(); keyPressed != tetris::Control::NONE) {
+			// Immediately quit the game is the key is pressed
+			if (keyPressed == tetris::Control::QUIT) {
+				break;
+			}
 			// Handle toggling of paused menu.
 			if (keyPressed == tetris::Control::PAUSE) {
 				isPaused = !isPaused;
+				continue;
 			}
 
 			// Do not process other input if game is paused
@@ -67,16 +72,13 @@ int mainLoop() {
 			continue;
 		}
 		
-		//Check if it is time for the block to fall one space
-		if (delay_in_frames == game.getFramesPerTick()) {
-			delay_in_frames = 0;
-			
+		// Check if it is time for the block to fall one space
+		if (delay_in_frames++ == game.getFramesPerTick()) {
 			game.tick();
 			if (game.isGameOver()) {
 				break;
 			}
-		} else {
-			++delay_in_frames;
+			delay_in_frames = 0;
 		}
 		
 		screenInterface::clearScreen(); // Clear the screen
