@@ -65,10 +65,39 @@ target_link_libraries(Tetris.out ${SCREEN_LIBS})
 
 # Compiler warnings (non-profiler build)
 target_compile_options(Tetris.out PRIVATE
-    -Werror -Wpedantic -Wuninitialized -Wredundant-decls
-    -Wfloat-equal -Wall -Wextra -Wcast-qual -Wconversion
-    -Wshadow -Wunused-parameter -Wwrite-strings -Wno-variadic-macros
+    -Werror
+    -Wpedantic
+    -Wall
+    -Wextra
+    -Wuninitialized
+    -Wshadow
+    -Wredundant-decls
+    -Wfloat-equal
+    -Wcast-qual
+    -Wconversion
+    -Wunused-parameter
+    -Wunused-variable
+    -Wwrite-strings
+    -Wno-variadic-macros
+    -Wnull-dereference
+    -Wdeprecated
+    -Wsign-compare
+    -Wmissing-declarations
+    -Wuseless-cast
+    -Wfloat-conversion
+    -Wformat=2
+    -fno-common
+    -fanalyzer
+    -Wno-analyzer-use-of-uninitialized-value
+    -O3
+    -fno-omit-frame-pointer
 )
+
+target_link_options(Tetris.out PRIVATE
+    -Wl,-z,now
+    -Wl,-z,relro
+)
+
 
 # Suppress warnings for Raylib
 target_compile_options(raylib PRIVATE 

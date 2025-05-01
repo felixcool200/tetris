@@ -64,7 +64,7 @@ void UI<screenInterface>::drawStats(unsigned int score, unsigned int lines, unsi
     }};
 
     for (auto const [index, control] : std::views::enumerate(controls)) {
-        const auto yOffset = static_cast<int>(CONTROL_OFFSET + 2 + index);
+        const auto yOffset = static_cast<int>(CONTROL_OFFSET + 2 + static_cast<size_t>(index));
         screenInterface::addStringAt(control.first, offset, yOffset);
         screenInterface::addCharAt(tetris::ControlTools::enumToValue(control.second), offset + 8,
                                    yOffset, tetris::Color::TEXT_YELLOW);

@@ -92,7 +92,7 @@ tetris::Control RaylibScreen::getInput() {
 
 Screen::StatusCode RaylibScreen::initScreen() {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Tetris - Raylib");
-    SetTargetFPS(tetris::fps);
+    SetTargetFPS(static_cast<int>(tetris::fps));
     return Screen::StatusCode::OKEY;
 }
 

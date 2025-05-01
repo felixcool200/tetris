@@ -52,12 +52,11 @@ constexpr std::array<std::pair<short, NcurseColor>, 16> colorMappings = {{
 }};
 
 // Short-to-Enum conversion
-constexpr NcurseColor valueToEnum(short toFind) {
+[[maybe_unused]] constexpr NcurseColor valueToEnum(short toFind) {
     for (const auto& [key, element] : colorMappings) {
         if (key == toFind) return element;
     }
     return NcurseColor::NONE;
-    // throw std::invalid_argument("Invalid input to converter");
 }
 
 // Enum-to-Short conversion
