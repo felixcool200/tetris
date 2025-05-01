@@ -1,0 +1,15 @@
+Checks: >
+  clang-analyzer-*,           # Static analysis checks
+  cppcoreguidelines-*,        # Core C++ guidelines
+  modernize-*,                # Use modern C++ features
+  performance-*,              # Performance suggestions
+  readability-*               # Code readability
+
+WarningsAsErrors: ''
+HeaderFilterRegex: '.*'
+FormatStyle: file
+CheckOptions:
+  - key:             modernize-use-trailing-return
+    value:           'false'
+  - key:             modernize-use-auto.MinTypeNameLength
+    value:           '5'

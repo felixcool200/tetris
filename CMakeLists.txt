@@ -6,6 +6,9 @@ project(Tetris)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Export command to allow use with clang-tidy
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
 # Build type
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the build type" FORCE)
@@ -31,13 +34,12 @@ if(SCREEN_TYPE STREQUAL "ncurses")
     list(APPEND SOURCE_FILES src/ncursesScreen.cpp)
     find_package(Curses REQUIRED)
     set(SCREEN_LIBS ncurses)
-    add_definitions(-DSCREEN_NCURSES)
+    set(SCREEN_DEFINE SCREEN_NCURSES)
 
 elseif(SCREEN_TYPE STREQUAL "raylib")
     message(STATUS "Using raylib as the screen renderer")
     list(APPEND SOURCE_FILES src/raylibScreen.cpp)
-    
-    # Raylib setup (fetch raylib only if needed)
+
     include(FetchContent)
     FetchContent_Declare(
         raylib
@@ -46,15 +48,17 @@ elseif(SCREEN_TYPE STREQUAL "raylib")
     )
     FetchContent_MakeAvailable(raylib)
     set(SCREEN_LIBS raylib)
-    add_definitions(-DSCREEN_RAYLIB)
+    set(SCREEN_DEFINE SCREEN_RAYLIB)
 
 else()
     message(FATAL_ERROR "Unknown SCREEN_TYPE '${SCREEN_TYPE}', please choose 'ncurses', or 'raylib'")
 endif()
 
+
 # Main executable
 add_executable(Tetris.out ${SOURCE_FILES})
 target_include_directories(Tetris.out PRIVATE ${INCLUDE_DIR})
+target_compile_definitions(Tetris.out PRIVATE ${SCREEN_DEFINE})
 
 # Link appropriate libraries
 target_link_libraries(Tetris.out ${SCREEN_LIBS})
