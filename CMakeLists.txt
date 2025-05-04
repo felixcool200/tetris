@@ -50,6 +50,11 @@ elseif(SCREEN_TYPE STREQUAL "raylib")
     set(SCREEN_LIBS raylib)
     set(SCREEN_DEFINE SCREEN_RAYLIB)
 
+    # Suppress warnings for Raylib
+    target_compile_options(raylib PRIVATE 
+        -Wno-unused-result    # Suppress unused return value warnings
+        -Wno-stringop-overflow # Suppress string overflow warnings
+    )
 else()
     message(FATAL_ERROR "Unknown SCREEN_TYPE '${SCREEN_TYPE}', please choose 'ncurses', or 'raylib'")
 endif()
@@ -96,13 +101,6 @@ target_compile_options(Tetris.out PRIVATE
 target_link_options(Tetris.out PRIVATE
     -Wl,-z,now
     -Wl,-z,relro
-)
-
-
-# Suppress warnings for Raylib
-target_compile_options(raylib PRIVATE 
-    -Wno-unused-result    # Suppress unused return value warnings
-    -Wno-stringop-overflow # Suppress string overflow warnings
 )
 
 # Optionally, you can add a profiling build as before
