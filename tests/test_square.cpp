@@ -5,27 +5,27 @@
 TEST_CASE("Square default state") {
     Square sq;
 
-    REQUIRE_FALSE(sq.isPlaced());
-    REQUIRE(sq.getColor() == tetris::Color::NONE);
+    CHECK_FALSE(sq.isPlaced());
+    CHECK(sq.getColor() == tetris::Color::NONE);
 }
 
 TEST_CASE("Square::place sets filled and color") {
     Square sq;
     sq.place(tetris::Color::TETROMINO_RED);
 
-    REQUIRE(sq.isPlaced());
-    REQUIRE(sq.getColor() == tetris::Color::TETROMINO_RED);
+    CHECK(sq.isPlaced());
+    CHECK(sq.getColor() == tetris::Color::TETROMINO_RED);
 }
 
 TEST_CASE("Square::remove clears filled and sets color to NONE") {
     Square sq;
     sq.place(tetris::Color::TETROMINO_BLUE);
-    REQUIRE(sq.isPlaced());
+    CHECK(sq.isPlaced());
 
     sq.remove();
 
-    REQUIRE_FALSE(sq.isPlaced());
-    REQUIRE(sq.getColor() == tetris::Color::NONE);
+    CHECK_FALSE(sq.isPlaced());
+    CHECK(sq.getColor() == tetris::Color::NONE);
 }
 
 TEST_CASE("Square::replace copies state from another square") {
@@ -33,12 +33,12 @@ TEST_CASE("Square::replace copies state from another square") {
     source.place(tetris::Color::TETROMINO_GREEN);
 
     Square target;
-    REQUIRE_FALSE(target.isPlaced());
+    CHECK_FALSE(target.isPlaced());
 
     target.replace(source);
 
-    REQUIRE(target.isPlaced());
-    REQUIRE(target.getColor() == tetris::Color::TETROMINO_GREEN);
+    CHECK(target.isPlaced());
+    CHECK(target.getColor() == tetris::Color::TETROMINO_GREEN);
 }
 
 SCENARIO("A Square can be placed, removed, and replaced", "[square]") {
@@ -46,19 +46,19 @@ SCENARIO("A Square can be placed, removed, and replaced", "[square]") {
         Square s;
 
         THEN("It should not be placed initially") {
-            REQUIRE_FALSE(s.isPlaced());
-            REQUIRE(s.getColor() == tetris::Color::NONE);
+            CHECK_FALSE(s.isPlaced());
+            CHECK(s.getColor() == tetris::Color::NONE);
         }
 
         WHEN("It is placed with a color") {
             s.place(tetris::Color::TETROMINO_RED);
 
             THEN("It should be marked as placed") {
-                REQUIRE(s.isPlaced());
+                CHECK(s.isPlaced());
             }
 
             THEN("It should store the correct color") {
-                REQUIRE(s.getColor() == tetris::Color::TETROMINO_RED);
+                CHECK(s.getColor() == tetris::Color::TETROMINO_RED);
             }
         }
 
@@ -67,11 +67,11 @@ SCENARIO("A Square can be placed, removed, and replaced", "[square]") {
             s.remove();
 
             THEN("It should no longer be placed") {
-                REQUIRE_FALSE(s.isPlaced());
+                CHECK_FALSE(s.isPlaced());
             }
 
             THEN("Its color should be NONE") {
-                REQUIRE(s.getColor() == tetris::Color::NONE);
+                CHECK(s.getColor() == tetris::Color::NONE);
             }
         }
 
@@ -81,8 +81,8 @@ SCENARIO("A Square can be placed, removed, and replaced", "[square]") {
             s.replace(other);
 
             THEN("It should copy the placed state and color") {
-                REQUIRE(s.isPlaced());
-                REQUIRE(s.getColor() == tetris::Color::TETROMINO_GREEN);
+                CHECK(s.isPlaced());
+                CHECK(s.getColor() == tetris::Color::TETROMINO_GREEN);
             }
         }
 
@@ -92,8 +92,8 @@ SCENARIO("A Square can be placed, removed, and replaced", "[square]") {
             s.replace(other);
 
             THEN("It should no longer be placed") {
-                REQUIRE_FALSE(s.isPlaced());
-                REQUIRE(s.getColor() == tetris::Color::NONE);
+                CHECK_FALSE(s.isPlaced());
+                CHECK(s.getColor() == tetris::Color::NONE);
             }
         }
     }
