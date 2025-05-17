@@ -1,7 +1,7 @@
 #pragma once
 
-#include <common.hpp>
-#include <screenInterface.hpp>
+#include "common.hpp"
+#include "screenInterface.hpp"
 
 namespace Screen {
 struct RaylibScreen {

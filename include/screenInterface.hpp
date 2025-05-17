@@ -1,6 +1,7 @@
 #pragma once
-#include <common.hpp>
 #include <concepts>
+
+#include "common.hpp"
 
 namespace Screen {
 

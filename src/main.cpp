@@ -1,10 +1,11 @@
 #include <chrono>
-#include <common.hpp>
-#include <game.hpp>
 #include <iostream>
-#include <screenTypeSelector.hpp>
 #include <thread>
-#include <timer.hpp>
+
+#include "common.hpp"
+#include "game.hpp"
+#include "screenTypeSelector.hpp"
+#include "timer.hpp"
 
 template <typename screenInterface>
     requires Screen::ScreenInterface<screenInterface>

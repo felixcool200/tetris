@@ -1,5 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
-#include <square.hpp>
+
+#include "square.hpp"
 
 TEST_CASE("Square default state") {
     Square sq;

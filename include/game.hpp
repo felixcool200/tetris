@@ -1,12 +1,13 @@
 #pragma once
 
 #include <array>
-#include <common.hpp>
 #include <optional>
-#include <screenInterface.hpp>
-#include <square.hpp>
-#include <tetromino.hpp>
-#include <ui.hpp>
+
+#include "common.hpp"
+#include "screenInterface.hpp"
+#include "square.hpp"
+#include "tetromino.hpp"
+#include "ui.hpp"
 
 class Game {
    private:

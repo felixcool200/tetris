@@ -1,11 +1,12 @@
+#include "raylibScreen.hpp"
+
 #include <raylib.h>
 
-#include <common.hpp>
-#include <game.hpp>
 #include <iostream>
 #include <ranges>
-#include <raylibScreen.hpp>
-#include <string>
+
+#include "common.hpp"
+#include "game.hpp"
 
 namespace {
 

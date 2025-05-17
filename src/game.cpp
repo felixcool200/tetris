@@ -1,5 +1,6 @@
+#include "game.hpp"
+
 #include <cassert>
-#include <game.hpp>
 #include <iostream>
 
 Game::Game() {
@@ -63,15 +64,14 @@ void Game::createPreview() {
     }
 
     m_tetrominoPreview = m_tetromino;
-    while (
-        !checkForObstruction(Tetromino::testMove(m_tetrominoPreview, tetris::Direction::South))) {
-        m_tetrominoPreview.move(tetris::Direction::South);
+    while (!checkForObstruction(Tetromino::testMove(m_tetrominoPreview, tetris::Direction::DOWN))) {
+        m_tetrominoPreview.move(tetris::Direction::DOWN);
     }
 }
 
 void Game::dropTetromino() {
-    while (!checkForObstruction(Tetromino::testMove(m_tetromino, tetris::Direction::South))) {
-        m_tetromino.move(tetris::Direction::South);
+    while (!checkForObstruction(Tetromino::testMove(m_tetromino, tetris::Direction::DOWN))) {
+        m_tetromino.move(tetris::Direction::DOWN);
         m_score += 1;
     }
     placeTetromino();

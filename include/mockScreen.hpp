@@ -1,7 +1,8 @@
 #pragma once
-#include <common.hpp>
-#include <screenInterface.hpp>
 #include <string_view>
+
+#include "common.hpp"
+#include "screenInterface.hpp"
 
 // Implementation of the ScreenInterface for mocking
 namespace Screen {

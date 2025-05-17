@@ -2,16 +2,16 @@
 
 // Define the screen type based on the preprocessor macro passed by CMake
 #ifdef SCREEN_NCURSES
-#include <ncursesScreen.hpp>
+#include "ncursesScreen.hpp"
 using ScreenType = Screen::NcursesScreen;
 
 #elif defined(SCREEN_RAYLIB)
-#include <raylibScreen.hpp>
+#include "raylibScreen.hpp"
 using ScreenType = Screen::RaylibScreen;
 
 #else
 #error "No valid SCREEN_TYPE defined!"
 #endif
 
-#include <screenInterface.hpp>
+#include "screenInterface.hpp"
 static_assert(Screen::ScreenInterface<ScreenType>, "Selected screen does not implement interface");

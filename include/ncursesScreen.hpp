@@ -1,9 +1,10 @@
 #pragma once
 #include <ncurses.h>
 
-#include <common.hpp>
-#include <screenInterface.hpp>
 #include <string_view>
+
+#include "common.hpp"
+#include "screenInterface.hpp"
 
 // Implementation of the ScreenInterface for Ncurses
 namespace Screen {

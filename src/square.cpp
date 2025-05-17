@@ -1,4 +1,4 @@
-#include <square.hpp>
+#include "square.hpp"
 
 void Square::place(tetris::Color color) {
     m_filled = true;

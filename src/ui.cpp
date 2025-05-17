@@ -1,11 +1,12 @@
-#include <common.hpp>
+#include "ui.hpp"
+
 #include <iostream>
 #include <ranges>
-#include <screenTypeSelector.hpp>
 #include <string>
 #include <string_view>
-#include <ui.hpp>
 #include <utility>
+
+#include "common.hpp"
 
 template <typename screenInterface>
     requires Screen::ScreenInterface<screenInterface>
@@ -141,4 +142,5 @@ void UI<screenInterface>::renderPauseScreen(size_t score, size_t lines, size_t l
     drawStats(score, lines, level);
 }
 
+#include "screenTypeSelector.hpp"
 template class UI<ScreenType>;

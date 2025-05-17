@@ -1,12 +1,11 @@
+#include "ncursesScreen.hpp"
+
 #include <ncurses.h>
 
-#include <common.hpp>
-#include <game.hpp>
 #include <iostream>
-#include <ncursesScreen.hpp>
 #include <stdexcept>
-#include <string>
-#include <string_view>
+
+#include "game.hpp"
 
 namespace {
 enum class NcurseColor {
