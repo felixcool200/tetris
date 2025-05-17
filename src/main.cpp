@@ -1,9 +1,8 @@
-#include <ScreenToUse.hpp>
 #include <chrono>
 #include <common.hpp>
 #include <game.hpp>
 #include <iostream>
-#include <screenInterface.hpp>
+#include <screenTypeSelector.hpp>
 #include <thread>
 #include <timer.hpp>
 
@@ -18,11 +17,11 @@ int mainLoop() {
         return -1;
     }
 
-    Game<screenInterface> game;
+    Game game;
     Timer timer(false);
 
     screenInterface::clearScreen();  // Clear the screen
-    game.render();
+    game.render<screenInterface>();
     screenInterface::redrawScreen();  // Redraw the screen
     int frame = 0;
     while (true) {
@@ -64,7 +63,7 @@ int mainLoop() {
 
         if (isPaused) {
             screenInterface::clearScreen();  // Clear the screen
-            game.renderPauseScreen();
+            game.renderPauseScreen<screenInterface>();
             screenInterface::redrawScreen();  // Redraw the screen
             std::this_thread::sleep_for(50ms);
             continue;
@@ -80,7 +79,7 @@ int mainLoop() {
         }
 
         screenInterface::clearScreen();  // Clear the screen
-        game.render();
+        game.render<screenInterface>();
         screenInterface::redrawScreen();  // Redraw the screen
 
         std::chrono::duration<double> deltaTime =

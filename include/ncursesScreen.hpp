@@ -3,10 +3,10 @@
 
 #include <common.hpp>
 #include <screenInterface.hpp>
-#include <string>
 #include <string_view>
 
 // Implementation of the ScreenInterface for Ncurses
+namespace Screen {
 class NcursesScreen {
    public:
     static Screen::StatusCode initScreen();
@@ -29,3 +29,4 @@ class NcursesScreen {
     static Screen::StatusCode addStringAtBoard(std::string_view s, int x, int y,
                                                tetris::Color color = tetris::Color::NONE);
 };
+}  // namespace Screen

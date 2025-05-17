@@ -1,8 +1,6 @@
-#include <ScreenToUse.hpp>
 #include <common.hpp>
 #include <functional>
 #include <iostream>
-#include <screenInterface.hpp>
 #include <tetromino.hpp>
 
 /*
@@ -31,9 +29,7 @@
             1 5 9 D
             0 4 8 C
 */
-template <typename screenInterface>
-    requires Screen::ScreenInterface<screenInterface>
-bool Tetromino<screenInterface>::isFilledAt(int x, int y) const {
+bool Tetromino::isFilledAt(int x, int y) const {
     switch (m_direction) {
         case tetris::Direction::North:
             return tetris::PIECES[m_shapeIndex][x][y];
@@ -49,9 +45,7 @@ bool Tetromino<screenInterface>::isFilledAt(int x, int y) const {
     return false;
 }
 
-template <typename screenInterface>
-    requires Screen::ScreenInterface<screenInterface>
-char Tetromino<screenInterface>::getShape() const {
+char Tetromino::getShape() const {
     switch (m_shapeIndex) {
         case 0:
             return 'O';
@@ -71,9 +65,7 @@ char Tetromino<screenInterface>::getShape() const {
     return 'O';
 }
 
-template <typename screenInterface>
-    requires Screen::ScreenInterface<screenInterface>
-void Tetromino<screenInterface>::hold() {
+void Tetromino::hold() {
     // Reset position
     m_x = startX;
     m_y = startY;
@@ -82,9 +74,7 @@ void Tetromino<screenInterface>::hold() {
     m_beenHeld = true;
 }
 
-template <typename screenInterface>
-    requires Screen::ScreenInterface<screenInterface>
-void Tetromino<screenInterface>::move(tetris::Direction directionToMove) {
+void Tetromino::move(tetris::Direction directionToMove) {
     switch (directionToMove) {
         // Rotate the Tetromino
         case tetris::Direction::North:
@@ -108,9 +98,23 @@ void Tetromino<screenInterface>::move(tetris::Direction directionToMove) {
     }
 }
 
+// Functions
+Tetromino Tetromino::testMove(Tetromino bl, tetris::Direction directionToMove) {
+    // Make sure it is a copy of bl
+    bl.move(directionToMove);
+    return bl;
+}
+
+Tetromino Tetromino::testTick(Tetromino bl) {
+    // Make sure it is a copy of bl
+    bl.tick();
+    return bl;
+}
+
+// Templated render functions
 template <typename screenInterface>
     requires Screen::ScreenInterface<screenInterface>
-void Tetromino<screenInterface>::render(bool isPreview) const {
+void Tetromino::render(bool isPreview) const {
     const auto color = isPreview ? getPreviewColor() : getColor();
     for (int dx = 0; dx < tetris::SHAPESIZE; ++dx) {
         for (int dy = 0; dy < tetris::SHAPESIZE; ++dy) {
@@ -123,7 +127,7 @@ void Tetromino<screenInterface>::render(bool isPreview) const {
 
 template <typename screenInterface>
     requires Screen::ScreenInterface<screenInterface>
-void Tetromino<screenInterface>::renderAt(int x, int y, bool isPreview) const {
+void Tetromino::renderAt(int x, int y, bool isPreview) const {
     const auto color = isPreview ? getPreviewColor() : getColor();
     for (int dx = 0; dx < tetris::SHAPESIZE; ++dx) {
         for (int dy = 0; dy < tetris::SHAPESIZE; ++dy) {
@@ -134,20 +138,7 @@ void Tetromino<screenInterface>::renderAt(int x, int y, bool isPreview) const {
     }
 }
 
-// Functions
-template <typename screenInterface>
-    requires Screen::ScreenInterface<screenInterface>
-Tetromino<screenInterface> Tetromino<screenInterface>::testMove(Tetromino<screenInterface> bl,
-                                                                tetris::Direction directionToMove) {
-    // Make sure it is a copy of bl
-    bl.move(directionToMove);
-    return bl;
-}
+#include "screenTypeSelector.hpp"
 
-template <typename screenInterface>
-    requires Screen::ScreenInterface<screenInterface>
-Tetromino<screenInterface> Tetromino<screenInterface>::testTick(Tetromino<screenInterface> bl) {
-    // Make sure it is a copy of bl
-    bl.tick();
-    return bl;
-}
+template void Tetromino::render<ScreenType>(bool) const;
+template void Tetromino::renderAt<ScreenType>(int, int, bool) const;

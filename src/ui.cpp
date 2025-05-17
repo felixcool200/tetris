@@ -1,8 +1,7 @@
-#include <ScreenToUse.hpp>
 #include <common.hpp>
 #include <iostream>
 #include <ranges>
-#include <screenInterface.hpp>
+#include <screenTypeSelector.hpp>
 #include <string>
 #include <string_view>
 #include <ui.hpp>
@@ -10,9 +9,8 @@
 
 template <typename screenInterface>
     requires Screen::ScreenInterface<screenInterface>
-void UI<screenInterface>::render(std::optional<Tetromino<screenInterface>> hold,
-                                 Tetromino<screenInterface> next, size_t score, size_t lines,
-                                 size_t level) {
+void UI<screenInterface>::render(std::optional<Tetromino> hold, Tetromino next, size_t score,
+                                 size_t lines, size_t level) {
     drawBorders();
     drawHold(hold);
     drawNext(next);
@@ -97,7 +95,7 @@ void UI<screenInterface>::drawBorders() {
 
 template <typename screenInterface>
     requires Screen::ScreenInterface<screenInterface>
-void UI<screenInterface>::drawHold(std::optional<Tetromino<screenInterface>> bl) {
+void UI<screenInterface>::drawHold(std::optional<Tetromino> bl) {
     using namespace std::string_view_literals;
     const std::string hline = std::string(tetris::BORDER_LEFT, '#');
     screenInterface::addStringAt("Hold"sv, 1, 1);
@@ -111,12 +109,12 @@ void UI<screenInterface>::drawHold(std::optional<Tetromino<screenInterface>> bl)
         bl->rotateRight();
     }
     bl->rotateRight();
-    bl->renderAt(1, 2);
+    bl->renderAt<screenInterface>(1, 2);
 }
 
 template <typename screenInterface>
     requires Screen::ScreenInterface<screenInterface>
-void UI<screenInterface>::drawNext(Tetromino<screenInterface>& bl) {
+void UI<screenInterface>::drawNext(Tetromino& bl) {
     const std::string hline = std::string(tetris::BORDER_LEFT, '#');
     screenInterface::addStringAt("Next", 1, 1 + tetris::SHAPESIZE + 3);
     screenInterface::addStringAt(hline, 0, 2 * (tetris::SHAPESIZE + 3));
@@ -126,7 +124,7 @@ void UI<screenInterface>::drawNext(Tetromino<screenInterface>& bl) {
         bl.rotateRight();
     }
     bl.rotateRight();
-    bl.renderAt(1, 2 + tetris::SHAPESIZE + 3);
+    bl.renderAt<screenInterface>(1, 2 + tetris::SHAPESIZE + 3);
 }
 
 template <typename screenInterface>
@@ -142,3 +140,5 @@ void UI<screenInterface>::renderPauseScreen(size_t score, size_t lines, size_t l
     }
     drawStats(score, lines, level);
 }
+
+template class UI<ScreenType>;

@@ -3,18 +3,18 @@
 #include <array>
 #include <common.hpp>
 #include <optional>
+#include <screenInterface.hpp>
 #include <square.hpp>
 #include <tetromino.hpp>
+#include <ui.hpp>
 
-template <typename screenInterface>
-    requires Screen::ScreenInterface<screenInterface>
 class Game {
    private:
     std::array<std::array<Square, tetris::BOARD_HEIGHT>, tetris::BOARD_WIDTH> m_board;
-    Tetromino<screenInterface> m_tetromino;
-    std::optional<Tetromino<screenInterface>> m_hold;
-    Tetromino<screenInterface> m_next;
-    Tetromino<screenInterface> m_tetrominoPreview;
+    Tetromino m_tetromino;
+    std::optional<Tetromino> m_hold;
+    Tetromino m_next;
+    Tetromino m_tetrominoPreview;
 
     size_t m_score = 0;
     size_t m_linesCleared = 0;
@@ -24,12 +24,12 @@ class Game {
     bool m_isGameOver = false;
     bool m_tetrominoJustPlaced = true;
 
-    bool checkForObstruction(const Tetromino<screenInterface>& bl) const;
+    bool checkForObstruction(const Tetromino& bl) const;
 
     void createPreview();
     void dropTetromino();
     void placeTetromino();
-    void addTetrominoToBoard(const Tetromino<screenInterface>& bl);
+    void addTetrominoToBoard(const Tetromino& bl);
     void removeCompleteRows();
     void createNewTetromino();
     void removeRow(int index);
@@ -40,9 +40,6 @@ class Game {
     Game();
     void tick();
     void update(tetris::Control keyPressed);
-
-    void render() const;
-    void renderPauseScreen() const;
 
     size_t getFramesPerTick() const { return m_framesPerTick; };
     bool wasTetrominoJustPlaced() const { return m_tetrominoJustPlaced; };
@@ -57,4 +54,13 @@ class Game {
         return ((x <= tetris::BOARD_WIDTH - 1) && (x >= 0) && (y <= tetris::BOARD_HEIGHT - 1) &&
                 (y >= 0));
     }
+
+    // Templated render functions
+    template <typename screenInterface>
+        requires Screen::ScreenInterface<screenInterface>
+    void renderPauseScreen() const;
+
+    template <typename screenInterface>
+        requires Screen::ScreenInterface<screenInterface>
+    void render() const;
 };
