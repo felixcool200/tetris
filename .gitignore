@@ -35,3 +35,5 @@
 /build/*
 !/build/build.sh
 /.vscode/
+_deps/
+CMakeFiles/
