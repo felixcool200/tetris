@@ -134,7 +134,7 @@ void Tetromino::move(tetris::Direction directionToMove) {
     switch (directionToMove) {
         // Rotate the Tetromino
         case tetris::Direction::UP:
-            rotateRight();
+            m_y -= 1;
             break;
         // Move Tetromino one step to the right
         case tetris::Direction::RIGHT:
@@ -152,19 +152,6 @@ void Tetromino::move(tetris::Direction directionToMove) {
             m_x -= 1;
             break;
     }
-}
-
-// Functions
-Tetromino Tetromino::testMove(Tetromino bl, tetris::Direction directionToMove) {
-    // Make sure it is a copy of bl
-    bl.move(directionToMove);
-    return bl;
-}
-
-Tetromino Tetromino::testTick(Tetromino bl) {
-    // Make sure it is a copy of bl
-    bl.tick();
-    return bl;
 }
 
 // Templated render functions

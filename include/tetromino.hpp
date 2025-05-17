@@ -57,9 +57,6 @@ class Tetromino {
     int getY() const { return m_y; };
     char getShape() const;
 
-    static Tetromino testMove(Tetromino bl, tetris::Direction directionToMove);
-    static Tetromino testTick(Tetromino bl);
-
     template <typename screenInterface>
         requires Screen::ScreenInterface<screenInterface>
     void render(bool isPreview = false) const;

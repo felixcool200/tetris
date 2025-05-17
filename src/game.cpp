@@ -1,8 +1,8 @@
 #include "game.hpp"
 
 #include <cassert>
+#include <functional>
 #include <iostream>
-
 Game::Game() {
     updateSpeed();
     createPreview();
@@ -17,11 +17,18 @@ void Game::tick() {
         return;
     }
 
+    const Tetromino nextTickPosition = std::invoke(
+        [](Tetromino tetromino) {
+            tetromino.tick();
+            return tetromino;
+        },
+        m_tetromino);
+
     // See if we can move the tetromino down one if not place it.
-    if (checkForObstruction(Tetromino::testTick(m_tetromino))) {
+    if (checkForObstruction(nextTickPosition)) {
         placeTetromino();
     } else {
-        m_tetromino.tick();
+        m_tetromino = std::move(nextTickPosition);
     }
 }
 
@@ -63,14 +70,24 @@ void Game::createPreview() {
         return;
     }
 
+    const auto nextDownPosition = [](Tetromino tetromino) {
+        tetromino.move(tetris::Direction::DOWN);
+        return tetromino;
+    };
+
     m_tetrominoPreview = m_tetromino;
-    while (!checkForObstruction(Tetromino::testMove(m_tetrominoPreview, tetris::Direction::DOWN))) {
+    while (!checkForObstruction(nextDownPosition(m_tetrominoPreview))) {
         m_tetrominoPreview.move(tetris::Direction::DOWN);
     }
 }
 
 void Game::dropTetromino() {
-    while (!checkForObstruction(Tetromino::testMove(m_tetromino, tetris::Direction::DOWN))) {
+    const auto nextDownPosition = [](Tetromino tetromino) {
+        tetromino.move(tetris::Direction::DOWN);
+        return tetromino;
+    };
+
+    while (!checkForObstruction(nextDownPosition(m_tetromino))) {
         m_tetromino.move(tetris::Direction::DOWN);
         m_score += 1;
     }
@@ -111,15 +128,36 @@ void Game::update(tetris::Control keyPressed) {
         case tetris::Control::TOGGLE_PREVIEW:
             m_showPreview = !m_showPreview;
             break;
-        case tetris::Control::ROTATE:
-        case tetris::Control::RIGHT:
-        case tetris::Control::DOWN:
-        case tetris::Control::LEFT:
-            const auto direction = tetris::ControlTools::controlToDirection(keyPressed);
-            if (!checkForObstruction(Tetromino::testMove(m_tetromino, direction))) {
-                m_tetromino.move(direction);
+        case tetris::Control::ROTATE: {
+            const Tetromino nextRotatedPosition = std::invoke(
+                [](Tetromino tetromino) {
+                    tetromino.rotateRight();
+                    return tetromino;
+                },
+                m_tetromino);
+
+            if (!checkForObstruction(nextRotatedPosition)) {
+                m_tetromino = std::move(nextRotatedPosition);
             }
             break;
+        }
+        case tetris::Control::RIGHT:
+        case tetris::Control::DOWN:
+        case tetris::Control::LEFT: {
+            const auto direction = tetris::ControlTools::controlToDirection(keyPressed);
+
+            const Tetromino movedCandidate = std::invoke(
+                [](Tetromino tetromino, const auto direction) {
+                    tetromino.move(direction);
+                    return tetromino;
+                },
+                m_tetromino, direction);
+
+            if (!checkForObstruction(movedCandidate)) {
+                m_tetromino = std::move(movedCandidate);
+            }
+            break;
+        }
     }
     createPreview();
 }
