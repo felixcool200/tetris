@@ -135,7 +135,7 @@ WINDOW* backBuffer = nullptr;
 
 }  // end namespace
 
-Screen::StatusCode NcursesScreen::initScreen() {
+Screen::StatusCode Screen::NcursesScreen::initScreen() {
     initscr();             // Create the screen
     timeout(-1);           // Do not wait for input
     noecho();              // Dont echo key pressed
@@ -173,7 +173,7 @@ Screen::StatusCode NcursesScreen::initScreen() {
     return Screen::StatusCode::OKEY;
 }
 
-tetris::Control NcursesScreen::getInput() {
+tetris::Control Screen::NcursesScreen::getInput() {
     const auto key = getch();
     if (key == ERR) {
         return tetris::Control::NONE;
@@ -195,7 +195,7 @@ tetris::Control NcursesScreen::getInput() {
     return tetris::ControlTools::valueToEnum(static_cast<char>(key));
 }
 
-Screen::StatusCode NcursesScreen::closeScreen() {
+Screen::StatusCode Screen::NcursesScreen::closeScreen() {
     if (backBuffer) {
         delwin(backBuffer);
         backBuffer = nullptr;
@@ -203,12 +203,12 @@ Screen::StatusCode NcursesScreen::closeScreen() {
     return endwin() == ERR ? Screen::StatusCode::ERROR : Screen::StatusCode::OKEY;
 }
 
-Screen::StatusCode NcursesScreen::clearScreen() {
+Screen::StatusCode Screen::NcursesScreen::clearScreen() {
     werase(backBuffer);
     return Screen::StatusCode::OKEY;
 }
 
-Screen::StatusCode NcursesScreen::redrawScreen() {
+Screen::StatusCode Screen::NcursesScreen::redrawScreen() {
     if (refresh() == ERR) {
         return Screen::StatusCode::ERROR;
     }
@@ -217,7 +217,7 @@ Screen::StatusCode NcursesScreen::redrawScreen() {
     return Screen::StatusCode::OKEY;
 }
 
-Screen::StatusCode NcursesScreen::addCharAt(char ch, int x, int y, tetris::Color color) {
+Screen::StatusCode Screen::NcursesScreen::addCharAt(char ch, int x, int y, tetris::Color color) {
     const bool useColor = (has_colors() == TRUE && color != tetris::Color::NONE);
 
     if (useColor) {
@@ -235,8 +235,8 @@ Screen::StatusCode NcursesScreen::addCharAt(char ch, int x, int y, tetris::Color
     return Screen::StatusCode::OKEY;
 }
 
-Screen::StatusCode NcursesScreen::addStringAt(std::string_view s, int x, int y,
-                                              tetris::Color color) {
+Screen::StatusCode Screen::NcursesScreen::addStringAt(std::string_view s, int x, int y,
+                                                      tetris::Color color) {
     for (size_t i = 0; i < s.size(); ++i) {
         if (addCharAt(s[i], x + static_cast<int>(i), y, color) != Screen::StatusCode::OKEY) {
             return Screen::StatusCode::ERROR;
@@ -245,16 +245,17 @@ Screen::StatusCode NcursesScreen::addStringAt(std::string_view s, int x, int y,
     return Screen::StatusCode::OKEY;
 }
 
-Screen::StatusCode NcursesScreen::addCharAtBoard(char ch, int x, int y, tetris::Color color) {
-    if (Game<NcursesScreen>::s_isOnBoard(x, y)) {
+Screen::StatusCode Screen::NcursesScreen::addCharAtBoard(char ch, int x, int y,
+                                                         tetris::Color color) {
+    if (Game::s_isOnBoard(x, y)) {
         return addCharAt(ch, x + tetris::BORDER_LEFT, y + tetris::BORDER_TOP, color);
     }
     return Screen::StatusCode::ERROR;
 }
 
-Screen::StatusCode NcursesScreen::addStringAtBoard(std::string_view s, int x, int y,
-                                                   tetris::Color color) {
-    if (Game<NcursesScreen>::s_isOnBoard(x, y)) {
+Screen::StatusCode Screen::NcursesScreen::addStringAtBoard(std::string_view s, int x, int y,
+                                                           tetris::Color color) {
+    if (Game::s_isOnBoard(x, y)) {
         return addStringAt(s, x + tetris::BORDER_LEFT, y + tetris::BORDER_TOP, color);
     }
     return Screen::StatusCode::ERROR;

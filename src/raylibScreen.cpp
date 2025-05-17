@@ -65,7 +65,7 @@ Vector2 toScreenPos(int x, int y) {
 }
 }  // namespace
 
-tetris::Control RaylibScreen::getInput() {
+tetris::Control Screen::RaylibScreen::getInput() {
     const auto key = GetKeyPressed();
     switch (key) {
         case KEY_UP:
@@ -90,53 +90,54 @@ tetris::Control RaylibScreen::getInput() {
     return tetris::ControlTools::valueToEnum(static_cast<char>(ch));
 }
 
-Screen::StatusCode RaylibScreen::initScreen() {
+Screen::StatusCode Screen::RaylibScreen::initScreen() {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Tetris - Raylib");
     SetTargetFPS(static_cast<int>(tetris::fps));
     return Screen::StatusCode::OKEY;
 }
 
-Screen::StatusCode RaylibScreen::closeScreen() {
+Screen::StatusCode Screen::RaylibScreen::closeScreen() {
     CloseWindow();
     return Screen::StatusCode::OKEY;
 }
 
-Screen::StatusCode RaylibScreen::clearScreen() {
+Screen::StatusCode Screen::RaylibScreen::clearScreen() {
     BeginDrawing();
     ClearBackground(BLACK);
     return Screen::StatusCode::OKEY;
 }
 
-Screen::StatusCode RaylibScreen::redrawScreen() {
+Screen::StatusCode Screen::RaylibScreen::redrawScreen() {
     EndDrawing();
     return Screen::StatusCode::OKEY;
 }
 
-Screen::StatusCode RaylibScreen::addCharAt(char ch, int x, int y, tetris::Color color) {
+Screen::StatusCode Screen::RaylibScreen::addCharAt(char ch, int x, int y, tetris::Color color) {
     const Vector2 pos = toScreenPos(x, y);
     DrawText(TextFormat("%c", ch), static_cast<int>(pos.x), static_cast<int>(pos.y), TILE_SIZE,
              toRaylibColor(color));
     return Screen::StatusCode::OKEY;
 }
 
-Screen::StatusCode RaylibScreen::addCharAtBoard(char ch, int x, int y, tetris::Color color) {
-    if (Game<RaylibScreen>::s_isOnBoard(x, y)) {
+Screen::StatusCode Screen::RaylibScreen::addCharAtBoard(char ch, int x, int y,
+                                                        tetris::Color color) {
+    if (Game::s_isOnBoard(x, y)) {
         return addCharAt(ch, x + tetris::BORDER_LEFT, y + tetris::BORDER_TOP, color);
     }
     return Screen::StatusCode::ERROR;
 }
 
-Screen::StatusCode RaylibScreen::addStringAt(std::string_view s, int x, int y,
-                                             tetris::Color color) {
+Screen::StatusCode Screen::RaylibScreen::addStringAt(std::string_view s, int x, int y,
+                                                     tetris::Color color) {
     for (auto const [index, letter] : std::views::enumerate(s)) {
         addCharAt(letter, x + static_cast<int>(index), y, color);
     }
     return Screen::StatusCode::OKEY;
 }
 
-Screen::StatusCode RaylibScreen::addStringAtBoard(std::string_view s, int x, int y,
-                                                  tetris::Color color) {
-    if (Game<RaylibScreen>::s_isOnBoard(x, y)) {
+Screen::StatusCode Screen::RaylibScreen::addStringAtBoard(std::string_view s, int x, int y,
+                                                          tetris::Color color) {
+    if (Game::s_isOnBoard(x, y)) {
         return addStringAt(s, x + tetris::BORDER_LEFT, y + tetris::BORDER_TOP, color);
     }
     return Screen::StatusCode::ERROR;

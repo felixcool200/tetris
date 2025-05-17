@@ -3,6 +3,7 @@
 #include <common.hpp>
 #include <screenInterface.hpp>
 
+namespace Screen {
 struct RaylibScreen {
     static Screen::StatusCode initScreen();
     static Screen::StatusCode closeScreen();
@@ -18,3 +19,4 @@ struct RaylibScreen {
     static Screen::StatusCode addStringAtBoard(std::string_view s, int x, int y,
                                                tetris::Color color = tetris::Color::NONE);
 };
+}  // namespace Screen
