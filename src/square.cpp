@@ -10,7 +10,7 @@ void Square::remove() {
     m_color = tetris::Color::NONE;
 }
 
-void Square::replace(Square s) {
+void Square::replace(const Square s) {
     m_filled = s.m_filled;
     m_color = s.m_color;
 }
