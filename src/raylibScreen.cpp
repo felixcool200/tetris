@@ -120,7 +120,7 @@ Screen::StatusCode RaylibScreen::addCharAt(char ch, int x, int y, tetris::Color 
 }
 
 Screen::StatusCode RaylibScreen::addCharAtBoard(char ch, int x, int y, tetris::Color color) {
-    if (Game<RaylibScreen>::isOnBoard(x, y)) {
+    if (Game<RaylibScreen>::s_isOnBoard(x, y)) {
         return addCharAt(ch, x + tetris::BORDER_LEFT, y + tetris::BORDER_TOP, color);
     }
     return Screen::StatusCode::ERROR;
@@ -136,7 +136,7 @@ Screen::StatusCode RaylibScreen::addStringAt(std::string_view s, int x, int y,
 
 Screen::StatusCode RaylibScreen::addStringAtBoard(std::string_view s, int x, int y,
                                                   tetris::Color color) {
-    if (Game<RaylibScreen>::isOnBoard(x, y)) {
+    if (Game<RaylibScreen>::s_isOnBoard(x, y)) {
         return addStringAt(s, x + tetris::BORDER_LEFT, y + tetris::BORDER_TOP, color);
     }
     return Screen::StatusCode::ERROR;

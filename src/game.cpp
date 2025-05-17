@@ -32,18 +32,12 @@ void Game<screenInterface>::tick() {
 
 template <typename screenInterface>
     requires Screen::ScreenInterface<screenInterface>
-bool Game<screenInterface>::wasTetrominoJustPlaced() const {
-    return m_tetrominoJustPlaced;
-}
-
-template <typename screenInterface>
-    requires Screen::ScreenInterface<screenInterface>
 void Game<screenInterface>::addTetrominoToBoard(const Tetromino<screenInterface>& bl) {
     const int x = bl.getX();
     const int y = bl.getY();
     for (int dy = 0; dy < tetris::SHAPESIZE; ++dy) {
         for (int dx = 0; dx < tetris::SHAPESIZE; ++dx) {
-            if (bl.isFilledAt(dx, dy) && isOnBoard(x + dx, y + dy)) {
+            if (bl.isFilledAt(dx, dy) && s_isOnBoard(x + dx, y + dy)) {
                 m_board[x + dx][y + dy].place(bl.getColor());
             }
         }
@@ -60,7 +54,7 @@ bool Game<screenInterface>::checkForObstruction(const Tetromino<screenInterface>
             // If there is a tetromino at that position
             if (bl.isFilledAt(dx, dy)) {  // Only check squares the tetromino fills
                 // Check that the piece does not leave the game board
-                if (!isOnBoard(x + dx, y + dy)) {
+                if (!s_isOnBoard(x + dx, y + dy)) {
                     return true;
                 }
                 // See if there is a collision at that specific square.
@@ -96,12 +90,6 @@ void Game<screenInterface>::dropTetromino() {
         m_score += 1;
     }
     placeTetromino();
-}
-
-template <typename screenInterface>
-    requires Screen::ScreenInterface<screenInterface>
-bool Game<screenInterface>::isGameOver() const {
-    return m_isGameOver;
 }
 
 template <typename screenInterface>
@@ -156,13 +144,6 @@ void Game<screenInterface>::update(tetris::Control keyPressed) {
 
 template <typename screenInterface>
     requires Screen::ScreenInterface<screenInterface>
-std::string Game<screenInterface>::getResult() const {
-    return std::string("Game over \nResult:\nLines cleared:") + std::to_string(m_linesCleared) +
-           "\nScore: " + std::to_string(m_score);
-}
-
-template <typename screenInterface>
-    requires Screen::ScreenInterface<screenInterface>
 void Game<screenInterface>::placeTetromino() {
     m_tetrominoJustPlaced = true;
     addTetrominoToBoard(m_tetromino);
@@ -175,8 +156,7 @@ void Game<screenInterface>::placeTetromino() {
 template <typename screenInterface>
     requires Screen::ScreenInterface<screenInterface>
 void Game<screenInterface>::updateLevel() {
-    const unsigned int newLevel =
-        std::min(static_cast<int>(m_linesCleared / 10), tetris::MAX_LEVEL);
+    const size_t newLevel = std::min(m_linesCleared / 10, static_cast<size_t>(tetris::MAX_LEVEL));
     if (m_level == newLevel) {
         return;
     }
@@ -188,22 +168,17 @@ void Game<screenInterface>::updateLevel() {
 template <typename screenInterface>
     requires Screen::ScreenInterface<screenInterface>
 void Game<screenInterface>::updateSpeed() {
-    const int frameOn60 = (m_level < 9)    ? 48 - (5 * m_level)
-                          : (m_level == 9) ? 5
-                          : (m_level < 13) ? 4
-                          : (m_level < 16) ? 3
-                          : (m_level < 19) ? 2
-                          : (m_level < 29) ? 1
-                                           : 0;
+    const auto frameOn60 = (m_level < 9)    ? 48 - (5 * m_level)
+                           : (m_level == 9) ? 5
+                           : (m_level < 13) ? 4
+                           : (m_level < 16) ? 3
+                           : (m_level < 19) ? 2
+                           : (m_level < 29) ? 1
+                                            : 0;
 
     // This removes the correlation between fps and game speed.
-    m_framesPerTick = static_cast<int>((frameOn60 + 0.5) / (60 * tetris::frameDuration.count()));
-}
-
-template <typename screenInterface>
-    requires Screen::ScreenInterface<screenInterface>
-int Game<screenInterface>::getFramesPerTick() const {
-    return m_framesPerTick;
+    m_framesPerTick = static_cast<size_t>((static_cast<double>(frameOn60) + 0.5) /
+                                          (60 * tetris::frameDuration.count()));
 }
 
 template <typename screenInterface>

@@ -11,7 +11,7 @@ template <typename screenInterface>
     requires Screen::ScreenInterface<screenInterface>
 int mainLoop() {
     using namespace std::chrono_literals;
-    int delay_in_frames = 0;
+    size_t delay_in_frames = 0;
     bool isPaused = false;
 
     if (screenInterface::initScreen() == Screen::StatusCode::ERROR) {

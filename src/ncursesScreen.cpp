@@ -246,7 +246,7 @@ Screen::StatusCode NcursesScreen::addStringAt(std::string_view s, int x, int y,
 }
 
 Screen::StatusCode NcursesScreen::addCharAtBoard(char ch, int x, int y, tetris::Color color) {
-    if (Game<NcursesScreen>::isOnBoard(x, y)) {
+    if (Game<NcursesScreen>::s_isOnBoard(x, y)) {
         return addCharAt(ch, x + tetris::BORDER_LEFT, y + tetris::BORDER_TOP, color);
     }
     return Screen::StatusCode::ERROR;
@@ -254,7 +254,7 @@ Screen::StatusCode NcursesScreen::addCharAtBoard(char ch, int x, int y, tetris::
 
 Screen::StatusCode NcursesScreen::addStringAtBoard(std::string_view s, int x, int y,
                                                    tetris::Color color) {
-    if (Game<NcursesScreen>::isOnBoard(x, y)) {
+    if (Game<NcursesScreen>::s_isOnBoard(x, y)) {
         return addStringAt(s, x + tetris::BORDER_LEFT, y + tetris::BORDER_TOP, color);
     }
     return Screen::StatusCode::ERROR;

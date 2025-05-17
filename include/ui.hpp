@@ -12,8 +12,7 @@ class UI {
     static void drawNext(Tetromino<screenInterface>& next);
     static void drawBorders();
     static void render(std::optional<Tetromino<screenInterface>> hold,
-                       Tetromino<screenInterface> next, unsigned int score, unsigned int lines,
-                       unsigned int level);
-    static void drawStats(unsigned int score, unsigned int lines, unsigned int level);
-    static void renderPauseScreen(unsigned int score, unsigned int lines, unsigned int level);
+                       Tetromino<screenInterface> next, size_t score, size_t lines, size_t level);
+    static void drawStats(size_t score, size_t lines, size_t level);
+    static void renderPauseScreen(size_t score, size_t lines, size_t level);
 };

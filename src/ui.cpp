@@ -11,8 +11,8 @@
 template <typename screenInterface>
     requires Screen::ScreenInterface<screenInterface>
 void UI<screenInterface>::render(std::optional<Tetromino<screenInterface>> hold,
-                                 Tetromino<screenInterface> next, unsigned int score,
-                                 unsigned int lines, unsigned int level) {
+                                 Tetromino<screenInterface> next, size_t score, size_t lines,
+                                 size_t level) {
     drawBorders();
     drawHold(hold);
     drawNext(next);
@@ -21,7 +21,7 @@ void UI<screenInterface>::render(std::optional<Tetromino<screenInterface>> hold,
 
 template <typename screenInterface>
     requires Screen::ScreenInterface<screenInterface>
-void UI<screenInterface>::drawStats(unsigned int score, unsigned int lines, unsigned int level) {
+void UI<screenInterface>::drawStats(size_t score, size_t lines, size_t level) {
     using namespace std::string_view_literals;
     constexpr size_t offset = tetris::BOARD_WIDTH + tetris::BORDER_LEFT + 1;
     constexpr size_t SCORE_OFFSET = 1;
@@ -131,8 +131,7 @@ void UI<screenInterface>::drawNext(Tetromino<screenInterface>& bl) {
 
 template <typename screenInterface>
     requires Screen::ScreenInterface<screenInterface>
-void UI<screenInterface>::renderPauseScreen(unsigned int score, unsigned int lines,
-                                            unsigned int level) {
+void UI<screenInterface>::renderPauseScreen(size_t score, size_t lines, size_t level) {
     using namespace std::string_view_literals;
     drawBorders();
     constexpr std::array<std::string_view, 2> message = {{"Game is"sv, "paused"sv}};

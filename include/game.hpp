@@ -16,10 +16,10 @@ class Game {
     Tetromino<screenInterface> m_next;
     Tetromino<screenInterface> m_tetrominoPreview;
 
-    unsigned int m_score = 0;
-    unsigned int m_linesCleared = 0;
-    unsigned int m_level = 0;
-    unsigned int m_framesPerTick = 0;
+    size_t m_score = 0;
+    size_t m_linesCleared = 0;
+    size_t m_level = 0;
+    size_t m_framesPerTick = 0;
     bool m_showPreview = true;
     bool m_isGameOver = false;
     bool m_tetrominoJustPlaced = true;
@@ -41,14 +41,19 @@ class Game {
     void tick();
     void update(tetris::Control keyPressed);
 
-    int getFramesPerTick() const;
     void render() const;
     void renderPauseScreen() const;
-    std::string getResult() const;
-    bool wasTetrominoJustPlaced() const;
-    bool isGameOver() const;
 
-    static constexpr bool isOnBoard(int x, int y) {
+    size_t getFramesPerTick() const { return m_framesPerTick; };
+    bool wasTetrominoJustPlaced() const { return m_tetrominoJustPlaced; };
+    bool isGameOver() const { return m_isGameOver; };
+
+    std::string getResult() const {
+        return std::string("Game over \nResult:\nLines cleared:") + std::to_string(m_linesCleared) +
+               "\nScore: " + std::to_string(m_score);
+    };
+
+    static constexpr bool s_isOnBoard(int x, int y) {
         return ((x <= tetris::BOARD_WIDTH - 1) && (x >= 0) && (y <= tetris::BOARD_HEIGHT - 1) &&
                 (y >= 0));
     }
