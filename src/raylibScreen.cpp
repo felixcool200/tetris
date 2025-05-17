@@ -113,7 +113,7 @@ Screen::StatusCode RaylibScreen::redrawScreen() {
 }
 
 Screen::StatusCode RaylibScreen::addCharAt(char ch, int x, int y, tetris::Color color) {
-    Vector2 pos = toScreenPos(x, y);
+    const Vector2 pos = toScreenPos(x, y);
     DrawText(TextFormat("%c", ch), static_cast<int>(pos.x), static_cast<int>(pos.y), TILE_SIZE,
              toRaylibColor(color));
     return Screen::StatusCode::OKEY;
