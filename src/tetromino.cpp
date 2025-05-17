@@ -1,7 +1,10 @@
-#include <common.hpp>
+#include "tetromino.hpp"
+
+#include <array>
 #include <functional>
 #include <iostream>
-#include <tetromino.hpp>
+
+#include "common.hpp"
 
 /*
     https://stackoverflow.com/questions/37812817/finding-element-at-x-y-in-a-given-matrix-after-rotation-in-c-c
@@ -30,17 +33,70 @@
             0 4 8 C
 */
 bool Tetromino::isFilledAt(int x, int y) const {
+    static constexpr std::array<std::array<std::array<bool, tetris::SHAPESIZE>, tetris::SHAPESIZE>,
+                                Tetromino::TETROMINOS>
+        PIECES = {{
+            // O_PIECE
+            {{
+                {false, false, false, false},
+                {false, true, true, false},
+                {false, true, true, false},
+                {false, false, false, false},
+            }},
+            // I_PIECE
+            {{
+                {false, false, false, false},
+                {true, true, true, true},
+                {false, false, false, false},
+                {false, false, false, false},
+            }},
+            // S_PIECE
+            {{
+                {false, false, false, false},
+                {false, true, true, false},
+                {true, true, false, false},
+                {false, false, false, false},
+            }},
+            // Z_PIECE
+            {{
+                {false, false, false, false},
+                {true, true, false, false},
+                {false, true, true, false},
+                {false, false, false, false},
+            }},
+            // L_PIECE
+            {{
+                {false, false, false, false},
+                {true, true, true, false},
+                {true, false, false, false},
+                {false, false, false, false},
+            }},
+            // J_PIECE
+            {{
+                {false, false, false, false},
+                {true, true, true, false},
+                {false, false, true, false},
+                {false, false, false, false},
+            }},
+            // T_PIECE
+            {{
+                {false, false, false, false},
+                {true, true, true, false},
+                {false, true, false, false},
+                {false, false, false, false},
+            }},
+        }};
+
     switch (m_direction) {
-        case tetris::Direction::North:
-            return tetris::PIECES[m_shapeIndex][x][y];
-        case tetris::Direction::East:
-            return tetris::PIECES[m_shapeIndex][y][tetris::SHAPESIZE - 1 - x];
-        case tetris::Direction::South:
-            return tetris::PIECES[m_shapeIndex][tetris::SHAPESIZE - 1 - x]
-                                 [tetris::SHAPESIZE - 1 - y];
-        case tetris::Direction::West:
-            return tetris::PIECES[m_shapeIndex][tetris::SHAPESIZE - 1 - y]
-                                 [tetris::SHAPESIZE - 1 - (tetris::SHAPESIZE - 1 - x)];
+        case tetris::Direction::UP:
+            return PIECES[m_shapeIndex][x][y];
+        case tetris::Direction::RIGHT:
+            return PIECES[m_shapeIndex][y][tetris::SHAPESIZE - 1 - x];
+        case tetris::Direction::DOWN:
+            return PIECES[m_shapeIndex][tetris::SHAPESIZE - 1 - x][tetris::SHAPESIZE - 1 - y];
+        case tetris::Direction::LEFT:
+            return PIECES[m_shapeIndex][tetris::SHAPESIZE - 1 - y]
+                         [tetris::SHAPESIZE - 1 - (tetris::SHAPESIZE - 1 - x)];
     }
     return false;
 }
@@ -67,9 +123,9 @@ char Tetromino::getShape() const {
 
 void Tetromino::hold() {
     // Reset position
-    m_x = startX;
-    m_y = startY;
-    m_direction = tetris::DEFAULT_SHAPE_DIRECTION;
+    m_x = START_X;
+    m_y = START_Y;
+    m_direction = DEFAULT_SHAPE_DIRECTION;
 
     m_beenHeld = true;
 }
@@ -77,22 +133,22 @@ void Tetromino::hold() {
 void Tetromino::move(tetris::Direction directionToMove) {
     switch (directionToMove) {
         // Rotate the Tetromino
-        case tetris::Direction::North:
+        case tetris::Direction::UP:
             rotateRight();
             break;
         // Move Tetromino one step to the right
-        case tetris::Direction::East:
+        case tetris::Direction::RIGHT:
             m_x += 1;
             break;
 
-        // Speed up Tetromino
+        // Move tetramino one extra step
         // TODO: Change this to a factor(2) that is multiplied when a tick is performed.
-        case tetris::Direction::South:
+        case tetris::Direction::DOWN:
             m_y += 1;
             break;
 
         // Move Tetromino one step to the left
-        case tetris::Direction::West:
+        case tetris::Direction::LEFT:
             m_x -= 1;
             break;
     }
