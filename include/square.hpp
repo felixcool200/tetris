@@ -10,7 +10,7 @@ class Square {
     void place(tetris::Color color);
     void remove();
 
-    bool isPlaced() const;
     void replace(Square s);
-    tetris::Color getColor() const;
+    bool isPlaced() const { return m_filled; };
+    tetris::Color getColor() const { return m_color; };
 };

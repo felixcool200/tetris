@@ -71,50 +71,6 @@ char Tetromino<screenInterface>::getShape() const {
     return 'O';
 }
 
-// To rotate left: m_direction = (m_direction - 1) % 4;
-template <typename screenInterface>
-    requires Screen::ScreenInterface<screenInterface>
-void Tetromino<screenInterface>::rotateRight() {
-    m_direction = static_cast<tetris::Direction>((static_cast<int>(m_direction) + 1) % 4);
-}
-
-template <typename screenInterface>
-    requires Screen::ScreenInterface<screenInterface>
-int Tetromino<screenInterface>::getX() const {
-    return m_x;
-}
-
-template <typename screenInterface>
-    requires Screen::ScreenInterface<screenInterface>
-int Tetromino<screenInterface>::getY() const {
-    return m_y;
-}
-
-template <typename screenInterface>
-    requires Screen::ScreenInterface<screenInterface>
-tetris::Color Tetromino<screenInterface>::getColor() const {
-    return tetris::TETROMINO_COLORS[m_shapeIndex];
-}
-
-template <typename screenInterface>
-    requires Screen::ScreenInterface<screenInterface>
-tetris::Color Tetromino<screenInterface>::getPreviewColor() const {
-    return tetris::PREVIEW_COLORS[m_shapeIndex];
-    // return tetris::Color::PREVIEW_COLOR;
-}
-
-template <typename screenInterface>
-    requires Screen::ScreenInterface<screenInterface>
-void Tetromino<screenInterface>::tick() {
-    m_y += 1;
-}
-
-template <typename screenInterface>
-    requires Screen::ScreenInterface<screenInterface>
-bool Tetromino<screenInterface>::hasBeenHeld() const {
-    return m_beenHeld;
-}
-
 template <typename screenInterface>
     requires Screen::ScreenInterface<screenInterface>
 void Tetromino<screenInterface>::hold() {

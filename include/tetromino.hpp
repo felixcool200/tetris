@@ -19,18 +19,21 @@ class Tetromino {
    public:
     bool isFilledAt(int x, int y) const;
     void hold();
-    bool hasBeenHeld() const;
+    bool hasBeenHeld() const { return m_beenHeld; };
 
-    void tick();
+    void tick() { m_y += 1; };
     void move(tetris::Direction directionToMove);
-    void rotateRight();
+    void rotateRight() {
+        m_direction = static_cast<tetris::Direction>((static_cast<int>(m_direction) + 1) % 4);
+    };
 
     void render(bool isPreview = false) const;
     void renderAt(int x, int y, bool isPreview = false) const;
-    tetris::Color getColor() const;
-    tetris::Color getPreviewColor() const;
-    int getX() const;
-    int getY() const;
+
+    tetris::Color getColor() const { return tetris::TETROMINO_COLORS[m_shapeIndex]; };
+    tetris::Color getPreviewColor() const { return tetris::PREVIEW_COLORS[m_shapeIndex]; };
+    int getX() const { return m_x; };
+    int getY() const { return m_y; };
     char getShape() const;
 
     static Tetromino<screenInterface> testMove(Tetromino<screenInterface> bl,
