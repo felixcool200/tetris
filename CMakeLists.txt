@@ -60,13 +60,16 @@ else()
 endif()
 
 
-# Main executable
-add_executable(Tetris.out ${SOURCE_FILES})
-target_include_directories(Tetris.out PRIVATE ${INCLUDE_DIR})
-target_compile_definitions(Tetris.out PRIVATE ${SCREEN_DEFINE})
+# Create library
+add_library(tetris_core ${SOURCE_FILES})
+target_include_directories(tetris_core PUBLIC ${INCLUDE_DIR})
+target_compile_definitions(tetris_core PUBLIC ${SCREEN_DEFINE})
+target_link_libraries(tetris_core PUBLIC ${SCREEN_LIBS})
 
-# Link appropriate libraries
-target_link_libraries(Tetris.out ${SCREEN_LIBS})
+
+# Main executable
+add_executable(Tetris.out src/main.cpp)
+target_link_libraries(Tetris.out PRIVATE tetris_core)
 
 # Compiler warnings (non-profiler build)
 target_compile_options(Tetris.out PRIVATE
@@ -103,9 +106,6 @@ target_link_options(Tetris.out PRIVATE
     -Wl,-z,relro
 )
 
-# Optionally, you can add a profiling build as before
-#add_executable(TetrisProfiler.out ${SOURCE_FILES})
-#target_include_directories(TetrisProfiler.out PRIVATE ${INCLUDE_DIR})
-#target_link_libraries(TetrisProfiler.out ${SCREEN_LIBS})
-#target_compile_options(TetrisProfiler.out PRIVATE -pg -no-pie -fno-builtin)
-#target_link_options(TetrisProfiler.out PRIVATE -pg)
+# Add tests directory
+add_subdirectory(tests)
+enable_testing()
