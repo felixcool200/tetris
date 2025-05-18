@@ -110,12 +110,12 @@ void UI<screenInterface>::drawHold(std::optional<Tetromino> bl) {
         bl->rotateRight();
     }
     bl->rotateRight();
-    bl->renderAt<screenInterface>(1, 2);
+    bl->render<screenInterface>(std::pair(1, 2));
 }
 
 template <typename screenInterface>
     requires Screen::ScreenInterface<screenInterface>
-void UI<screenInterface>::drawNext(Tetromino& bl) {
+void UI<screenInterface>::drawNext(Tetromino bl) {
     const std::string hline = std::string(tetris::BORDER_LEFT, '#');
     screenInterface::addStringAt("Next", 1, 1 + tetris::SHAPESIZE + 3);
     screenInterface::addStringAt(hline, 0, 2 * (tetris::SHAPESIZE + 3));
@@ -125,7 +125,7 @@ void UI<screenInterface>::drawNext(Tetromino& bl) {
         bl.rotateRight();
     }
     bl.rotateRight();
-    bl.renderAt<screenInterface>(1, 2 + tetris::SHAPESIZE + 3);
+    bl.render<screenInterface>(std::pair(1, 2 + tetris::SHAPESIZE + 3));
 }
 
 template <typename screenInterface>

@@ -1,14 +1,16 @@
 #pragma once
 
-#include <random>
+#include <array>
+#include <optional>
 
 #include "common.hpp"
 #include "screenInterface.hpp"
 
 class Tetromino {
-   private:
+   public:
     static constexpr int TETROMINOS = 7;
 
+   private:
     static constexpr std::array<tetris::Color, TETROMINOS> TETROMINO_COLORS = {
         tetris::Color::TETROMINO_YELLOW,  tetris::Color::TETROMINO_CYAN,
         tetris::Color::TETROMINO_GREEN,   tetris::Color::TETROMINO_RED,
@@ -22,14 +24,6 @@ class Tetromino {
         tetris::Color::PREVIEW_MAGENTA,
     };
 
-    static int randomTetrominoIndex() {
-        static std::random_device rd;
-        static std::mt19937 gen(rd());
-        static std::uniform_int_distribution<int> dist(0, TETROMINOS - 1);
-
-        return dist(gen);
-    }
-
     static constexpr tetris::Direction DEFAULT_SHAPE_DIRECTION = tetris::Direction::RIGHT;
     static constexpr int START_X = (tetris::BOARD_WIDTH - tetris::SHAPESIZE) / 2;
     static constexpr int START_Y = -1;  // All block has a line of zeros at the top as they are
@@ -37,14 +31,16 @@ class Tetromino {
     int m_x = START_X;
     int m_y = START_Y;
     bool m_beenHeld = false;
-    int m_shapeIndex = randomTetrominoIndex();
+    size_t m_shapeIndex = 0;
     tetris::Direction m_direction = DEFAULT_SHAPE_DIRECTION;
 
     // Allow unit tests to access private data
     friend class TetrominoTestHelper;
 
    public:
-    bool isFilledAt(int x, int y) const;
+    Tetromino() : Tetromino(0) {};
+    explicit Tetromino(std::optional<int> shapeIndex);
+    bool isFilledAt(size_t x, size_t y) const;
     void hold();
     bool hasBeenHeld() const { return m_beenHeld; };
 
@@ -62,9 +58,6 @@ class Tetromino {
 
     template <typename screenInterface>
         requires Screen::ScreenInterface<screenInterface>
-    void render(bool isPreview = false) const;
-
-    template <typename screenInterface>
-        requires Screen::ScreenInterface<screenInterface>
-    void renderAt(int x, int y, bool isPreview = false) const;
+    void render(std::optional<std::pair<size_t, size_t>> pos = std::nullopt,
+                bool isPreview = false) const;
 };

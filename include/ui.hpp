@@ -10,7 +10,7 @@ template <typename screenInterface>
 class UI {
    public:
     static void drawHold(std::optional<Tetromino> hold);
-    static void drawNext(Tetromino& next);
+    static void drawNext(Tetromino next);
     static void drawBorders();
     static void render(std::optional<Tetromino> hold, Tetromino next, size_t score, size_t lines,
                        size_t level);

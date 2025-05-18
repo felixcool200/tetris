@@ -1,10 +1,23 @@
 #include "tetromino.hpp"
 
-#include <array>
 #include <functional>
-#include <iostream>
+#include <random>
 
 #include "common.hpp"
+namespace {
+static int randomTetrominoIndex() {
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    static std::uniform_int_distribution<int> dist(0, Tetromino::TETROMINOS - 1);
+
+    return dist(gen);
+}
+
+}  // namespace
+
+Tetromino::Tetromino(std::optional<int> shapeIndex) {
+    m_shapeIndex = shapeIndex.value_or(randomTetrominoIndex());
+}
 
 /*
     https://stackoverflow.com/questions/37812817/finding-element-at-x-y-in-a-given-matrix-after-rotation-in-c-c
@@ -32,7 +45,7 @@
             1 5 9 D
             0 4 8 C
 */
-bool Tetromino::isFilledAt(int x, int y) const {
+bool Tetromino::isFilledAt(size_t x, size_t y) const {
     static constexpr std::array<std::array<std::array<bool, tetris::SHAPESIZE>, tetris::SHAPESIZE>,
                                 Tetromino::TETROMINOS>
         PIECES = {{
@@ -136,46 +149,37 @@ void Tetromino::move(tetris::Direction directionToMove) {
         case tetris::Direction::UP:
             m_y -= 1;
             break;
-        // Move Tetromino one step to the right
+
         case tetris::Direction::RIGHT:
             m_x += 1;
             break;
 
-        // Move tetramino one extra step
-        // TODO: Change this to a factor(2) that is multiplied when a tick is performed.
         case tetris::Direction::DOWN:
             m_y += 1;
             break;
 
-        // Move Tetromino one step to the left
         case tetris::Direction::LEFT:
             m_x -= 1;
             break;
     }
 }
 
-// Templated render functions
+// Templated render function
 template <typename screenInterface>
     requires Screen::ScreenInterface<screenInterface>
-void Tetromino::render(bool isPreview) const {
+void Tetromino::render(std::optional<std::pair<size_t, size_t>> pos, bool isPreview) const {
     const auto color = isPreview ? getPreviewColor() : getColor();
-    for (int dx = 0; dx < tetris::SHAPESIZE; ++dx) {
-        for (int dy = 0; dy < tetris::SHAPESIZE; ++dy) {
-            if (isFilledAt(dx, dy)) {
-                screenInterface::addCharAtBoard('B', (m_x + dx), (m_y + dy), color);
-            }
+    const auto drawFunc = [&](size_t dx, size_t dy) {
+        if (pos.has_value()) {
+            screenInterface::addCharAt('B', (pos->first + dx), (pos->second + dy), color);
+        } else {
+            screenInterface::addCharAtBoard('B', (m_x + dx), (m_y + dy), color);
         }
-    }
-}
-
-template <typename screenInterface>
-    requires Screen::ScreenInterface<screenInterface>
-void Tetromino::renderAt(int x, int y, bool isPreview) const {
-    const auto color = isPreview ? getPreviewColor() : getColor();
-    for (int dx = 0; dx < tetris::SHAPESIZE; ++dx) {
-        for (int dy = 0; dy < tetris::SHAPESIZE; ++dy) {
+    };
+    for (size_t dx = 0; dx < tetris::SHAPESIZE; ++dx) {
+        for (size_t dy = 0; dy < tetris::SHAPESIZE; ++dy) {
             if (isFilledAt(dx, dy)) {
-                screenInterface::addCharAt('B', (x + dx), (y + dy), color);
+                drawFunc(dx, dy);
             }
         }
     }
@@ -183,5 +187,5 @@ void Tetromino::renderAt(int x, int y, bool isPreview) const {
 
 #include "screenTypeSelector.hpp"
 
-template void Tetromino::render<ScreenType>(bool) const;
-template void Tetromino::renderAt<ScreenType>(int, int, bool) const;
+template void Tetromino::render<ScreenType>(std::optional<std::pair<size_t, size_t>> pos,
+                                            bool isPreview) const;
