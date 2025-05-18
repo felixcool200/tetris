@@ -10,10 +10,10 @@
 
 namespace {
 
-constexpr int TILE_SIZE = 24;
-constexpr int SCREEN_WIDTH =
+constexpr size_t TILE_SIZE = 24;
+constexpr size_t SCREEN_WIDTH =
     (tetris::BOARD_WIDTH + tetris::BORDER_LEFT + tetris::BORDER_RIGHT) * TILE_SIZE;
-constexpr int SCREEN_HEIGHT =
+constexpr size_t SCREEN_HEIGHT =
     (tetris::BOARD_HEIGHT + tetris::BORDER_TOP + tetris::BORDER_BOTTOM) * TILE_SIZE;
 
 // Mapping from tetris::Color to Raylib Color
@@ -61,7 +61,7 @@ Color toRaylibColor(tetris::Color color) {
     }
 }
 
-Vector2 toScreenPos(int x, int y) {
+Vector2 toScreenPos(size_t x, size_t y) {
     return {static_cast<float>(x * TILE_SIZE), static_cast<float>(y * TILE_SIZE)};
 }
 }  // namespace
@@ -113,14 +113,15 @@ Screen::StatusCode Screen::RaylibScreen::redrawScreen() {
     return Screen::StatusCode::OKEY;
 }
 
-Screen::StatusCode Screen::RaylibScreen::addCharAt(char ch, int x, int y, tetris::Color color) {
+Screen::StatusCode Screen::RaylibScreen::addCharAt(char ch, size_t x, size_t y,
+                                                   tetris::Color color) {
     const Vector2 pos = toScreenPos(x, y);
     DrawText(TextFormat("%c", ch), static_cast<int>(pos.x), static_cast<int>(pos.y), TILE_SIZE,
              toRaylibColor(color));
     return Screen::StatusCode::OKEY;
 }
 
-Screen::StatusCode Screen::RaylibScreen::addCharAtBoard(char ch, int x, int y,
+Screen::StatusCode Screen::RaylibScreen::addCharAtBoard(char ch, size_t x, size_t y,
                                                         tetris::Color color) {
     if (Game::s_isOnBoard(x, y)) {
         return addCharAt(ch, x + tetris::BORDER_LEFT, y + tetris::BORDER_TOP, color);
@@ -128,7 +129,7 @@ Screen::StatusCode Screen::RaylibScreen::addCharAtBoard(char ch, int x, int y,
     return Screen::StatusCode::ERROR;
 }
 
-Screen::StatusCode Screen::RaylibScreen::addStringAt(std::string_view s, int x, int y,
+Screen::StatusCode Screen::RaylibScreen::addStringAt(std::string_view s, size_t x, size_t y,
                                                      tetris::Color color) {
     for (auto const [index, letter] : std::views::enumerate(s)) {
         addCharAt(letter, x + static_cast<int>(index), y, color);
@@ -136,7 +137,7 @@ Screen::StatusCode Screen::RaylibScreen::addStringAt(std::string_view s, int x, 
     return Screen::StatusCode::OKEY;
 }
 
-Screen::StatusCode Screen::RaylibScreen::addStringAtBoard(std::string_view s, int x, int y,
+Screen::StatusCode Screen::RaylibScreen::addStringAtBoard(std::string_view s, size_t x, size_t y,
                                                           tetris::Color color) {
     if (Game::s_isOnBoard(x, y)) {
         return addStringAt(s, x + tetris::BORDER_LEFT, y + tetris::BORDER_TOP, color);

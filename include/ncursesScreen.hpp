@@ -19,15 +19,15 @@ class NcursesScreen {
     static Screen::StatusCode redrawScreen();
 
     // Chars
-    static Screen::StatusCode addCharAtBoard(char ch, int x, int y,
+    static Screen::StatusCode addCharAtBoard(char ch, size_t x, size_t y,
                                              tetris::Color color = tetris::Color::NONE);
-    static Screen::StatusCode addCharAt(char ch, int x, int y,
+    static Screen::StatusCode addCharAt(char ch, size_t x, size_t y,
                                         tetris::Color color = tetris::Color::NONE);
 
     // Strings
-    static Screen::StatusCode addStringAt(std::string_view s, int x, int y,
+    static Screen::StatusCode addStringAt(std::string_view s, size_t x, size_t y,
                                           tetris::Color color = tetris::Color::NONE);
-    static Screen::StatusCode addStringAtBoard(std::string_view s, int x, int y,
+    static Screen::StatusCode addStringAtBoard(std::string_view s, size_t x, size_t y,
                                                tetris::Color color = tetris::Color::NONE);
 };
 }  // namespace Screen

@@ -216,7 +216,8 @@ Screen::StatusCode Screen::NcursesScreen::redrawScreen() {
     return Screen::StatusCode::OKEY;
 }
 
-Screen::StatusCode Screen::NcursesScreen::addCharAt(char ch, int x, int y, tetris::Color color) {
+Screen::StatusCode Screen::NcursesScreen::addCharAt(char ch, size_t x, size_t y,
+                                                    tetris::Color color) {
     const bool useColor = (has_colors() == TRUE && color != tetris::Color::NONE);
 
     if (useColor) {

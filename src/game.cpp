@@ -256,8 +256,8 @@ template <typename screenInterface>
     requires Screen::ScreenInterface<screenInterface>
 void Game::render() const {
     // Draw placed blocks board
-    for (int y = 0; y < tetris::BOARD_HEIGHT; ++y) {
-        for (int x = 0; x < tetris::BOARD_WIDTH; ++x) {
+    for (size_t y = 0; y < tetris::BOARD_HEIGHT; ++y) {
+        for (size_t x = 0; x < tetris::BOARD_WIDTH; ++x) {
             if (m_board[x][y].isPlaced()) {
                 screenInterface::addCharAtBoard('B', x, y, m_board[x][y].getColor());
             }
@@ -266,7 +266,7 @@ void Game::render() const {
 
     // Draw preview
     if (m_showPreview) {
-        m_tetrominoPreview.render<screenInterface>(true);
+        m_tetrominoPreview.render<screenInterface>(std::nullopt, true);
     }
 
     // Draw current tetromino

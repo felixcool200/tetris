@@ -11,26 +11,27 @@ enum class StatusCode {
 };
 
 template <typename screenInterface>
-concept ScreenInterface = requires(int x, int y, char ch, std::string_view s, tetris::Color color) {
-    // Method to configure and start the screen
-    { screenInterface::initScreen() } -> std::same_as<StatusCode>;
-    { screenInterface::closeScreen() } -> std::same_as<StatusCode>;
+concept ScreenInterface =
+    requires(size_t x, size_t y, char ch, std::string_view s, tetris::Color color) {
+        // Method to configure and start the screen
+        { screenInterface::initScreen() } -> std::same_as<StatusCode>;
+        { screenInterface::closeScreen() } -> std::same_as<StatusCode>;
 
-    // Method for handling user input
-    { screenInterface::getInput() } -> std::same_as<tetris::Control>;
+        // Method for handling user input
+        { screenInterface::getInput() } -> std::same_as<tetris::Control>;
 
-    // Methods for clearing and redrawing the screen
-    { screenInterface::clearScreen() } -> std::same_as<StatusCode>;
-    { screenInterface::redrawScreen() } -> std::same_as<StatusCode>;
+        // Methods for clearing and redrawing the screen
+        { screenInterface::clearScreen() } -> std::same_as<StatusCode>;
+        { screenInterface::redrawScreen() } -> std::same_as<StatusCode>;
 
-    // Methods for adding characters to the screen
-    { screenInterface::addCharAt(ch, x, y, color) } -> std::same_as<StatusCode>;
-    { screenInterface::addCharAtBoard(ch, x, y, color) } -> std::same_as<StatusCode>;
+        // Methods for adding characters to the screen
+        { screenInterface::addCharAt(ch, x, y, color) } -> std::same_as<StatusCode>;
+        { screenInterface::addCharAtBoard(ch, x, y, color) } -> std::same_as<StatusCode>;
 
-    // Methods for adding strings to the screen
-    { screenInterface::addStringAt(s, x, y, color) } -> std::same_as<StatusCode>;
-    { screenInterface::addStringAtBoard(s, x, y, color) } -> std::same_as<StatusCode>;
-};
+        // Methods for adding strings to the screen
+        { screenInterface::addStringAt(s, x, y, color) } -> std::same_as<StatusCode>;
+        { screenInterface::addStringAtBoard(s, x, y, color) } -> std::same_as<StatusCode>;
+    };
 
 // Example of using the concept
 template <ScreenInterface T>
