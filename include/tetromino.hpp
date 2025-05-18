@@ -40,6 +40,9 @@ class Tetromino {
     int m_shapeIndex = randomTetrominoIndex();
     tetris::Direction m_direction = DEFAULT_SHAPE_DIRECTION;
 
+    // Allow unit tests to access private data
+    friend class TetrominoTestHelper;
+
    public:
     bool isFilledAt(int x, int y) const;
     void hold();

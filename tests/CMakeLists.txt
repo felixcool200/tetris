@@ -9,7 +9,9 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Catch2)
 
 # These tests can use the Catch2-provided main
-add_executable(unittests 
+add_executable(unittests
+    # Tests
+    test_game.cpp
     test_square.cpp
     test_tetramino.cpp
 )

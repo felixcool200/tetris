@@ -23,7 +23,7 @@ class Game {
     size_t m_framesPerTick = 0;
     bool m_showPreview = true;
     bool m_isGameOver = false;
-    bool m_tetrominoJustPlaced = true;
+    bool m_tetrominoJustPlaced = false;
 
     bool checkForObstruction(const Tetromino& bl) const;
 
@@ -37,6 +37,9 @@ class Game {
     void updateLevel();
     void updateSpeed();
 
+    // Allow unit tests to access private data
+    friend class GameTestHelper;
+
    public:
     Game();
     void tick();
@@ -47,8 +50,8 @@ class Game {
     bool isGameOver() const { return m_isGameOver; };
 
     std::string getResult() const {
-        return std::string("Game over \nResult:\nLines cleared:") + std::to_string(m_linesCleared) +
-               "\nScore: " + std::to_string(m_score);
+        return std::string("Game over \nResult\n\tLines cleared: ") +
+               std::to_string(m_linesCleared) + "\n\tScore: " + std::to_string(m_score);
     };
 
     static constexpr bool s_isOnBoard(int x, int y) {
