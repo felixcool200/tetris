@@ -38,7 +38,7 @@ class Tetromino {
     friend class TetrominoTestHelper;
 
    public:
-    Tetromino() : Tetromino(0) {};
+    Tetromino() : Tetromino(std::nullopt) {};
     explicit Tetromino(std::optional<int> shapeIndex);
     bool isFilledAt(size_t x, size_t y) const;
     void hold();
