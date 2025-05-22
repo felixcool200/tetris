@@ -4,13 +4,16 @@
 #include "gameHelper.hpp"
 #include "tetrominoHelper.hpp"
 
+// Helper function to clear a given number of lines by simulating O-tetromino drops.
+// Each iteration places 5 O-blocks (2x2) side by side to fill and clear lines.
 void clearLines(GameTestHelper& gameTest, int lines = 2) {
+    // The number of lines must be even because each O-tetromino (2x2) clears two lines per
+    // placement.
     assert(lines % 2 == 0);
     gameTest.setCurrentTetromino(Tetromino(0));
-    // Simulate clearing 10 lines
+    // Simulate clearing 'lines' lines (must be even, as each O-block clears 2 lines)
     for (int i = 0; i < lines / 2; ++i) {
-        // Create 5 2x2 blocks next to each other to clear 10 lines
-        // Move first block all the way to the left
+        // Place 5 O-blocks from left to right to fill the bottom two rows
         gameTest.setNextTetromino(Tetromino(0));
         gameTest.getGame().update(tetris::Control::LEFT);
         gameTest.getGame().update(tetris::Control::LEFT);
@@ -40,6 +43,8 @@ void clearLines(GameTestHelper& gameTest, int lines = 2) {
     }
 }
 
+// Test: The default state of the game is as expected (initial speed, not game over, no tetromino
+// placed)
 TEST_CASE("Game default state") {
     GameTestHelper gameTest(Tetromino(0));
     CHECK(gameTest.getGame().getFramesPerTick() == 97);
@@ -47,6 +52,7 @@ TEST_CASE("Game default state") {
     CHECK(gameTest.getGame().wasTetrominoJustPlaced() == false);
 }
 
+// Test: The result string is correct before and after dropping tetrominos (score/lines update)
 TEST_CASE("Game test result string") {
     GameTestHelper gameTest(Tetromino(0));
     const std::string emtpyResult =
@@ -61,6 +67,7 @@ TEST_CASE("Game test result string") {
     CHECK(gameTest.getGame().getResult() != emtpyResult);
 }
 
+// Test: The static border checker correctly identifies valid and invalid board coordinates
 TEST_CASE("Game test border checker") {
     GameTestHelper gameTest(Tetromino(0));
     const std::vector<std::pair<std::pair<int, int>, bool>> test_cases = {
@@ -80,8 +87,8 @@ TEST_CASE("Game test border checker") {
     }
 }
 
+// Test: Placing a single O-block at the leftmost position fills the correct cells on the board
 TEST_CASE("Game tick can place a block to board") {
-    // Create a stable game state with a known tetromino (O block by default)
     GameTestHelper gameTest(Tetromino(0));
 
     // Move the tetromino all the way to the left
@@ -121,8 +128,8 @@ TEST_CASE("Game tick can place a block to board") {
     }
 }
 
+// Test: Placing two O-blocks on top of each other at the leftmost position fills the correct cells
 TEST_CASE("Game tick can place two blocks on top of each other") {
-    // Create a stable game state with a known tetromino (O block by default)
     GameTestHelper gameTest(Tetromino(0));
 
     gameTest.setNextTetromino(Tetromino(0));
@@ -174,6 +181,7 @@ TEST_CASE("Game tick can place two blocks on top of each other") {
     }
 }
 
+// Test: checkForObstruction detects collisions with boundaries and placed blocks
 TEST_CASE("Game::checkForObstruction detects collisions and boundaries", "[game][obstruction]") {
     GameTestHelper gameTest(Tetromino(0));
     Tetromino t = Tetromino(0);
@@ -193,6 +201,7 @@ TEST_CASE("Game::checkForObstruction detects collisions and boundaries", "[game]
     CHECK(gameTest.checkForObstruction(t2));
 }
 
+// Test: createPreview sets the preview tetromino to the lowest unobstructed position
 TEST_CASE("Game::createPreview sets preview to lowest unobstructed position", "[game][preview]") {
     GameTestHelper gameTest(Tetromino(0));
     gameTest.createPreview();
@@ -208,6 +217,7 @@ TEST_CASE("Game::createPreview sets preview to lowest unobstructed position", "[
     CHECK(gameTest.checkForObstruction(test));
 }
 
+// Test: dropTetromino moves the current tetromino to the bottom and places it
 TEST_CASE("Game::dropTetromino moves tetromino to bottom and places it", "[game][drop]") {
     GameTestHelper gameTest(Tetromino(0));
     auto originalX = gameTest.getTetromino().getX() + 1;
@@ -217,6 +227,7 @@ TEST_CASE("Game::dropTetromino moves tetromino to bottom and places it", "[game]
     CHECK(board[originalX][tetris::BOARD_HEIGHT - 1].isPlaced());
 }
 
+// Test: placeTetromino places the current tetromino on the board at its current position
 TEST_CASE("Game::placeTetromino places current tetromino on board", "[game][place]") {
     GameTestHelper gameTest(Tetromino(0));
     auto t = gameTest.getTetromino();
@@ -227,12 +238,14 @@ TEST_CASE("Game::placeTetromino places current tetromino on board", "[game][plac
     CHECK(board[t.getX() + 1][t.getY() + 1].isPlaced());
 }
 
+// Test: addTetrominoToBoard places all filled squares of a tetromino onto the board
 TEST_CASE("Game::addTetrominoToBoard places all filled squares", "[game][addToBoard]") {
     GameTestHelper gameTest(Tetromino(0));
     Tetromino t(0);
     t.move(tetris::Direction::DOWN);
     gameTest.addTetrominoToBoard(t);
     const auto& board = gameTest.getBoard();
+    // Check all filled cells of the tetromino are placed on the board
     for (size_t dx = 0; dx < tetris::SHAPESIZE; ++dx) {
         for (size_t dy = 0; dy < tetris::SHAPESIZE; ++dy) {
             if (t.isFilledAt(dx, dy)) {
@@ -242,6 +255,7 @@ TEST_CASE("Game::addTetrominoToBoard places all filled squares", "[game][addToBo
     }
 }
 
+// Test: removeCompleteRows removes filled rows and updates score/lines
 TEST_CASE("Game::removeCompleteRows removes filled rows and updates score/lines",
           "[game][removeRows]") {
     GameTestHelper gameTest(Tetromino(0));
@@ -257,6 +271,7 @@ TEST_CASE("Game::removeCompleteRows removes filled rows and updates score/lines"
     CHECK(gameTest.getGame().getResult().find("Lines cleared: 1") != std::string::npos);
 }
 
+// Test: createNewTetromino sets the current tetromino to the next tetromino
 TEST_CASE("Game::createNewTetromino sets current tetromino to next", "[game][newTetromino]") {
     GameTestHelper gameTest(Tetromino(0));
     Tetromino next(1);
@@ -265,6 +280,7 @@ TEST_CASE("Game::createNewTetromino sets current tetromino to next", "[game][new
     CHECK(gameTest.getTetromino().getShape() == next.getShape());
 }
 
+// Test: removeRow shifts all rows above the removed row down by one
 TEST_CASE("Game::removeRow shifts rows down", "[game][removeRow]") {
     GameTestHelper gameTest(Tetromino(0));
     // Fill two rows
@@ -279,6 +295,7 @@ TEST_CASE("Game::removeRow shifts rows down", "[game][removeRow]") {
     }
 }
 
+// Test: updateLevel increases the level after clearing enough lines
 TEST_CASE("Game::updateLevel increases level after clearing lines", "[game][level]") {
     GameTestHelper gameTest(Tetromino(0));
     clearLines(gameTest, 10);
@@ -287,6 +304,7 @@ TEST_CASE("Game::updateLevel increases level after clearing lines", "[game][leve
     CHECK(gameTest.getGame().getFramesPerTick() < 97);  // Should be faster
 }
 
+// Test: updateSpeed sets frames per tick according to the current level (speed increases)
 TEST_CASE("Game::updateSpeed sets frames per tick according to level", "[game][speed]") {
     GameTestHelper gameTest(Tetromino(0));
     size_t prevFrames = gameTest.getGame().getFramesPerTick();
