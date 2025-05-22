@@ -68,11 +68,11 @@ TEST_CASE("UI::renderPauseScreen draws pause message and stats", "[ui][pause]") 
 namespace holdAndNextBoxes {
 
 // Helper to print all drawn chars for debugging
-void printDrawnChars() {
+void printDrawnChars(size_t offset_x, size_t offset_y) {
     std::ostringstream oss;
     oss << "drawnChars: [";
     for (const auto& [ch, x, y] : Screen::MockScreen::drawnChars) {
-        oss << "('" << ch << "', " << x - 1 << ", " << y - 9 << "), ";
+        oss << "('" << ch << "', " << x - offset_x << ", " << y - offset_y << "), ";
     }
     oss << "]";
     UNSCOPED_INFO(oss.str());
@@ -84,7 +84,7 @@ void checkTetrominoDrawnInNextBox(const std::vector<std::pair<int, int>>& expect
     constexpr size_t baseY = 9;  // Y coordinate where the "Next" box starts
     for (const auto& [dx, dy] : expectedOffsets) {
         INFO("Checking for 'B' at (" << (baseX + dx) << ", " << (baseY + dy) << ")");
-        printDrawnChars();
+        printDrawnChars(baseX, baseY);
         CHECK(Screen::MockScreen::wasCharDrawnAt('B', baseX + dx, baseY + dy));
     }
 }
@@ -95,7 +95,7 @@ void checkTetrominoDrawnInHoldBox(const std::vector<std::pair<int, int>>& expect
     constexpr size_t baseY = 2;  // Y coordinate where the "Hold" box starts
     for (const auto& [dx, dy] : expectedOffsets) {
         INFO("Checking for 'B' at (" << (baseX + dx) << ", " << (baseY + dy) << ")");
-        printDrawnChars();
+        printDrawnChars(baseX, baseY);
         CHECK(Screen::MockScreen::wasCharDrawnAt('B', baseX + dx, baseY + dy));
     }
 }
