@@ -122,15 +122,22 @@ make
 This project is licensed under the [MIT License](LICENSE).
 
 ---
-<!-- 
-## 🚧 TODO
+
+## 🚧 TODO/Possible features
 
 - [ ] High score system
 - [ ] Sound effects (raylib)
 - [ ] More visual polish for raylib mode
 
 ---
--->
+
+---
+
+## 🚧 Work in progress
+
+- Unit tests for all classes written using Catch2.
+
+---
 
 ## 🤝 Contributing
 
