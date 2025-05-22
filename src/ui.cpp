@@ -106,7 +106,7 @@ void UI<screenInterface>::drawHold(std::optional<Tetromino> bl) {
         return;
     }
     // This makes the blocks look better in the holding space
-    if (bl->getShape() == 'I') {
+    if (bl->getShape() == Tetromino::Shape::I) {
         bl->rotateRight();
     }
     bl->rotateRight();
@@ -121,7 +121,7 @@ void UI<screenInterface>::drawNext(Tetromino bl) {
     screenInterface::addStringAt(hline, 0, 2 * (tetris::SHAPESIZE + 3));
 
     // This makes the blocks look better in the holding space
-    if (bl.getShape() == 'I') {
+    if (bl.getShape() == Tetromino::Shape::I) {
         bl.rotateRight();
     }
     bl.rotateRight();

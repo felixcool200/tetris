@@ -15,8 +15,8 @@ static int randomTetrominoIndex() {
 
 }  // namespace
 
-Tetromino::Tetromino(std::optional<int> shapeIndex) {
-    m_shapeIndex = shapeIndex.value_or(randomTetrominoIndex());
+Tetromino::Tetromino(std::optional<Shape> shape) {
+    m_shape = shape.value_or(indexToShape(randomTetrominoIndex()));
 }
 
 /*
@@ -102,36 +102,17 @@ bool Tetromino::isFilledAt(size_t x, size_t y) const {
 
     switch (m_direction) {
         case tetris::Direction::UP:
-            return PIECES[m_shapeIndex][x][y];
+            return PIECES[shapeToIndex(m_shape)][x][y];
         case tetris::Direction::RIGHT:
-            return PIECES[m_shapeIndex][y][tetris::SHAPESIZE - 1 - x];
+            return PIECES[shapeToIndex(m_shape)][y][tetris::SHAPESIZE - 1 - x];
         case tetris::Direction::DOWN:
-            return PIECES[m_shapeIndex][tetris::SHAPESIZE - 1 - x][tetris::SHAPESIZE - 1 - y];
+            return PIECES[shapeToIndex(m_shape)][tetris::SHAPESIZE - 1 - x]
+                         [tetris::SHAPESIZE - 1 - y];
         case tetris::Direction::LEFT:
-            return PIECES[m_shapeIndex][tetris::SHAPESIZE - 1 - y]
+            return PIECES[shapeToIndex(m_shape)][tetris::SHAPESIZE - 1 - y]
                          [tetris::SHAPESIZE - 1 - (tetris::SHAPESIZE - 1 - x)];
     }
     return false;
-}
-
-char Tetromino::getShape() const {
-    switch (m_shapeIndex) {
-        case 0:
-            return 'O';
-        case 1:
-            return 'I';
-        case 2:
-            return 'S';
-        case 3:
-            return 'Z';
-        case 4:
-            return 'L';
-        case 5:
-            return 'J';
-        case 6:
-            return 'T';
-    }
-    return 'O';
 }
 
 void Tetromino::hold() {
@@ -186,6 +167,5 @@ void Tetromino::render(std::optional<std::pair<size_t, size_t>> pos, bool isPrev
 }
 
 #include "screenTypeSelector.hpp"
-
 template void Tetromino::render<ScreenType>(std::optional<std::pair<size_t, size_t>> pos,
                                             bool isPreview) const;
