@@ -5,7 +5,6 @@
 #include "common.hpp"
 #include "game.hpp"
 #include "screenTypeSelector.hpp"
-#include "timer.hpp"
 
 template <typename screenInterface>
     requires Screen::ScreenInterface<screenInterface>
@@ -19,7 +18,6 @@ int mainLoop() {
     }
 
     Game game;
-    Timer timer(false);
 
     screenInterface::clearScreen();  // Clear the screen
     game.render<screenInterface>();
@@ -28,10 +26,11 @@ int mainLoop() {
     while (true) {
         // The frame timer starts here
         frame++;
-        timer.start();
+        const auto frameStartTime = std::chrono::high_resolution_clock::now();
 
         // Check if a key is pressed
-        if (auto keyPressed = screenInterface::getInput(); keyPressed != tetris::Control::NONE) {
+        if (const auto keyPressed = screenInterface::getInput();
+            keyPressed != tetris::Control::NONE) {
             // Immediately quit the game is the key is pressed
             if (keyPressed == tetris::Control::QUIT) {
                 break;
@@ -83,10 +82,11 @@ int mainLoop() {
         game.render<screenInterface>();
         screenInterface::redrawScreen();  // Redraw the screen
 
-        std::chrono::duration<double> deltaTime =
+        const auto frameDoneTime = std::chrono::high_resolution_clock::now();
+        const auto deltaTime =
             (tetris::frameDuration -
-             std::chrono::duration_cast<std::chrono::microseconds>(timer.stop()));
-        // Allow first frame to be slow/late
+             std::chrono::duration_cast<std::chrono::microseconds>(frameDoneTime - frameStartTime));
+        // Allow first few frames to be slow/late
         if (deltaTime.count() < 0) {
             if (frame > 5) {
                 screenInterface::closeScreen();

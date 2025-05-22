@@ -20,7 +20,6 @@ set(SOURCE_FILES
     src/main.cpp
     src/tetromino.cpp
     src/game.cpp
-    src/timer.cpp
     src/ui.cpp
     src/square.cpp
 )
