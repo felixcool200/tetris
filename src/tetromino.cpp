@@ -169,3 +169,7 @@ void Tetromino::render(std::optional<std::pair<size_t, size_t>> pos, bool isPrev
 #include "screenTypeSelector.hpp"
 template void Tetromino::render<ScreenType>(std::optional<std::pair<size_t, size_t>> pos,
                                             bool isPreview) const;
+
+#include "mockScreen.hpp"
+template void Tetromino::render<Screen::MockScreen>(std::optional<std::pair<size_t, size_t>> pos,
+                                                    bool isPreview) const;

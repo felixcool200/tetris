@@ -1,39 +1,86 @@
 #pragma once
+#include <string>
 #include <string_view>
+#include <tuple>
+#include <vector>
 
 #include "common.hpp"
 #include "screenInterface.hpp"
 
-// Implementation of the ScreenInterface for mocking
 namespace Screen {
-class MockScreen {
-   public:
-    static Screen::StatusCode initScreen() { return Screen::StatusCode::OKEY; };
-    static Screen::StatusCode closeScreen() { return Screen::StatusCode::OKEY; };
+struct MockScreen {
+    static inline std::vector<std::string> drawnStrings;
+    static inline std::vector<std::tuple<char, size_t, size_t>> drawnChars;
 
-    static tetris::Control getInput();
+    static void reset() {
+        drawnStrings.clear();
+        drawnChars.clear();
+    }
 
-    static Screen::StatusCode clearScreen() { return Screen::StatusCode::OKEY; };
-    static Screen::StatusCode redrawScreen() { return Screen::StatusCode::OKEY; };
+    // Required by concept
+    static Screen::StatusCode initScreen() { return Screen::StatusCode::OKEY; }
+    static Screen::StatusCode closeScreen() { return Screen::StatusCode::OKEY; }
+    static tetris::Control getInput() { return tetris::Control::NONE; }
+    static Screen::StatusCode clearScreen() { return Screen::StatusCode::OKEY; }
+    static Screen::StatusCode redrawScreen() { return Screen::StatusCode::OKEY; }
 
-    // Chars
-    static Screen::StatusCode addCharAtBoard(char ch, int x, int y,
-                                             tetris::Color color = tetris::Color::NONE) {
+    static Screen::StatusCode addCharAt(char c, size_t x, size_t y,
+                                        tetris::Color = tetris::Color::NONE) {
+        drawnStrings.push_back(std::string(1, c));
+        drawnChars.emplace_back(c, x, y);
         return Screen::StatusCode::OKEY;
-    };
-    static Screen::StatusCode addCharAt(char ch, int x, int y,
-                                        tetris::Color color = tetris::Color::NONE) {
+    }
+    static Screen::StatusCode addCharAtBoard(char c, size_t x, size_t y,
+                                             tetris::Color = tetris::Color::NONE) {
+        drawnStrings.push_back(std::string(1, c));
+        drawnChars.emplace_back(c, x, y);
         return Screen::StatusCode::OKEY;
-    };
+    }
+    static Screen::StatusCode addStringAt(std::string_view str, size_t, size_t,
+                                          tetris::Color = tetris::Color::NONE) {
+        drawnStrings.push_back(std::string(str));
+        return Screen::StatusCode::OKEY;
+    }
+    static Screen::StatusCode addStringAtBoard(std::string_view str, size_t, size_t,
+                                               tetris::Color = tetris::Color::NONE) {
+        drawnStrings.push_back(std::string(str));
+        return Screen::StatusCode::OKEY;
+    }
 
-    // Strings
-    static Screen::StatusCode addStringAt(std::string_view s, int x, int y,
-                                          tetris::Color color = tetris::Color::NONE) {
-        return Screen::StatusCode::OKEY;
-    };
-    static Screen::StatusCode addStringAtBoard(std::string_view s, int x, int y,
-                                               tetris::Color color = tetris::Color::NONE) {
-        return Screen::StatusCode::OKEY;
-    };
+    static bool wasStringDrawn(const std::string& s) {
+        for (const auto& str : drawnStrings)
+            if (str.find(s) != std::string::npos) return true;
+        return false;
+    }
+    static int countChar(char c) {
+        int count = 0;
+        for (const auto& str : drawnStrings) {
+            for (char ch : str) {
+                if (ch == c) {
+                    ++count;
+                }
+            }
+        }
+        return count;
+    }
+
+    static bool wasCharDrawnAt(char c, size_t x, size_t y) {
+        for (const auto& [ch, cx, cy] : drawnChars) {
+            if (ch == c && cx == x && cy == y) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static int countCharAt(char c, size_t x, size_t y) {
+        int count = 0;
+        for (const auto& [ch, cx, cy] : drawnChars) {
+            if (ch == c && cx == x && cy == y) {
+                ++count;
+            }
+        }
+        return count;
+    }
 };
 }  // namespace Screen

@@ -14,6 +14,7 @@ add_executable(unittests
     test_game.cpp
     test_square.cpp
     test_tetramino.cpp
+    test_ui.cpp
 )
 target_link_libraries(unittests PRIVATE Catch2::Catch2WithMain)
 

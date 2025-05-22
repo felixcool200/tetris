@@ -144,3 +144,7 @@ void UI<screenInterface>::renderPauseScreen(size_t score, size_t lines, size_t l
 
 #include "screenTypeSelector.hpp"
 template class UI<ScreenType>;
+
+#include "mockScreen.hpp"
+// Explicit instantiation for MockScreen
+template class UI<Screen::MockScreen>;
